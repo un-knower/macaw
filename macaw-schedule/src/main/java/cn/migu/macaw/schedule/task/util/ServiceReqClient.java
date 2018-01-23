@@ -10,8 +10,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.message.BasicNameValuePair;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,6 +23,7 @@ import com.google.common.collect.Maps;
 import cn.migu.common.redis.StringRedisService;
 import cn.migu.macaw.common.RestTemplateProvider;
 import cn.migu.macaw.common.ServiceName;
+import cn.migu.macaw.common.ServiceUrlProvider;
 import cn.migu.macaw.common.SysRetCode;
 import cn.migu.macaw.common.log.LogUtils;
 import cn.migu.macaw.common.message.Entity;
@@ -34,8 +33,6 @@ import cn.migu.macaw.schedule.task.TaskNodeBrief;
 import cn.migu.macaw.schedule.task.datasource.DataSourceAdapter;
 import cn.migu.macaw.schedule.task.datasource.DataSourceFlatAttr;
 import cn.migu.macaw.schedule.workflow.DataConstants;
-
-//import cn.migu.macaw.schedule.dao.JobTaskMapper;
 
 /**
  * http client工具类
@@ -224,7 +221,6 @@ public class ServiceReqClient
     
     @Resource(name = "restTemplateForLoadBalance")
     private RestTemplate restTemplate;
-
     
     /**
      *
@@ -233,7 +229,7 @@ public class ServiceReqClient
      * @param brief
      * @throws Exception
      */
-    public void postCommonTask(String url, Map<String,String> entity, TaskNodeBrief brief)
+    public void postCommonTask(String url, Map<String, String> entity, TaskNodeBrief brief)
         throws Exception
     {
         String response = this.post(url, entity, brief);
@@ -258,7 +254,7 @@ public class ServiceReqClient
      * @return
      * @throws Exception
      */
-    public Entity postCommonTaskForEntity(String url, Map<String,String> entity, TaskNodeBrief brief)
+    public Entity postCommonTaskForEntity(String url, Map<String, String> entity, TaskNodeBrief brief)
         throws Exception
     {
         String response = this.post(url, entity, brief);
@@ -286,7 +282,7 @@ public class ServiceReqClient
      * @return
      * @throws Exception
      */
-    public String postCommonTaskForString(String url, Map<String,String> entity, TaskNodeBrief brief)
+    public String postCommonTaskForString(String url, Map<String, String> entity, TaskNodeBrief brief)
         throws Exception
     {
         String response = this.post(url, entity, brief);
@@ -307,7 +303,6 @@ public class ServiceReqClient
         return content;
         
     }
-
     
     /**
      * 数据同步任务
@@ -418,7 +413,7 @@ public class ServiceReqClient
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public String submitSparkTask(String url, Map<String,String> entity, TaskNodeBrief brief)
+    public String submitSparkTask(String url, Map<String, String> entity, TaskNodeBrief brief)
         throws Exception
     {
         
@@ -437,8 +432,9 @@ public class ServiceReqClient
                 {
                     if (e instanceof RuntimeException && sparkEventHandler.isHandlerEvent(errStack))
                     {
-
-                        Optional<Map.Entry<String,String>> result = entity.entrySet().stream()
+                        
+                        Optional<Map.Entry<String, String>> result = entity.entrySet()
+                            .stream()
                             .filter(nvp -> StringUtils.equals(nvp.getKey(), this.appId)
                                 && StringUtils.isNotEmpty(nvp.getValue()))
                             .findFirst();
@@ -450,9 +446,9 @@ public class ServiceReqClient
                             sparkEventHandler.reAllocDriver(errStack, brief, appId);
                             String newAppId =
                                 jobTasksCache.get(brief.getJobCode(), "-", DataConstants.SPARK_CONTEXT_APPID);
-
+                            
                             entity.put(this.appId, newAppId);
-
+                            
                         }
                         
                         //postSparkTask(url, newEntity, brief);
@@ -523,7 +519,7 @@ public class ServiceReqClient
             appName = context.getAppname();
             String appId = context.getAppid();
             
-            String queryUrl = StringUtils.join("http://", ServiceName.SPARK_DRIVER_RES_MGR, "/", sparkTaskQuery);
+            String queryUrl = ServiceUrlProvider.sparkJobMgrService(sparkTaskQuery);
             //sysParamCache.get(brief.getJobCode(), ModuleUrlKey.RESOURCE_URL_KEY) + sparkTaskQuery;
             String respPhase2 = this.post(queryUrl, this.sparkAppEntity(entity, appName, appId, brief, true), brief);
             
@@ -611,20 +607,19 @@ public class ServiceReqClient
      * @author zhaocan
      * @see [类、类#方法、类#成员]
      */
-    public String post(String url, Map<String,String> entity, TaskNodeBrief brief)
+    public String post(String url, Map<String, String> entity, TaskNodeBrief brief)
         throws Exception
     {
         //记录post log信息
         taskTraceLogUtil.reqPostLog(url, entity, brief);
         
-        String result = RestTemplateProvider.postFormForEntity(restTemplate, url, String.class,entity);
+        String result = RestTemplateProvider.postFormForEntity(restTemplate, url, String.class, entity);
         
         taskTraceLogUtil.resqPostLog(url, brief, result);
         
         return result;
         
     }
-
     
     /**
      * 创建sql http发送entity
@@ -633,18 +628,16 @@ public class ServiceReqClient
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public Map<String,String> sqlHiveEntity(String sql)
+    public Map<String, String> sqlHiveEntity(String sql)
     {
-        Map<String,String> entity = Maps.newHashMap();
-
+        Map<String, String> entity = Maps.newHashMap();
+        
         entity.put(runType, DEFAULT_RUN_TYPE);
         entity.put(dataSource, DATA_SOURCE_HIVE);
         entity.put(this.sql, sql);
         
         return entity;
     }
-
-
     
     /**
      * spark sql请求参数
@@ -653,10 +646,10 @@ public class ServiceReqClient
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public Map<String,String> sqlHiveEntity(String sql, String appId)
+    public Map<String, String> sqlHiveEntity(String sql, String appId)
     {
-        Map<String,String> entity = Maps.newHashMap();
-
+        Map<String, String> entity = Maps.newHashMap();
+        
         entity.put(runType, DEFAULT_RUN_TYPE);
         entity.put(dataSource, DATA_SOURCE_HIVE);
         entity.put(this.sql, sql);
@@ -673,16 +666,16 @@ public class ServiceReqClient
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public Map<String,String> sparkCtxInitEntity(TaskNodeBrief brief, String procCode, String cores, String memory)
+    public Map<String, String> sparkCtxInitEntity(TaskNodeBrief brief, String procCode, String cores, String memory)
     {
-        Map<String,String> entity = Maps.newHashMap();
-
+        Map<String, String> entity = Maps.newHashMap();
+        
         entity.put(this.coresNum, cores);
-
+        
         entity.put(this.executorMemory, memory);
-
+        
         entity.put(this.jobCode, procCode);
-
+        
         entity.put(this.dataSource, DATA_SOURCE_HIVE);
         
         this.getClusterMaster(entity, brief);
@@ -696,9 +689,9 @@ public class ServiceReqClient
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public Map<String,String> sparkCtxFreeEntity(String appId)
+    public Map<String, String> sparkCtxFreeEntity(String appId)
     {
-        Map<String,String> entity = Maps.newHashMap();
+        Map<String, String> entity = Maps.newHashMap();
         entity.put(this.appId, appId);
         
         return entity;
@@ -711,13 +704,13 @@ public class ServiceReqClient
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public Map<String,String> sqlListEntity(List<String> sqls)
+    public Map<String, String> sqlListEntity(List<String> sqls)
     {
         
-        Map<String,String> entity = Maps.newHashMap();
+        Map<String, String> entity = Maps.newHashMap();
         
         String jsonString = JSONArray.toJSONString(sqls).replaceAll("\n", " ").replace("\\n", " ");
-
+        
         entity.put(runType, DEFAULT_RUN_TYPE);
         entity.put(this.dataSource, DATA_SOURCE_HIVE);
         entity.put(this.sqlList, jsonString);
@@ -736,12 +729,12 @@ public class ServiceReqClient
      * @author zhaocan
      * @see [类、类#方法、类#成员]
      */
-    public Map<String,String> sparkAppEntity(Map<String,String> entity, String name, String id, TaskNodeBrief brief,
+    public Map<String, String> sparkAppEntity(Map<String, String> entity, String name, String id, TaskNodeBrief brief,
         boolean flag)
     {
         entity.put(appName, name);
         entity.put(appId, id);
-
+        
         return entity;
     }
     
@@ -786,11 +779,12 @@ public class ServiceReqClient
      * @author zhaocan
      * @see [类、类#方法、类#成员]
      */
-    public List<Object[]> executeJdbcQuery(String sql, TaskNodeBrief brief, DataSourceFlatAttr dsAttr, String... colNames)
+    public List<Object[]> executeJdbcQuery(String sql, TaskNodeBrief brief, DataSourceFlatAttr dsAttr,
+        String... colNames)
         throws Exception
     {
         List<Object[]> rst = new ArrayList<Object[]>();
-        Map<String,String> entity = Maps.newHashMap();
+        Map<String, String> entity = Maps.newHashMap();
         entity.put(this.dataSource, DATA_SOURCE_HUGETABLE);
         entity.put(this.sql, sql);
         
@@ -805,7 +799,7 @@ public class ServiceReqClient
         
         for (int i = 0; i < 3; i++)
         {
-            String qryUrl = StringUtils.join("http://",ServiceName.DATA_SYN_AND_HT,"/",JDBC_EXECUTE_QUERY);
+            String qryUrl = StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
             String result = this.post(qryUrl, entity, brief);
             
             JSONObject jsonObject = JSONObject.parseObject(result);
@@ -871,36 +865,36 @@ public class ServiceReqClient
      * @return
      * @see [类、类#方法、类#成员]
      */
-    private void postFormExtend(Map<String,String> entity, TaskNodeBrief brief)
+    private void postFormExtend(Map<String, String> entity, TaskNodeBrief brief)
     {
-
-            entity.put(this.batchNo, brief.getBatchCode());
-            entity.put(this.jobCode, brief.getJobCode());
-            entity.put(this.taskCode, brief.getNodeId());
-            
-            String coreNumStr = jobTasksCache.get(brief.getJobCode(), brief.getNodeId(), DataConstants.CORE_NUM);
-            int coreNum = StringUtils.isEmpty(coreNumStr) ? 0 : Integer.valueOf(coreNumStr);
-            if (0 != coreNum)
-            {
-                entity.put(this.coresNum, String.valueOf(coreNum));
-            }
-            else
-            {
-                entity.put(this.coresNum, String.valueOf(SparkResourceMgr.DEFAULT_CORE_NUM));
-            }
-            
-            String memSizeStr = jobTasksCache.get(brief.getJobCode(), brief.getNodeId(), DataConstants.MEM_SIZE);
-            int memSize = StringUtils.isEmpty(memSizeStr) ? 0 : Integer.valueOf(memSizeStr);
-            if (0 != memSize)
-            {
-                entity.put(this.executorMemory, String.valueOf(memSize));
-            }
-            else
-            {
-                entity.put(this.executorMemory, String.valueOf(SparkResourceMgr.DEFAULT_MEM_SIZE));
-            }
-            
-            this.getClusterMaster(entity, brief);
+        
+        entity.put(this.batchNo, brief.getBatchCode());
+        entity.put(this.jobCode, brief.getJobCode());
+        entity.put(this.taskCode, brief.getNodeId());
+        
+        String coreNumStr = jobTasksCache.get(brief.getJobCode(), brief.getNodeId(), DataConstants.CORE_NUM);
+        int coreNum = StringUtils.isEmpty(coreNumStr) ? 0 : Integer.valueOf(coreNumStr);
+        if (0 != coreNum)
+        {
+            entity.put(this.coresNum, String.valueOf(coreNum));
+        }
+        else
+        {
+            entity.put(this.coresNum, String.valueOf(SparkResourceMgr.DEFAULT_CORE_NUM));
+        }
+        
+        String memSizeStr = jobTasksCache.get(brief.getJobCode(), brief.getNodeId(), DataConstants.MEM_SIZE);
+        int memSize = StringUtils.isEmpty(memSizeStr) ? 0 : Integer.valueOf(memSizeStr);
+        if (0 != memSize)
+        {
+            entity.put(this.executorMemory, String.valueOf(memSize));
+        }
+        else
+        {
+            entity.put(this.executorMemory, String.valueOf(SparkResourceMgr.DEFAULT_MEM_SIZE));
+        }
+        
+        this.getClusterMaster(entity, brief);
     }
     
     /**
@@ -920,8 +914,6 @@ public class ServiceReqClient
         entity.put(this.hdfsPath, dataSourceAdapter.getHdfsUrl(brief, dsAttr));
     }
     
-
-    
     /**
      * 停止提交的spark任务
      *
@@ -934,10 +926,8 @@ public class ServiceReqClient
     public void stopSparkTask(String name, String id, TaskNodeBrief brief)
         throws Exception
     {
-        String stopUrl = StringUtils.join("http://", ServiceName.SPARK_DRIVER_RES_MGR, "/", SPARK_STOP_APP);
-        //StringUtils.join(sysParamCache.get(brief.getJobCode(), ModuleUrlKey.RESOURCE_URL_KEY), SPARK_STOP_APP);
+        String stopUrl = ServiceUrlProvider.sparkJobMgrService(SPARK_STOP_APP);
         String stopRet = this.post(stopUrl, this.sparkAppEntity(null, name, id, brief, false), brief);
-        //stopRet = StringUtil.getResp(stopRet);
         
         Response resp = JSON.parseObject(stopRet, Response.class, Feature.InitStringFieldAsEmpty);
         
