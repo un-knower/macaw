@@ -1,0 +1,106 @@
+server:
+  # 端口
+  port: 8083
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+#    serviceUrl:
+#      defaultZone: http://localhost:8001/eureka/
+#    healthcheck:
+#        enabled: true
+#        instance:
+#            lease-expiration-duration-in-seconds: 30
+#            lease-renewal-interval-in-seconds: 10
+
+spring:
+  application:
+    name: macaw-sparkdriver-manager
+  datasource:
+    name: macaw-sparkdriver-ds
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.18.111.8:3306/bigdata_platform?useSSL=false&characterEncoding=UTF-8
+    username: service
+    password: Emc20090
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 连接池最大使用连接数
+      max-active: 200
+      # 初始化连接大小
+      initial-size: 1
+      # 获取连接最大等待时间
+      max-wait: 60000
+      # 连接池最小空闲
+      min-idle: 3
+      # 自动清除无用连接
+      remove-abandoned: true
+      # 清除无用连接的等待时间
+      remove-abandoned-timeout: 180
+      # 连接属性
+      connection-properties: clientEncoding=UTF-8
+  redis:
+      # Redis数据库索引（默认为0）
+      database: 3
+      # Redis服务器地址
+      host: 172.18.111.9
+      # Redis服务器连接端口
+      port: 6379
+      # Redis服务器连接密码（默认为空）
+      password:
+      # 连接超时时间（毫秒）
+      timeout: 0
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 200
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 5000
+        # 连接池中的最大空闲连接
+        max-idle: 5
+        # 连接池中的最小空闲连接
+        min-idle: 0
+  jackson:
+    default-property-inclusion: NON_NULL
+
+
+# mybatis配置
+mybatis:
+  type-aliases-package: cn.migu.macaw.sparkdrivermgr.api.model
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    database-id: bigdata_platform
+    # 开启字段名和属性名驼峰匹配
+    map-underscore-to-camel-case: true
+    # 全局启用或禁用延迟加载。当禁用时，所有关联对象都会即时加载
+    lazy-loading-enabled: true
+    # 当启用时，有延迟加载属性的对象在被调用时将会完全加载任意属性。否则，每种属性将会按需要加载
+    aggressive-lazy-loading: true
+
+mapper:
+  mappers: cn.migu.macaw.common.mapper.CommonMapper
+  not-empty: false
+  identity: MYSQL
+
+# 分页插件配置
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+spark-job:
+  max-cores: 512 #单spark job最大分配核数
+  max-mem-size: 327680 #单spark job最大分配executor内存大小320G,单位M
+spark-driver:
+  restart-all: false
+  port-pool: 5110,5111,5112,5113,5114,5115,5116,5117,5118,5119,5120,5121,\
+              5122,5123,5124,5125,5126,5127,5128,5129,5130,5131,5132,5133,\
+              5134,5135,5136,5137,5138,5139,5140,5141,5142,5143,5144,5145,\
+              5146,5147,5148,5149,5150
+
+# 日志
+logging:
+  level:
+    cn.migu.macaw.sparkdrivermgr: INFO
+

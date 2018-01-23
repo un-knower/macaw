@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.schedule.dao.JobMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.schedule.api.model.Job">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="KIND" jdbcType="INTEGER" property="kind" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="JOB_CLASS" jdbcType="VARCHAR" property="jobClass" />
+    <result column="STATE" jdbcType="INTEGER" property="state" />
+    <result column="CRON_EXPRESSION" jdbcType="VARCHAR" property="cronExpression" />
+    <result column="SUCCESS" jdbcType="BIGINT" property="success" />
+    <result column="FAIL" jdbcType="BIGINT" property="fail" />
+    <result column="RUN_BATCHNO" jdbcType="VARCHAR" property="runBatchno" />
+    <result column="REAL_STATE" jdbcType="TINYINT" property="realState" />
+    <result column="PROJECT_CODE" jdbcType="VARCHAR" property="projectCode" />
+    <result column="NOTE" jdbcType="LONGVARCHAR" property="note" />
+    <result column="GRAPH_XML" jdbcType="LONGVARCHAR" property="graphXml" />
+  </resultMap>
+</mapper>

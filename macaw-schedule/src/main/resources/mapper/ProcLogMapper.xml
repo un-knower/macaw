@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.schedule.dao.ProcLogMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.schedule.api.model.ProcLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="TYPE" jdbcType="INTEGER" property="type" />
+    <result column="JOB_CODE" jdbcType="VARCHAR" property="jobCode" />
+    <result column="JOB_BATCHNO" jdbcType="VARCHAR" property="jobBatchno" />
+    <result column="DEAL_USER" jdbcType="VARCHAR" property="dealUser" />
+    <result column="PROC_CODE" jdbcType="VARCHAR" property="procCode" />
+    <result column="BATCHNO" jdbcType="VARCHAR" property="batchno" />
+    <result column="START_TIME" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="STATE" jdbcType="INTEGER" property="state" />
+    <result column="ELAPSE" jdbcType="BIGINT" property="elapse" />
+    <result column="P_REDO" jdbcType="VARCHAR" property="pRedo" />
+    <result column="OTHERS_VARS" jdbcType="VARCHAR" property="othersVars" />
+    <result column="P_MONTH" jdbcType="VARCHAR" property="pMonth" />
+    <result column="P_DAY" jdbcType="VARCHAR" property="pDay" />
+    <result column="INPUT" jdbcType="LONGVARCHAR" property="input" />
+    <result column="OUTPUT" jdbcType="LONGVARCHAR" property="output" />
+    <result column="NOTE" jdbcType="LONGVARCHAR" property="note" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.schedule.dao.TaskMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.schedule.api.model.Task">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="TYPE" jdbcType="INTEGER" property="type" />
+    <result column="KIND" jdbcType="INTEGER" property="kind" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="TASK_CLASS" jdbcType="VARCHAR" property="taskClass" />
+    <result column="LOOP_NUM" jdbcType="INTEGER" property="loopNum" />
+    <result column="RETRY_NUM" jdbcType="INTEGER" property="retryNum" />
+    <result column="WAIT_TIME" jdbcType="INTEGER" property="waitTime" />
+    <result column="NOTE" jdbcType="LONGVARCHAR" property="note" />
+  </resultMap>
+</mapper>

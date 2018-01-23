@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.schedule.dao.ProcedureMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.schedule.api.model.Procedure">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="JOB_CODE" jdbcType="VARCHAR" property="jobCode" />
+    <result column="DEAL_USER" jdbcType="VARCHAR" property="dealUser" />
+    <result column="DEAL_TIME" jdbcType="TIMESTAMP" property="dealTime" />
+    <result column="CPUS" jdbcType="VARCHAR" property="cpus" />
+    <result column="MEMORY" jdbcType="VARCHAR" property="memory" />
+    <result column="REAL_STATE" jdbcType="INTEGER" property="realState" />
+    <result column="PROJECT_CODE" jdbcType="VARCHAR" property="projectCode" />
+    <result column="DATABASE_SPARK" jdbcType="VARCHAR" property="databaseSpark" />
+    <result column="DATABASE_HT" jdbcType="VARCHAR" property="databaseHt" />
+    <result column="CONTENT" jdbcType="LONGVARCHAR" property="content" />
+    <result column="NOTE" jdbcType="LONGVARCHAR" property="note" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.schedule.dao.TaskTemplateMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.schedule.api.model.TaskTemplate">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="TASK_CODE" jdbcType="VARCHAR" property="taskCode" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="TASK_CLASS" jdbcType="VARCHAR" property="taskClass" />
+  </resultMap>
+</mapper>

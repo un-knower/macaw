@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.schedule.dao.ProcVariableMapMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.schedule.api.model.ProcVariableMap">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="JOB_CODE" jdbcType="VARCHAR" property="jobCode" />
+    <result column="PROC_CODE" jdbcType="VARCHAR" property="procCode" />
+    <result column="VARI_CODE" jdbcType="VARCHAR" property="variCode" />
+    <result column="DEFAULT_VALUE" jdbcType="VARCHAR" property="defaultValue" />
+  </resultMap>
+</mapper>

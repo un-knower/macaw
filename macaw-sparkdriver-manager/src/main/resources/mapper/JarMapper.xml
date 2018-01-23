@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.sparkdrivermgr.dao.JarMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.sparkdrivermgr.api.model.Jar">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="APP_ID" jdbcType="VARCHAR" property="appId" />
+    <result column="SERVER_ID" jdbcType="VARCHAR" property="serverId" />
+    <result column="KIND" jdbcType="INTEGER" property="kind" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="PATH" jdbcType="VARCHAR" property="path" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+  </resultMap>
+
+  <select id="getDriverDeploymentByType" resultMap="BaseResultMap">
+    SELECT J.OBJ_ID,
+    J.APP_ID,
+    J.SERVER_ID,
+    S.USERNAME,
+    S.PASSWORD,
+    J.PATH,
+    S.IP
+    FROM JAR J
+    INNER JOIN SERVER S
+    ON J.SERVER_ID = S.OBJ_ID
+    WHERE J.STATUS = '2'
+    AND J.APP_ID like #{driverType}
+    AND J.NAME = 'springboot'
+  </select>
+
+  <select id="getAllDriverDeployment" resultMap="BaseResultMap" >
+    SELECT J.OBJ_ID,
+    J.APP_ID,
+    J.SERVER_ID,
+    S.USERNAME,
+    S.PASSWORD,
+    J.PATH,
+    S.IP
+    FROM JAR J
+    INNER JOIN SERVER S
+    ON J.SERVER_ID = S.OBJ_ID
+    WHERE J.STATUS = '2'
+    AND (J.APP_ID like '%-calc' or J.APP_ID like '%-algo')
+    AND J.NAME = 'springboot'
+  </select>
+</mapper>

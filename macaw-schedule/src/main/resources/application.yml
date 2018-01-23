@@ -1,0 +1,104 @@
+server:
+  # 端口
+  port: 8082
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+#    serviceUrl:
+#      defaultZone: http://localhost:8001/eureka/
+#    healthcheck:
+#        enabled: true
+#        instance:
+#            lease-expiration-duration-in-seconds: 30
+#            lease-renewal-interval-in-seconds: 10
+
+spring:
+  application:
+    name: macaw-schedule
+  datasource:
+    name: macaw-schedule-ds
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.18.111.8:3306/bigdata_platform?useSSL=false&characterEncoding=UTF-8
+    username: service
+    password: Emc20090
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 连接池最大使用连接数
+      max-active: 200
+      # 初始化连接大小
+      initial-size: 1
+      # 获取连接最大等待时间
+      max-wait: 60000
+      # 连接池最小空闲
+      min-idle: 3
+      # 自动清除无用连接
+      remove-abandoned: true
+      # 清除无用连接的等待时间
+      remove-abandoned-timeout: 180
+      # 连接属性
+      connection-properties: clientEncoding=UTF-8
+  redis:
+      # Redis数据库索引（默认为0）
+      database: 2
+      # Redis服务器地址
+      host: 172.18.111.9
+      # Redis服务器连接端口
+      port: 6379
+      # Redis服务器连接密码（默认为空）
+      password:
+      # 连接超时时间（毫秒）
+      timeout: 0
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 200
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 5000
+        # 连接池中的最大空闲连接
+        max-idle: 5
+        # 连接池中的最小空闲连接
+        min-idle: 0
+  jackson:
+    default-property-inclusion: NON_NULL
+
+spark:
+  master-url: spark://172.18.111.3:7077
+hdfs:
+  schema-prefix: hdfs://hadoop
+  ha-conf: '{"clustername":"hadoop","namenodes":[{"hostname":"ndl-bass-ys-vm-129-186","port":"8020"},{"hostname":"ndl-bass-ys-vm-129-187","port":"8020"}]}'
+crossdata:
+  address: 192.168.129.186,192.168.129.187
+  port: 9099
+
+# mybatis配置
+mybatis:
+  type-aliases-package: cn.migu.macaw.schedule.api.model
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    database-id: bigdata_platform
+    # 开启字段名和属性名驼峰匹配
+    map-underscore-to-camel-case: true
+    # 全局启用或禁用延迟加载。当禁用时，所有关联对象都会即时加载
+    lazy-loading-enabled: true
+    # 当启用时，有延迟加载属性的对象在被调用时将会完全加载任意属性。否则，每种属性将会按需要加载
+    aggressive-lazy-loading: true
+
+mapper:
+  mappers: cn.migu.macaw.common.mapper.CommonMapper
+  not-empty: false
+  identity: MYSQL
+
+# 分页插件配置
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+# 日志
+logging:
+  level:
+    cn.migu.macaw.schedule: INFO
+

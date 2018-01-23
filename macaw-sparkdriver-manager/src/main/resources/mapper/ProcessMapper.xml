@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.sparkdrivermgr.dao.ProcessMapper">
+    <resultMap id="BaseResultMap" type="cn.migu.macaw.sparkdrivermgr.api.model.Process">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="OBJ_ID" jdbcType="VARCHAR" property="objId"/>
+        <result column="APP_ID" jdbcType="VARCHAR" property="appId"/>
+        <result column="SERVER_ID" jdbcType="VARCHAR" property="serverId"/>
+        <result column="JAR_ID" jdbcType="VARCHAR" property="jarId"/>
+        <result column="PORT" jdbcType="INTEGER" property="port"/>
+        <result column="KIND" jdbcType="VARCHAR" property="kind"/>
+        <result column="PROCESS_NO" jdbcType="INTEGER" property="processNo"/>
+        <result column="STATUS" jdbcType="INTEGER" property="status"/>
+        <result column="MEMORY" jdbcType="VARCHAR" property="memory"/>
+        <result column="CPUS" jdbcType="INTEGER" property="cpus"/>
+        <result column="DEAL_TIME" jdbcType="TIMESTAMP" property="dealTime"/>
+        <result column="DEAL_USER" jdbcType="VARCHAR" property="dealUser"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="NOTE" jdbcType="LONGVARCHAR" property="note"/>
+    </resultMap>
+
+    <resultMap id="availableProcessMap" type="cn.migu.macaw.sparkdrivermgr.model.AvailableSparkDriverProcess">
+        <id column="OBJ_ID" jdbcType="VARCHAR" property="objId"/>
+        <result column="APP_ID" jdbcType="VARCHAR" property="appId"/>
+        <result column="SERVER_ID" jdbcType="VARCHAR" property="serverId"/>
+        <result column="JAR_ID" jdbcType="VARCHAR" property="jarId"/>
+        <result column="IP" jdbcType="VARCHAR" property="ip"/>
+        <result column="PORT" jdbcType="INTEGER" property="port"/>
+    </resultMap>
+
+    <resultMap id="driverMetaDataMap" type="cn.migu.macaw.sparkdrivermgr.model.SparkDriverMetaData">
+        <id column="JAR_ID" jdbcType="VARCHAR" property="jarId"/>
+        <result column="SERVER_ID" jdbcType="VARCHAR" property="serverId"/>
+        <result column="PROCESS_ID" jdbcType="VARCHAR" property="processId"/>
+        <result column="DRIVER_TYPE" jdbcType="VARCHAR" property="driverType"/>
+        <result column="PID" jdbcType="INTEGER" property="pid"/>
+        <result column="LAUNCH_CMD" jdbcType="VARCHAR" property="launchCmd"/>
+        <result column="DRIVER_IP" jdbcType="VARCHAR" property="driverIp"/>
+        <result column="DRIVER_PORT" jdbcType="INTEGER" property="driverPort"/>
+        <result column="USERNAME" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+    </resultMap>
+
+    <select id="queryDriverMeta" resultMap="driverMetaDataMap">
+        select j.obj_id     as jar_id,
+        s.obj_id     as server_id,
+        j.app_id     as driver_type,
+        p.obj_id     as process_id,
+        p.process_no as pid,
+        j.path       as launch_cmd,
+        s.ip         as driver_ip,
+        p.port       as driver_port,
+        s.username,
+        s.password
+        from process p, jar j, server s
+        where p.obj_id = #{processId}
+        and p.jar_id is not null
+        and p.jar_id = j.obj_id
+        and p.server_id is not null
+        and p.server_id = s.obj_id
+    </select>
+
+    <select id="queryAvailableDriver" resultMap="availableProcessMap">
+        select t1.obj_id,t1.app_id,t1.jar_id,t1.server_id,t1.port,t2.ip
+        from process t1,server t2
+        where t1.server_id =
+        (select server_id
+        from (select server_id, count(server_id) as num
+        from process t
+        where status = 0
+        and app_id = #{driverType}
+        group by server_id
+        order by num desc) a limit 1)
+        and t1.server_id is not null
+        and t1.status = 0
+        and t1.server_id = t2.obj_id
+        order by deal_time asc limit 1
+    </select>
+
+    <delete id="deleteProcessByJarId">
+        delete from process where jar_id=#{jarId} and (app_id like '%calc' or app_id like '%algo')
+    </delete>
+</mapper>

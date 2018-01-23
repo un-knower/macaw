@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.schedule.dao.JobLogMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.schedule.api.model.JobLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="JOB_CODE" jdbcType="VARCHAR" property="jobCode" />
+    <result column="BATCHNO" jdbcType="VARCHAR" property="batchno" />
+    <result column="START_TIME" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="STATE" jdbcType="INTEGER" property="state" />
+    <result column="ELAPSE" jdbcType="BIGINT" property="elapse" />
+    <result column="PROJECT_CODE" jdbcType="VARCHAR" property="projectCode" />
+    <result column="NOTE" jdbcType="LONGVARCHAR" property="note" />
+    <result column="GRAPH_XML" jdbcType="LONGVARCHAR" property="graphXml" />
+  </resultMap>
+</mapper>

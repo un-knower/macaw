@@ -1,0 +1,94 @@
+package cn.migu.macaw.schedule.task.util;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * 
+ * 正则表达式实现字符串替换
+ * 可分组进行子串逐一替换
+ * 
+ * @author  zhaocan
+ * @version  [v1.0, 2015-1-12]
+ * @since  abnormal 1.0
+ */
+public abstract class RegxReplaceByGroup
+{
+    private Pattern pattern;
+    
+    private Matcher matcher;
+    
+    private String dstObj;
+    
+    /**
+     * 构造函数,初始化编译正则表达式
+     */
+    public RegxReplaceByGroup(String regex, String dstObj)
+    {
+        this.pattern = Pattern.compile(regex);
+        
+        this.dstObj = dstObj;
+    }
+    
+    /**
+     * 返回获取的组
+     */
+    public String group(int i)
+    {
+        return matcher.group(i);
+    }
+    
+    /**
+     * 抽象方法,用户实现需要替换的组方式
+     */
+    public abstract String replacement();
+    
+    /**
+     * 返回替换后的结果
+     */
+    public String rewrite(CharSequence original)
+    {
+        this.matcher = pattern.matcher(original);
+        StringBuffer result = new StringBuffer(original.length());
+        while (matcher.find())
+        {
+            matcher.appendReplacement(result, "");
+            result.append(replacement());
+        }
+        matcher.appendTail(result);
+        return result.toString();
+    }
+    
+    public String getDstObj()
+    {
+        return dstObj;
+    }
+    
+    public static void main(String... args)
+        throws Exception
+    {
+        String str = "select xx from yy where msisdn=${msisdn}";
+        
+        // anonymous subclass
+        RegxReplaceByGroup tripler = new RegxReplaceByGroup("([$][{]msisdn[}])", "13912952636")
+        {
+            @Override
+            public String replacement()
+            {
+                return this.getDstObj();
+            }
+        };
+        System.out.println(tripler.rewrite(str));
+        
+        // inline subclass
+        /*System.out.println(new RegxReplaceByGroup("(\\d{1,2})")
+        {
+            public String replacement()
+            {
+                int intValue = Integer.valueOf(group(1));
+                return String.valueOf(intValue * 3);
+            }
+        }.rewrite(str));*/
+        
+    }
+}
