@@ -72,7 +72,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
     @Autowired
     private GlobalParam globalParam;
     
-    private static final Log resCalclog = LogFactory.getLog("rescalc");
+    private static final Log sparkDriverInterlog = LogFactory.getLog("spark-driver-interactive");
     
     /**
      * 
@@ -120,10 +120,10 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         try
         {
             
-            reqRespLog.requestLog(request, resCalclog, logBean);
+            reqRespLog.requestLog(request, sparkDriverInterlog, logBean);
             String result = RestTemplateProvider.postFormForEntity(restTemplate, targetUrl, String.class, form);
             reqRespLog
-                .responseLog(resCalclog, logBean, StringUtils.join("[计算中心请求地址:", targetUrl, ",返回结果:", result, "]"));
+                .responseLog(sparkDriverInterlog, logBean, StringUtils.join("[计算中心请求地址:", targetUrl, ",返回结果:", result, "]"));
             
             Response response = JSON.parseObject(result, Response.class, Feature.InitStringFieldAsEmpty);
             
@@ -214,10 +214,10 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         {
             Map<String, String> params = Maps.newHashMap();
             params.put("dataSource", "hive");
-            reqRespLog.requestLog(request, resCalclog, logBean);
+            reqRespLog.requestLog(request, sparkDriverInterlog, logBean);
             String result = RestTemplateProvider.postFormForEntity(restTemplate, stopScUrl, String.class, params);
             reqRespLog
-                .responseLog(resCalclog, logBean, StringUtils.join("[计算中心请求地址:", stopScUrl, ",返回结果:", result, "]"));
+                .responseLog(sparkDriverInterlog, logBean, StringUtils.join("[计算中心请求地址:", stopScUrl, ",返回结果:", result, "]"));
         }
         catch (Exception e)
         {
@@ -348,10 +348,10 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
             StringUtils.join("http://", resCtx.getDriverIp(), ":", resCtx.getPort(), "/SparkSQL/startSparkSession.do");
         try
         {
-            reqRespLog.requestLog(request, resCalclog, logBean);
+            reqRespLog.requestLog(request, sparkDriverInterlog, logBean);
             String result = RestTemplateProvider.postFormForEntity(restTemplate, targetUrl, String.class, form);
             reqRespLog
-                .responseLog(resCalclog, logBean, StringUtils.join("[计算中心请求地址:", targetUrl, ",返回结果:", result, "]"));
+                .responseLog(sparkDriverInterlog, logBean, StringUtils.join("[计算中心请求地址:", targetUrl, ",返回结果:", result, "]"));
             
             Response response = JSON.parseObject(result, Response.class, Feature.InitStringFieldAsEmpty);
             

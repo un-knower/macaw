@@ -1,28 +1,21 @@
 package cn.migu.macaw.schedule.task.util;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import cn.migu.macaw.schedule.util.ScheduleLogTrace;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Joiner;
 
-import cn.migu.macaw.common.log.LogUtils;
 import cn.migu.macaw.schedule.task.TaskNodeBrief;
+import cn.migu.macaw.schedule.util.ScheduleLogTrace;
 
 /**
  * Task跟踪日志类
@@ -42,17 +35,17 @@ public class TaskTraceLogUtil
      * 发出请求描述,对以下请求记录日志
      */
     private String[][] reqDesc =
-        {{ServiceReqClient.SPARK_SQL_EXECUTE, "单SQL执行"}, {ServiceReqClient.SPARK_SQL_EXECUTE_CTX, "单SQL执行_IN-THE-CONTEXT"},
-            {ServiceReqClient.JDBC_EXECUTE_QUERY, "JDBC查询HT"}, {ServiceReqClient.LOADL_FILE_TO_DATABASE, "加载文件至数据库"},
-            {ServiceReqClient.EXECUTE_SQL_DATAFRAME, "SQL/DataFrame操作"}, {ServiceReqClient.SPARK_SELECT_TO_FILE, "SQL生成文件"},
-            {ServiceReqClient.SPARK_SQLLIST_PATH, "多SQL执行"}, {ServiceReqClient.SPARK_JSON_TO_DB, "json数据->Data WareHouse"},
-            {ServiceReqClient.SINGLE_DATASOURCE_TABLE, "crossdata DB->HUGETABLE"}, {ServiceReqClient.ALGO_TRAIN, "算法中心数据训练"},
-            {ServiceReqClient.ALGO_USE, "算法中心数据使用"}, {ServiceReqClient.SPARK_SELECT_TO_TEXT, "SQL生成单个文本文件"},
-            {ServiceReqClient.COMMON_DB_CROSSDATA, "数据同步"}, {ServiceReqClient.SPARK_DRIVER_INIT, "Spark Driver申请"},
-            {ServiceReqClient.SPARK_DRIVER_FREE, "Spark Driver释放"}, {ServiceReqClient.SPARK_STOP_APP, "停止Spark Application"},
-            {ServiceReqClient.SPARK_SELECT_QUERY, "Spark SQL查询返回"},
-            {ServiceReqClient.SAVE_TO_REDIS_BYSQL, "根据spark sql保存数据到redis"},
-            {ServiceReqClient.DB_CROSSDATA_KILL, "Kill CrossData Job(By JobCode)"}};
+        {{RequestServiceUri.SPARK_SQL_EXECUTE, "单SQL执行"}, {RequestServiceUri.SPARK_SQL_EXECUTE_CTX, "单SQL执行_IN-THE-CONTEXT"},
+            {RequestServiceUri.JDBC_EXECUTE_QUERY, "JDBC查询HT"}, {RequestServiceUri.LOADL_FILE_TO_DATABASE, "加载文件至数据库"},
+            {RequestServiceUri.EXECUTE_SQL_DATAFRAME, "SQL/DataFrame操作"}, {RequestServiceUri.SPARK_SELECT_TO_FILE, "SQL生成文件"},
+            {RequestServiceUri.SPARK_SQLLIST_PATH, "多SQL执行"}, {RequestServiceUri.SPARK_JSON_TO_DB, "json数据->Data WareHouse"},
+            {RequestServiceUri.SINGLE_DATASOURCE_TABLE, "crossdata DB->HUGETABLE"}, {RequestServiceUri.ALGO_TRAIN, "算法数据训练"},
+            {RequestServiceUri.ALGO_USE, "算法数据使用"}, {RequestServiceUri.SPARK_SELECT_TO_TEXT, "SQL生成单个文本文件"},
+            {RequestServiceUri.COMMON_DB_CROSSDATA, "数据同步"}, {RequestServiceUri.SPARK_DRIVER_INIT, "Spark Driver申请"},
+            {RequestServiceUri.SPARK_DRIVER_FREE, "Spark Driver释放"}, {RequestServiceUri.SPARK_STOP_APP, "停止Spark Application"},
+            {RequestServiceUri.SPARK_SELECT_QUERY, "Spark SQL查询返回"},
+            {RequestServiceUri.SAVE_TO_REDIS_BYSQL, "根据spark sql保存数据到redis"},
+            {RequestServiceUri.DB_CROSSDATA_KILL, "Kill CrossData Job(By JobCode)"}};
     
     /**
      * 请求日志

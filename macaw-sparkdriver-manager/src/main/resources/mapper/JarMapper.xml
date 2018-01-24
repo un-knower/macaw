@@ -14,6 +14,7 @@
     <result column="PATH" jdbcType="VARCHAR" property="path" />
     <result column="USERNAME" jdbcType="VARCHAR" property="username" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="MAX_JVM" jdbcType="INTEGER" property="maxJvm" />
   </resultMap>
 
   <select id="getDriverDeploymentByType" resultMap="BaseResultMap">
@@ -36,6 +37,7 @@
     SELECT J.OBJ_ID,
     J.APP_ID,
     J.SERVER_ID,
+    J.MAX_JVM,
     S.USERNAME,
     S.PASSWORD,
     J.PATH,

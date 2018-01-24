@@ -40,83 +40,9 @@ import cn.migu.macaw.schedule.workflow.DataConstants;
  * @author soy
  */
 @Component("serviceReqClient")
-public class ServiceReqClient
+public class ServiceReqClient implements RequestKey,RequestServiceUri
 {
-    //请求编码
-    private final String defaultEncode = "UTF-8";
-    
-    //请求参数键值
-    private final String sql = "sql";
-    
-    private final String dataSource = "dataSource";
-    
-    private final String sqlList = "sqlList";
-    
-    private final String fieldsList = "fieldsList";
-    
-    private final String runType = "runType";
-    
-    private final String ObjectJson = "objectJson";
-    
-    private final String appName = "appName";
-    
-    private final String appId = "appId";
-    
-    private final String targetPath = "targetPath";
-    
-    private final String dataBaseName = "dataBaseName";
-    
-    private final String tableName = "tableName";
-    
-    private final String ip = "ip";
-    
-    private final String port = "port";
-    
-    private final String userName = "userName";
-    
-    private final String password = "password";
-    
-    private final String dataPath = "dataPath";
-    
-    private final String mode = "mode";
-    
-    private final String code = "code";
-    
-    private final String note = "note";
-    
-    private final String batchNo = "batchNo";
-    
-    private final String jobCode = "jobCode";
-    
-    private final String taskCode = "taskCode";
-    
-    private final String coresNum = "coresNum";
-    
-    private final String executorMemory = "executorMemory";
-    
-    private final String sparkIp = "sparkIp";
-    
-    private final String sparkMgrPort = "sparkMgrPort";
-    
-    private final String hdfsPath = "hdfsPath";
-    
-    private final String sparkPath = "sparkPath";
-    
-    private final String crossDataIp = "crossDataIp";
-    
-    private final String crossDataPort = "crossDataPort";
-    
-    //算法数据保存路径
-    private final String predictSavePath = "/predictSavePath";
-    
-    private final String modelSavePath = "/modelSavePath";
-    
-    private final String resultSavePath = "resultSavePath";
-    
-    //spark任务状态查询路径,本类内部使用
-    private final String sparkTaskQuery = "querySparkApp.do";
-    
-    //private final String sparkTaskStop = "stopSparkApp.do";
+
     
     //spark任务请求返回状态
     public static final String FINISHED = "00";
@@ -126,55 +52,7 @@ public class ServiceReqClient
     public static final String FAILED = "02";
     
     public static final String KILLED = "03";
-    
-    public static final String SYS_ERR = "99";
-    
-    //客户端请求地址,spark任务,需要资源调度
-    public static final String SPARK_SQL_EXECUTE = "rs/SparkSQL/executeSql.do";
-    
-    public static final String SPARK_SQL_EXECUTE_CTX = "rs/SparkSQL/doSessionSql.do";
-    
-    public static final String LOADL_FILE_TO_DATABASE = "rs/SparkSQL/loadFileToDatabase.do";
-    
-    public static final String EXECUTE_SQL_DATAFRAME = "rs/SparkSQL/executeSqldataFrame.do";
-    
-    public static final String SPARK_SELECT_TO_FILE = "rs/SparkSQL/selectToFile.do";
-    
-    public static final String SPARK_SELECT_TO_TEXT = "rs/SparkSQL/selectToSingleTextFile.do";
-    
-    public static final String SAVE_TO_REDIS_BYSQL = "rs/SparkSQL/saveToRedisBySql.do";
-    
-    public static final String TRAIN_SPARK_KMEANS_ONHIVE = "rs/trainSparkKmeansOnHive.do";
-    
-    public static final String PREDICT_SPARK_KMEANS_ONHIVE = "rs/predictSparkKmeansOnHive.do";
-    
-    public static final String SPARK_SQLLIST_PATH = "rs/SparkSQL/executeSqlList.do";
-    
-    public static final String SPARK_JSON_TO_DB = "rs/SparkSQL/jsonToDbBySql.do";
-    
-    public static final String ALGO_TRAIN = "rs/algo/scalaTrain.do";
-    
-    public static final String ALGO_USE = "rs/algo/scalaUse.do";
-    
-    //////////////////////////////////////////////
-    //客户端请求地址,普通请求,无需资源调度    
-    public static final String JDBC_EXECUTE_QUERY = "SparkSQL/executeQuery.do";
-    
-    public static final String SINGLE_DATASOURCE_TABLE = "singleDataSourceTable.do";
-    
-    public static final String COMMON_DB_CROSSDATA = "commonDbCrossdata.do";
-    
-    public static final String DB_CROSSDATA_KILL = "crossdatajob/shutdown.do";
-    
-    public static final String SPARK_DRIVER_INIT = "initSparkDriver.do";
-    
-    public static final String SPARK_DRIVER_FREE = "freeSparkDriver.do";
-    
-    public static final String SPARK_SELECT_QUERY = "doSessionSelectSql.do";
-    
-    public static final String SPARK_STOP_APP = "stopSparkApp.do";
-    
-    //////////////////////////////////////////////////////////////////
+
     
     //默认运行类型
     public static String DEFAULT_RUN_TYPE = "spark";
@@ -182,9 +60,7 @@ public class ServiceReqClient
     public static String DATA_SOURCE_HUGETABLE = "hugetable";
     
     public static String DATA_SOURCE_HIVE = "hive";
-    
-    //返回值-历史遗留问题(可能)
-    public static final String HISTORY_RET_SUCC = "00";
+
     
     /**
      * task trace tool
@@ -237,8 +113,7 @@ public class ServiceReqClient
         Response sqlrObj = JSON.parseObject(response, Response.class, Feature.InitStringFieldAsEmpty);
         
         Entity sr = sqlrObj.getResponse();
-        if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS)
-            && !StringUtils.equals(sr.getCode(), HISTORY_RET_SUCC))
+        if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS))
         {
             LogUtils.runLogError(response);
             String errMsg = StringUtils.isEmpty(sr.getErrorStack()) ? "调用服务中心组件失败" : sr.getErrorStack();
@@ -262,8 +137,7 @@ public class ServiceReqClient
         Response sqlrObj = JSON.parseObject(response, Response.class, Feature.InitStringFieldAsEmpty);
         
         Entity sr = sqlrObj.getResponse();
-        if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS)
-            && !StringUtils.equals(sr.getCode(), HISTORY_RET_SUCC))
+        if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS))
         {
             LogUtils.runLogError(response);
             String errMsg = StringUtils.isEmpty(sr.getErrorStack()) ? "调用服务中心组件失败" : sr.getErrorStack();
@@ -290,8 +164,7 @@ public class ServiceReqClient
         Response sqlrObj = JSON.parseObject(response, Response.class, Feature.InitStringFieldAsEmpty);
         
         Entity sr = sqlrObj.getResponse();
-        if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS)
-            && !StringUtils.equals(sr.getCode(), HISTORY_RET_SUCC))
+        if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS))
         {
             LogUtils.runLogError(response);
             String errMsg = StringUtils.isEmpty(sr.getErrorStack()) ? "调用服务中心组件失败" : sr.getErrorStack();
@@ -319,9 +192,9 @@ public class ServiceReqClient
         String crossDataIp = dataSourceAdapter.getCrossdataIp(brief);
         String crossDataPort = dataSourceAdapter.getCrossdataPort(brief);
         
-        postParams.put(this.crossDataIp, crossDataIp);
+        postParams.put(CROSS_DATA_IP, crossDataIp);
         
-        postParams.put(this.crossDataPort, crossDataPort);
+        postParams.put(CROSS_DATA_PORT, crossDataPort);
         
         String response = null;
         
@@ -353,8 +226,7 @@ public class ServiceReqClient
             }
             else
             {
-                if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS)
-                    && !StringUtils.equals(sr.getCode(), HISTORY_RET_SUCC))
+                if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS))
                 {
                     LogUtils.runLogError(response);
                 }
@@ -435,7 +307,7 @@ public class ServiceReqClient
                         
                         Optional<Map.Entry<String, String>> result = entity.entrySet()
                             .stream()
-                            .filter(nvp -> StringUtils.equals(nvp.getKey(), this.appId)
+                            .filter(nvp -> StringUtils.equals(nvp.getKey(), APP_ID)
                                 && StringUtils.isNotEmpty(nvp.getValue()))
                             .findFirst();
                         if (result.isPresent())
@@ -447,7 +319,7 @@ public class ServiceReqClient
                             String newAppId =
                                 jobTasksCache.get(brief.getJobCode(), "-", DataConstants.SPARK_CONTEXT_APPID);
                             
-                            entity.put(this.appId, newAppId);
+                            entity.put(APP_ID, newAppId);
                             
                         }
                         
@@ -519,7 +391,7 @@ public class ServiceReqClient
             appName = context.getAppname();
             String appId = context.getAppid();
             
-            String queryUrl = ServiceUrlProvider.sparkJobMgrService(sparkTaskQuery);
+            String queryUrl = ServiceUrlProvider.sparkJobMgrService(SPARK_JOB_STATUS_QUERY);
             //sysParamCache.get(brief.getJobCode(), ModuleUrlKey.RESOURCE_URL_KEY) + sparkTaskQuery;
             String respPhase2 = this.post(queryUrl, this.sparkAppEntity(entity, appName, appId, brief, true), brief);
             
@@ -632,9 +504,9 @@ public class ServiceReqClient
     {
         Map<String, String> entity = Maps.newHashMap();
         
-        entity.put(runType, DEFAULT_RUN_TYPE);
-        entity.put(dataSource, DATA_SOURCE_HIVE);
-        entity.put(this.sql, sql);
+        //entity.put(runType, DEFAULT_RUN_TYPE);
+        entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
+        entity.put(SQL, sql);
         
         return entity;
     }
@@ -650,10 +522,10 @@ public class ServiceReqClient
     {
         Map<String, String> entity = Maps.newHashMap();
         
-        entity.put(runType, DEFAULT_RUN_TYPE);
-        entity.put(dataSource, DATA_SOURCE_HIVE);
-        entity.put(this.sql, sql);
-        entity.put(this.appId, appId);
+        //entity.put(runType, DEFAULT_RUN_TYPE);
+        entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
+        entity.put(SQL, sql);
+        entity.put(APP_ID, appId);
         
         return entity;
     }
@@ -670,13 +542,13 @@ public class ServiceReqClient
     {
         Map<String, String> entity = Maps.newHashMap();
         
-        entity.put(this.coresNum, cores);
+        entity.put(CORES_NUM, cores);
         
-        entity.put(this.executorMemory, memory);
+        entity.put(EXECUTOR_MEMORY, memory);
         
-        entity.put(this.jobCode, procCode);
+        entity.put(JOB_CODE, procCode);
         
-        entity.put(this.dataSource, DATA_SOURCE_HIVE);
+        entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
         
         this.getClusterMaster(entity, brief);
         
@@ -692,7 +564,7 @@ public class ServiceReqClient
     public Map<String, String> sparkCtxFreeEntity(String appId)
     {
         Map<String, String> entity = Maps.newHashMap();
-        entity.put(this.appId, appId);
+        entity.put(APP_ID, appId);
         
         return entity;
     }
@@ -711,9 +583,9 @@ public class ServiceReqClient
         
         String jsonString = JSONArray.toJSONString(sqls).replaceAll("\n", " ").replace("\\n", " ");
         
-        entity.put(runType, DEFAULT_RUN_TYPE);
-        entity.put(this.dataSource, DATA_SOURCE_HIVE);
-        entity.put(this.sqlList, jsonString);
+        //entity.put(runType, DEFAULT_RUN_TYPE);
+        entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
+        entity.put(SQL_LIST, jsonString);
         
         return entity;
     }
@@ -732,14 +604,13 @@ public class ServiceReqClient
     public Map<String, String> sparkAppEntity(Map<String, String> entity, String name, String id, TaskNodeBrief brief,
         boolean flag)
     {
-        entity.put(appName, name);
-        entity.put(appId, id);
+        entity.put(APP_NAME, name);
+        entity.put(APP_ID, id);
         
         return entity;
     }
     
     /**
-     * 史国俊
      * 查询方法-带返回值
      * <功能详细描述>
      *
@@ -758,8 +629,7 @@ public class ServiceReqClient
         Response sqlrObj = JSON.parseObject(response, Response.class, Feature.InitStringFieldAsEmpty);
         
         Entity sr = sqlrObj.getResponse();
-        if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS)
-            && !StringUtils.equals(sr.getCode(), HISTORY_RET_SUCC))
+        if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS))
         {
             LogUtils.runLogError(response);
             throw new RuntimeException("查询hugetable错误");
@@ -785,14 +655,14 @@ public class ServiceReqClient
     {
         List<Object[]> rst = new ArrayList<Object[]>();
         Map<String, String> entity = Maps.newHashMap();
-        entity.put(this.dataSource, DATA_SOURCE_HUGETABLE);
-        entity.put(this.sql, sql);
+        entity.put(DATA_SOURCE, DATA_SOURCE_HUGETABLE);
+        entity.put(SQL, sql);
         
         if (sqlServiceUtil.isHtConnection(dsAttr))
         {
-            entity.put(this.dataBaseName, dsAttr.getConnectAddr());
-            entity.put(this.userName, dsAttr.getUsername());
-            entity.put(this.password, dsAttr.getPassword());
+            entity.put(DATA_BASE_NAME, dsAttr.getConnectAddr());
+            entity.put(USER_NAME, dsAttr.getUsername());
+            entity.put(PASSWORD, dsAttr.getPassword());
         }
         
         JSONArray jsonArray = null;
@@ -868,30 +738,30 @@ public class ServiceReqClient
     private void postFormExtend(Map<String, String> entity, TaskNodeBrief brief)
     {
         
-        entity.put(this.batchNo, brief.getBatchCode());
-        entity.put(this.jobCode, brief.getJobCode());
-        entity.put(this.taskCode, brief.getNodeId());
+        entity.put(BATCH_NO, brief.getBatchCode());
+        entity.put(JOB_CODE, brief.getJobCode());
+        entity.put(TASK_CODE, brief.getNodeId());
         
         String coreNumStr = jobTasksCache.get(brief.getJobCode(), brief.getNodeId(), DataConstants.CORE_NUM);
         int coreNum = StringUtils.isEmpty(coreNumStr) ? 0 : Integer.valueOf(coreNumStr);
         if (0 != coreNum)
         {
-            entity.put(this.coresNum, String.valueOf(coreNum));
+            entity.put(CORES_NUM, String.valueOf(coreNum));
         }
         else
         {
-            entity.put(this.coresNum, String.valueOf(SparkResourceMgr.DEFAULT_CORE_NUM));
+            entity.put(CORES_NUM, String.valueOf(SparkResourceMgr.DEFAULT_CORE_NUM));
         }
         
         String memSizeStr = jobTasksCache.get(brief.getJobCode(), brief.getNodeId(), DataConstants.MEM_SIZE);
         int memSize = StringUtils.isEmpty(memSizeStr) ? 0 : Integer.valueOf(memSizeStr);
         if (0 != memSize)
         {
-            entity.put(this.executorMemory, String.valueOf(memSize));
+            entity.put(EXECUTOR_MEMORY, String.valueOf(memSize));
         }
         else
         {
-            entity.put(this.executorMemory, String.valueOf(SparkResourceMgr.DEFAULT_MEM_SIZE));
+            entity.put(EXECUTOR_MEMORY, String.valueOf(SparkResourceMgr.DEFAULT_MEM_SIZE));
         }
         
         this.getClusterMaster(entity, brief);
@@ -910,8 +780,8 @@ public class ServiceReqClient
         
         DataSourceFlatAttr dsAttr = dataSourceAdapter.getNodeDataSourceConf(brief.getJobCode(), brief.getNodeId());
         
-        entity.put(this.sparkPath, dataSourceAdapter.getSparkMasterUrl(brief, dsAttr));
-        entity.put(this.hdfsPath, dataSourceAdapter.getHdfsUrl(brief, dsAttr));
+        entity.put(SPARK_PATH, dataSourceAdapter.getSparkMasterUrl(brief, dsAttr));
+        entity.put(HDFS_PATH, dataSourceAdapter.getHdfsUrl(brief, dsAttr));
     }
     
     /**
@@ -931,132 +801,13 @@ public class ServiceReqClient
         
         Response resp = JSON.parseObject(stopRet, Response.class, Feature.InitStringFieldAsEmpty);
         
-        if (!StringUtils.equals(resp.getResponse().getCode(), SysRetCode.SUCCESS)
-            && !StringUtils.equals(resp.getResponse().getCode(), HISTORY_RET_SUCC))
+        if (!StringUtils.equals(resp.getResponse().getCode(), SysRetCode.SUCCESS))
         {
             String msg = StringUtils.join("停止spark任务:", name, "失败[", brief.getBatchCode(), "]");
             LogUtils.runLogError(msg);
         }
     }
     
-    public String getDefaultEncode()
-    {
-        return defaultEncode;
-    }
-    
-    public String getSql()
-    {
-        return sql;
-    }
-    
-    public String getDataSource()
-    {
-        return dataSource;
-    }
-    
-    public String getRunType()
-    {
-        return runType;
-    }
-    
-    public String getObjectJson()
-    {
-        return ObjectJson;
-    }
-    
-    public String getSparkTaskQuery()
-    {
-        return sparkTaskQuery;
-    }
-    
-    public String getAppName()
-    {
-        return appName;
-    }
-    
-    public String getAppId()
-    {
-        return appId;
-    }
-    
-    public String getTargetPath()
-    {
-        return targetPath;
-    }
-    
-    public String getDataBaseName()
-    {
-        return dataBaseName;
-    }
-    
-    public String getTableName()
-    {
-        return tableName;
-    }
-    
-    public String getIp()
-    {
-        return ip;
-    }
-    
-    public String getPort()
-    {
-        return port;
-    }
-    
-    public String getUserName()
-    {
-        return userName;
-    }
-    
-    public String getPassword()
-    {
-        return password;
-    }
-    
-    public String getDataPath()
-    {
-        return dataPath;
-    }
-    
-    public String getResultSavePath()
-    {
-        return resultSavePath;
-    }
-    
-    public String getPredictSavePath()
-    {
-        return predictSavePath;
-    }
-    
-    public String getModelSavePath()
-    {
-        return modelSavePath;
-    }
-    
-    public String getMode()
-    {
-        return mode;
-    }
-    
-    public String getCode()
-    {
-        return code;
-    }
-    
-    public String getNote()
-    {
-        return note;
-    }
-    
-    public String getSqlList()
-    {
-        return sqlList;
-    }
-    
-    public String getFieldsList()
-    {
-        return fieldsList;
-    }
+
     
 }

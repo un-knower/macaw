@@ -24,7 +24,7 @@ import cn.migu.macaw.schedule.workflow.DataConstants;
  * sql执行任务--无返回值
  * 执行sql，除非异常跳出，否则无论执行是否失败都会执行下个节点
  * 
- * @author
+ * @author soy
  */
 @Component("sqlExecuteTask")
 public class SqlExecuteTask implements ITask

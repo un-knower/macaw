@@ -11,13 +11,13 @@
 
     <!-- warn日志 appender -->
     <appender name="EUREKA_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/apps/service/logs/fregata/eureka.log</file>
+        <file>/apps/service/logs/macaw/eureka.log</file>
         <!-- 日志格式 -->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger - %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/apps/service/logs/fregata/eureka-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/apps/service/logs/macaw/eureka-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
     <!-- 控制台日志 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -9,36 +8,70 @@
         </encoder>
     </appender>
 
+    <appender name="RUN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/apps/service/logs/macaw/spark-job-manager-run.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>/apps/service/logs/macaw/spark-job-manager-run.log.%i</fileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>100MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
 
     <!-- 接口日志 appender -->
-    <appender name="SPARK_DRIVER_MANAGER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/apps/service/logs/macaw/spark_driver_manager.log</file>
-        <!-- 日志格式 -->
+    <appender name="SPARK_JOB_FORWARD" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/apps/service/logs/macaw/spark-job-forward.log</file>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger - %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/apps/service/logs/macaw/spark_driver_manager-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
+            <fileNamePattern>/apps/service/logs/macaw/spark-job-forward-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>40</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="SPARK_DRIVER_INTERACTIVE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/apps/service/logs/macaw/spark-driver-interactive.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/apps/service/logs/macaw/spark-driver-interactive-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>40</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="SPARK_DRIVER_LAUNCH" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/apps/service/logs/macaw/spark-driver-launch.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/apps/service/logs/macaw/spark-driver-launch-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>40</maxHistory>
         </rollingPolicy>
     </appender>
 
     <!-- error日志 appender -->
-    <!--<appender name="ERROR_OUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/apps/service/logs/fregata/error.log</file>
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/apps/service/logs/macaw/spark-job-mgr-error.log</file>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%class:%line] %-5level %logger - %msg%n</pattern>
         </encoder>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/apps/service/logs/fregata/error-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>/apps/service/logs/macaw/spark-job-mgr-error.log.%i</fileNamePattern>
         </rollingPolicy>
-    </appender>-->
+        <triggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>100MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
     <!--
     <logger name="org.testMybatis" level="DEBUG" />
     <logger name="java.sql.Connection" level="DEBUG" />
@@ -50,10 +83,19 @@
     <!-- 基于INFO级别处理日志：具体控制台或者文件对日志级别的处理还要看所在appender配置的filter，如果没有配置filter，则使用root配置 -->
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SPARK_DRIVER_MANAGER"/>
-        <!--<appender-ref ref="ERROR_OUT"/>-->
+        <appender-ref ref="RUN"/>
     </root>
-    <!--<logger name="sport-ai-interface" level="INFO" additivity="false" >
-        <appender-ref ref="INTF_LOG" />
-    </logger>-->
+    <logger name="error" level="ERROR" additivity="false" >
+        <appender-ref ref="ERROR" />
+    </logger>
+    <logger name="spark-job-forward" level="INFO" additivity="false" >
+        <appender-ref ref="SPARK_JOB_FORWARD" />
+    </logger>
+    <logger name="spark-driver-interactive" level="INFO" additivity="false" >
+        <appender-ref ref="SPARK_DRIVER_INTERACTIVE" />
+    </logger>
+    <logger name="spark-driver-launch" level="INFO" additivity="false" >
+        <appender-ref ref="SPARK_DRIVER_LAUNCH" />
+    </logger>
+
 </configuration>

@@ -250,6 +250,15 @@ public class Jar extends BaseEntity
     }
 
     /**
+     * 设置spark driver进程最大数
+     * @param maxJvm spark driver进程最大数
+     */
+    public void setMaxJvm(Integer maxJvm)
+    {
+        this.maxJvm = maxJvm;
+    }
+
+    /**
      * 获取spark driver进程最大数
      *
      * @return Integer - spark driver进程最大数

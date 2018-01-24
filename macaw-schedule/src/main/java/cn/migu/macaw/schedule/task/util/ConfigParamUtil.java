@@ -149,7 +149,7 @@ public class ConfigParamUtil
     public List<JobParam> getJobRunParams(TaskNodeBrief brief, String kind)
     {
         Example example = new Example(JobParam.class);
-        example.setOrderByClause("key asc");
+        example.setOrderByClause("pkey asc");
         example.createCriteria().andEqualTo("jobCode", brief.getJobCode()).andEqualTo("kind", kind);
         
         List<JobParam> params = jobParamDao.selectByExample(example);
@@ -211,8 +211,8 @@ public class ConfigParamUtil
     public List<String> getJobRunCmdParams(TaskNodeBrief brief)
     {
         Example example = new Example(JobParam.class);
-        example.setOrderByClause("key asc");
-        example.createCriteria().andLike("key", StringUtils.join(OS_CMD, "_%")).andEqualTo("kind", SYS_TYPE);
+        example.setOrderByClause("pkey asc");
+        example.createCriteria().andLike("pkey", StringUtils.join(OS_CMD, "_%")).andEqualTo("kind", SYS_TYPE);
         
         List<JobParam> params = jobParamDao.selectByExample(example);
         

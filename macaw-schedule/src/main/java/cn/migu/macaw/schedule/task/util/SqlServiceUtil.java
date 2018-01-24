@@ -466,14 +466,14 @@ import java.util.Map;
     private Map<String, String> jdbcHtParams(String sql, DataSourceFlatAttr dsAttr, TaskNodeBrief brief)
     {
         Map<String, String> params = Maps.newHashMap();
-        params.put(client.getSql(), sql);
-        params.put(client.getDataSource(), ServiceReqClient.DATA_SOURCE_HUGETABLE);
+        params.put(RequestKey.SQL, sql);
+        params.put(RequestKey.DATA_SOURCE, ServiceReqClient.DATA_SOURCE_HUGETABLE);
 
         if (this.isHtConnection(dsAttr))
         {
-            params.put(client.getDataBaseName(), dsAttr.getConnectAddr());
-            params.put(client.getUserName(), dsAttr.getUsername());
-            params.put(client.getPassword(), dsAttr.getPassword());
+            params.put(RequestKey.DATA_BASE_NAME, dsAttr.getConnectAddr());
+            params.put(RequestKey.USER_NAME, dsAttr.getUsername());
+            params.put(RequestKey.PASSWORD, dsAttr.getPassword());
         }
 
         return params;

@@ -43,7 +43,7 @@ public class RemoteLaunchJar
     @Autowired
     private GlobalParam globalParam;
     
-    private static final Log springbootLog = LogFactory.getLog("springboot");
+    private static final Log sparkDriverLaunchLog = LogFactory.getLog("spark-driver-launch");
     
     /**
      * 启动单个spring boot jar
@@ -52,11 +52,6 @@ public class RemoteLaunchJar
      */
     public void start(SparkDriverMetaData param)
     {
-        /*String bootShell =
-            "/apps/service/unify_module/jdk1.8.0_91/bin/java -Xms2048M -Xmx2048M -Xss256K -XX:MetaspaceSize=256M -classpath ";*/
-        //"java -XX:MaxPermSize=256m -classpath ";
-        //java8启动命令
-        // /apps/service/unify_module/jdk1.8.0_91/bin/java -Xms2048M -Xmx2048M -Xss256K -XX:MetaspaceSize=256M -classpath
         
         String localIp = "";
         try
@@ -69,7 +64,7 @@ public class RemoteLaunchJar
             LogUtils.runLogError(e);
             return;
         }
-        
+
         String bootShellString =
             StringUtils.join(param.getLaunchCmd(),
                 " ",
@@ -90,12 +85,12 @@ public class RemoteLaunchJar
         
         try
         {
-            springbootLog.info(StringUtils.join("restart=>", bootShellString));
+            sparkDriverLaunchLog.info(StringUtils.join("restart=>", bootShellString));
             SSHManager.execCommand(param.getDriverIp(), param.getUsername(), param.getPassword(), bootShellString);
         }
         catch (Exception e)
         {
-            springbootLog.error("",e);
+            sparkDriverLaunchLog.error("",e);
         }
         
         /*String result =
@@ -111,8 +106,6 @@ public class RemoteLaunchJar
      */
     public void start(Jar driver, String port)
     {
-        /*String bootShell =
-            "/apps/service/unify_module/jdk1.8.0_91/bin/java -Xms2048M -Xmx2048M -Xss256K -XX:MetaspaceSize=256M -classpath ";*/
         
         String localIp = "";
         try
@@ -125,7 +118,6 @@ public class RemoteLaunchJar
             LogUtils.runLogError(e);
             return;
         }
-        //localIp = "172.16.39.26";
         
         String bootShellString =
             StringUtils.join(driver.getPath(),
@@ -147,13 +139,13 @@ public class RemoteLaunchJar
         
         try
         {
-            springbootLog.info(StringUtils.join("init=>", bootShellString));
+            sparkDriverLaunchLog.info(StringUtils.join("init=>", bootShellString));
 
             SSHManager.execCommand(driver.getIp(), driver.getUsername(), driver.getPassword(), bootShellString);
         }
         catch (Exception e)
         {
-            springbootLog.error("",e);
+            sparkDriverLaunchLog.error("",e);
         }
         
     }
@@ -219,7 +211,6 @@ public class RemoteLaunchJar
                 dataSheetHandler.deleteProcess(driver);
             }
         });
-        //resourceTbOpr.resetDriverNum();
         
     }
     

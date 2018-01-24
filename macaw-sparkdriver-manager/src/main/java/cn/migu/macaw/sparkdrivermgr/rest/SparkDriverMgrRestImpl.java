@@ -1,7 +1,24 @@
 package cn.migu.macaw.sparkdrivermgr.rest;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
 
 import cn.migu.macaw.common.RestTemplateProvider;
 import cn.migu.macaw.common.SysRetCode;
@@ -11,6 +28,7 @@ import cn.migu.macaw.common.message.Entity;
 import cn.migu.macaw.common.message.Response;
 import cn.migu.macaw.sparkdrivermgr.GlobalParam;
 import cn.migu.macaw.sparkdrivermgr.api.model.Jar;
+import cn.migu.macaw.sparkdrivermgr.api.model.Process;
 import cn.migu.macaw.sparkdrivermgr.api.model.SparkApplicationLog;
 import cn.migu.macaw.sparkdrivermgr.api.service.SparkDriverManagerService;
 import cn.migu.macaw.sparkdrivermgr.cache.SparkJobContext;
@@ -23,37 +41,20 @@ import cn.migu.macaw.sparkdrivermgr.manager.DataSheetHandler;
 import cn.migu.macaw.sparkdrivermgr.manager.RemoteLaunchJar;
 import cn.migu.macaw.sparkdrivermgr.model.SparkDriverMetaData;
 import cn.migu.macaw.sparkdrivermgr.model.SparkJobMetaData;
-import cn.migu.macaw.sparkdrivermgr.api.model.Process;
 import cn.migu.macaw.sparkdrivermgr.service.ISparkJobMgrService;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
-import com.google.common.collect.Maps;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * spark driver管理restful接口实现
  * @author soy
  */
+@RestController
 public class SparkDriverMgrRestImpl implements SparkDriverManagerService
 {
-    private static final Log sparkJobForwardLog = LogFactory.getLog("spark-job-forword");
+    private static final Log sparkJobForwardLog = LogFactory.getLog("spark-job-forward");
 
-    private static final Log querySparkLog = LogFactory.getLog("spark-job-query");
+    private static final Log sparkDriverInterlog = LogFactory.getLog("spark-driver-interactive");
 
-    private static final Log driverInteractivelog = LogFactory.getLog("spark-driver-interactive");
+    private static final Log sparkDriverLaunchLog = LogFactory.getLog("spark-driver-launch");
 
     @Autowired
     private ReqRespLog reqRespLog;
@@ -215,18 +216,12 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
     @Override
     public Response querySparkJobStatus(HttpServletRequest request)
     {
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
-
-        reqRespLog.requestLog(request, querySparkLog, logBean);
-
         String appId = request.getParameter("appId");
 
         String sparkIp = request.getParameter("sparkIp");
         String sparkMgrPort = request.getParameter("sparkMgrPort");
 
         Response resp = sparkJobMgrService.querySparkApp(sparkIp, sparkMgrPort, appId);
-
-        reqRespLog.responseLog(querySparkLog, logBean, JSONObject.toJSONString(resp));
 
         return resp;
     }
@@ -236,7 +231,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
     {
         InterfaceLogBean logBean = reqRespLog.initLogBean(request);
 
-        reqRespLog.requestLog(request, sparkJobForwardLog, logBean);
+        reqRespLog.requestLog(request, sparkDriverLaunchLog, logBean);
 
         String driverPort = request.getParameter("driverPort");
         String pid = request.getParameter("pid");
@@ -255,7 +250,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
 
         dataSheetHandler.addProcess(unifyP);
 
-        reqRespLog.responseLog(sparkJobForwardLog, logBean, "增加进程记录成功");
+        reqRespLog.responseLog(sparkDriverLaunchLog, logBean, String.format("%s中进程%s启动成功",appId,pid));
 
         return null;
     }
@@ -493,9 +488,9 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
                         Collectors.toMap(e -> e.getKey(),e->e.getValue()[0]));
 
 
-                    reqRespLog.requestLog(request, driverInteractivelog, logBean);
+                    reqRespLog.requestLog(request, sparkDriverInterlog, logBean);
                     String result = RestTemplateProvider.postFormForEntity(restTemplate,url,String.class,params);
-                    reqRespLog.responseLog(driverInteractivelog,
+                    reqRespLog.responseLog(sparkDriverInterlog,
                         logBean,
                         StringUtils.join("[计算中心请求地址:", url, ",返回结果:", result, "]"));
 
@@ -593,7 +588,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
     {
         InterfaceLogBean logBean = reqRespLog.initLogBean(request);
 
-        reqRespLog.requestLog(request,driverInteractivelog , logBean);
+        reqRespLog.requestLog(request,sparkDriverInterlog , logBean);
 
         String appId = request.getParameter("appId");
 
@@ -621,7 +616,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
             sparkJobContext.remove(appId);
         }
 
-        reqRespLog.responseLog(driverInteractivelog, logBean, "处理结束");
+        reqRespLog.responseLog(sparkDriverInterlog, logBean, "处理结束");
 
     }
 

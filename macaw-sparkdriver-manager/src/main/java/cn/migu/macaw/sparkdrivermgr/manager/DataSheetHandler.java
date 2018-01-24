@@ -212,36 +212,32 @@ public class DataSheetHandler
      */
     public synchronized void updateAppLog(SparkJobMetaData res)
     {
-        SparkApplicationLog sparkApp = new SparkApplicationLog();
-        String uuid = UUID.randomUUID().toString().replace("-","");
-        sparkApp.setObjId(uuid);
-        sparkApp.setDriverIp(res.getDriverIp());
-        sparkApp.setDriverPort(res.getPort());
-        sparkApp.setStartTime(new Date());
-        sparkApp.setStatus(SysRetCode.SPARK_APP_RUNNING);
-        
-        sparkApp.setBatchno(res.getBatchNo());
-        
-        sparkApp.setJobCode(res.getJobCode());
-        
-        sparkApp.setCores(res.getCoreNum());
-        
-        sparkApp.setExecutorMemory(String.valueOf(res.getMemSize()));
 
-        sparkApp.setUserName(String.valueOf(res.getProcessId()));
-        
-        sparkApp.setAppid(res.getAppId());
-        sparkApp.setAppName(res.getAppName());
-
-        SparkApplicationLog appLog = this.getLatestAppById(res.getAppId());
-        if (null == appLog)
+        SparkApplicationLog sparkAppLog = this.getLatestAppById(res.getAppId());
+        if (null == sparkAppLog)
         {
             LogUtils.runLogError(StringUtils.join("提交spark app后查询不到spark_application记录[", res.getAppId(), "]"));
         }
-        
-        sparkApp.setObjId(appLog.getObjId());
-        
-        appDao.updateByPrimaryKeySelective(sparkApp);
+
+        sparkAppLog.setDriverIp(res.getDriverIp());
+        sparkAppLog.setDriverPort(res.getPort());
+        sparkAppLog.setStartTime(new Date());
+        sparkAppLog.setStatus(SysRetCode.SPARK_APP_RUNNING);
+
+        sparkAppLog.setBatchno(res.getBatchNo());
+
+        sparkAppLog.setJobCode(res.getJobCode());
+
+        sparkAppLog.setCores(res.getCoreNum());
+
+        sparkAppLog.setExecutorMemory(String.valueOf(res.getMemSize()));
+
+        sparkAppLog.setUserName(String.valueOf(res.getProcessId()));
+
+        sparkAppLog.setAppid(res.getAppId());
+        sparkAppLog.setAppName(res.getAppName());
+
+        appDao.updateByPrimaryKeySelective(sparkAppLog);
         
     }
     

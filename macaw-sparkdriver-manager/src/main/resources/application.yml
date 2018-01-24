@@ -4,19 +4,19 @@ server:
 
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
-#    serviceUrl:
-#      defaultZone: http://localhost:8001/eureka/
-#    healthcheck:
-#        enabled: true
-#        instance:
-#            lease-expiration-duration-in-seconds: 30
-#            lease-renewal-interval-in-seconds: 10
+#    register-with-eureka: false
+#    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://MGXY-migudmzftp004:8001/eureka/,http://MGXY-migudmzftp005:8001/eureka/
+    healthcheck:
+        enabled: true
+        instance:
+            lease-expiration-duration-in-seconds: 30
+            lease-renewal-interval-in-seconds: 10
 
 spring:
   application:
-    name: macaw-sparkdriver-manager
+    name: spark-driver-manager
   datasource:
     name: macaw-sparkdriver-ds
     driver-class-name: com.mysql.jdbc.Driver

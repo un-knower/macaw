@@ -186,4 +186,12 @@ public class SparkJobMetaData
     {
         this.resAlloc = resAlloc;
     }
+
+    @Override public String toString()
+    {
+        return "SparkJobMetaData{" + "appId='" + appId + '\'' + ", appName='" + appName + '\'' + ", driverIp='"
+            + driverIp + '\'' + ", port=" + port + ", driverType='" + driverType + '\'' + ", processId='" + processId
+            + '\'' + ", coreNum=" + coreNum + ", memSize=" + memSize + ", jobCode='" + jobCode + '\'' + ", batchNo='"
+            + batchNo + '\'' + ", taskCode='" + taskCode + '\'' + ", resAlloc=" + resAlloc + '}';
+    }
 }

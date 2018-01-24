@@ -10,7 +10,7 @@ public class BaseEntity
 {
     @Id
     @Column(name = "OBJ_ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
     private String objId;
     
     @Transient
