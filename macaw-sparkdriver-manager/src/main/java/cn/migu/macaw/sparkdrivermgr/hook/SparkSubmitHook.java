@@ -4,6 +4,7 @@ import java.util.Map;
 
 import cn.migu.macaw.common.RestTemplateProvider;
 import cn.migu.macaw.common.ServiceName;
+import cn.migu.macaw.common.ServiceUrlProvider;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -66,8 +67,8 @@ public class SparkSubmitHook
             
             try
             {
-                String scheduleUrl = String.format("http://%s/schedule/residualDriverHandle.do", ServiceName.JOB_SCHEDULE);
-                RestTemplateProvider.postFormForEntity(restTemplateForLoadBalance,scheduleUrl,String.class,params);
+                RestTemplateProvider.postFormForEntity(restTemplateForLoadBalance,
+                    ServiceUrlProvider.jobScheduleService("residualDriverHandle.do"),String.class,params);
             }
             catch (Exception e)
             {

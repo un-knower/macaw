@@ -33,6 +33,8 @@ import cn.migu.macaw.schedule.workflow.DataConstants;
 @Component("sqlServiceUtil")
 public class SqlServiceUtil
 {
+    private final int RETRY_TIME = 3;
+
     private final String SQL_SELECT = "select";
     
     private final String SPARK_SQL_SELECT_KEY = "_sparksql_ret_val";
@@ -312,7 +314,7 @@ public class SqlServiceUtil
     {
         String url = StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", "/SparkSQL/executeSql.do");
         
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < RETRY_TIME; i++)
         {
             try
             {

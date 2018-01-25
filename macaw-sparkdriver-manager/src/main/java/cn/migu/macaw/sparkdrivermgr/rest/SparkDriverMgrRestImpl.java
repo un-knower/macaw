@@ -273,21 +273,21 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         String note = request.getParameter("note");
 
         //在spark进程任务表中插入一条记录
-        SparkApplicationLog sparkapp = new SparkApplicationLog();
-        sparkapp.setAppid(appId);
-        sparkapp.setAppName(appName);
-        sparkapp.setSubmitIp(clientIp);
-        sparkapp.setStartTime(new Date());
-        sparkapp.setSparkMode("FAIR");
-        sparkapp.setDriverIp(driverIp);
-        sparkapp.setDriverPort(Integer.valueOf(driverPort));
-        sparkapp.setStatus(SysRetCode.SPARK_APP_RUNNING);
-        sparkapp.setNote(note);
+        SparkApplicationLog sparkApp = new SparkApplicationLog();
+        sparkApp.setAppid(appId);
+        sparkApp.setAppName(appName);
+        sparkApp.setSubmitIp(clientIp);
+        sparkApp.setStartTime(new Date());
+        sparkApp.setSparkMode("FAIR");
+        sparkApp.setDriverIp(driverIp);
+        sparkApp.setDriverPort(Integer.valueOf(driverPort));
+        sparkApp.setStatus(SysRetCode.SPARK_APP_RUNNING);
+        sparkApp.setNote(note);
 
         try
         {
-            dataSheetHandler.addAppLog(sparkapp);
-            reqRespLog.responseLog(sparkJobForwardLog, logBean, "新增APP记录成功");
+            dataSheetHandler.addAppLog(sparkApp);
+            reqRespLog.responseLog(sparkJobForwardLog, logBean, String.format("spark job提交成功,app_id=%s",appId));
         }
         catch (Exception e)
         {
@@ -296,7 +296,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
             LogUtils.runLogError(errMsg);
             reqRespLog.responseLog(sparkJobForwardLog, logBean, errMsg);
             entity.setCode(SysRetCode.ERROR);
-            entity.setDesc("新增APP记录失败");
+            entity.setDesc(String.format("spark job提交成功,app_id=%s,但写application log记录失败",appId));
             resp.setResponse(entity);
         }
 
@@ -318,7 +318,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         try
         {
             remoteJar.callback(appName, status, Integer.valueOf(port), request);
-            reqRespLog.responseLog(sparkJobForwardLog, logBean, StringUtils.join("回调成功:", appName, ",状态为", status));
+            reqRespLog.responseLog(sparkJobForwardLog, logBean, StringUtils.join("spark job执行完成:", appName, ",状态为", status));
         }
         catch (Exception e)
         {
@@ -376,7 +376,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         if (StringUtils.equals(entity.getCode(), SysRetCode.SUCCESS))
         {
             sparkSubmitHook.sendAliveMsg(resCtx, true);
-            reqRespLog.responseLog(sparkJobForwardLog, logBean, "初始化spark driver成功");
+            reqRespLog.responseLog(sparkJobForwardLog, logBean, "初始化spark session成功");
         }
         else
         {
@@ -473,7 +473,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
                 if (null == resCtx)
                 {
                     entity.setCode(SysRetCode.ERROR);
-                    entity.setDesc("spark application id查询不到资源映射上下文");
+                    entity.setDesc("spark application id查询不到spark job上下文");
                 }
                 else
                 {

@@ -29,10 +29,6 @@ import cn.migu.macaw.schedule.task.TaskNodeBrief;
 public class ConfigParamUtil implements ConfigParamKey,ConfigParamType
 {
 
-    
-
-
-
     /**
      * job运行时参数
      */

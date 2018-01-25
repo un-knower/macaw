@@ -92,6 +92,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         
         resource.setDriverIp(driverProcess.getIp());
         resource.setPort(driverProcess.getPort());
+        resource.setProcessId(driverProcess.getObjId());
         
         return SysRetCode.SUCCESS;
     }

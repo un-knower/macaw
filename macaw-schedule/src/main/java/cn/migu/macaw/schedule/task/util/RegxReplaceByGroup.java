@@ -37,9 +37,10 @@ public abstract class RegxReplaceByGroup
     {
         return matcher.group(i);
     }
-    
+
     /**
      * 抽象方法,用户实现需要替换的组方式
+     * @return 替换后的字符串
      */
     public abstract String replacement();
     

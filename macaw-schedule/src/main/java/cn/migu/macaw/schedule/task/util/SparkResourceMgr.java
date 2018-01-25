@@ -13,25 +13,24 @@ import cn.migu.macaw.schedule.cache.JobTasksCache;
 import cn.migu.macaw.schedule.workflow.DataConstants;
 
 /**
- * 资源管理类
+ * spark资源管理类
  * 
- * @author  zhaocan
- * @version  [1.0, 2016年1月15日]
+ * @author soy
  */
 @Component("sparkResourceMgr")
 public class SparkResourceMgr
 {
     
     ////////////////资源定义/////////////////////////////////
-    //核数
-    final static int DEFAULT_CORE_NUM = 2;
-    
-    //final static int MAX_CORE_NUM = 128;
-    
-    //内存大小,单位为M
-    final static int DEFAULT_MEM_SIZE = 512;
-    
-    //final static int MAX_MEM_SIZE = 18432;
+    /**
+     * 最小核数
+     */
+    static final int DEFAULT_CORE_NUM = 2;
+
+    /**
+     * 最小内存大小,单位为M
+     */
+    static final int DEFAULT_MEM_SIZE = 512;
     
     ///////////////////////////////////////////////////////
     
@@ -51,9 +50,9 @@ public class SparkResourceMgr
     public void sparkResourceAlloc(TaskNodeBrief brief, Map<String, String> sysParams)
         throws CloneNotSupportedException
     {
-        if (MapUtils.isNotEmpty(sysParams) && sysParams.containsKey(ConfigParamUtil.CPU_CORE_NUM))
+        if (MapUtils.isNotEmpty(sysParams) && sysParams.containsKey(ConfigParamKey.CPU_CORE_NUM))
         {
-            int coreNum = Integer.valueOf(sysParams.get(ConfigParamUtil.CPU_CORE_NUM));
+            int coreNum = Integer.valueOf(sysParams.get(ConfigParamKey.CPU_CORE_NUM));
             if (coreNum < DEFAULT_CORE_NUM)
             {
                 jobTasksCache.put(brief.getJobCode(),

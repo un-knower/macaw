@@ -38,12 +38,13 @@ public interface IJobTasksService
      */
     void jobRun(String jobCode, String batchNo)
         throws Exception;
-    
+
     /**
      * 业务节点运行
-     * @param brief
-     * @param dag
+     * @param brief 运行节点简明信息
+     * @param dag 任务节点构成的有向图
      * @param classType
+     * @throws Exception
      */
     void runNode(TaskNodeBrief brief, IdDag<String> dag, String classType)
         throws Exception;
@@ -85,9 +86,9 @@ public interface IJobTasksService
     
     /**
      * job执行结束回调接口
-     * @param jobCode
-     * @param info
-     * @see [类、类#方法、类#成员]
+     * @param jobCode 任务编码
+     * @param info 消息
+     * @param excep 是否异常
      */
     void jobCallbackIntf(String jobCode, String info, boolean excep);
     
@@ -103,8 +104,8 @@ public interface IJobTasksService
     
     /**
      * 是否为残留的job上下文信息
-     * @param jobCode
-     * @see [类、类#方法、类#成员]
+     * @param jobCode 任务编码
+     * @return 是否redis中有任务的元数据
      */
     boolean isResidualCtx(String jobCode);
 

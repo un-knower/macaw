@@ -1,4 +1,4 @@
-package cn.migu.macaw.sparkdrivermgr;
+package cn.migu.macaw.schedule;
 
 import java.util.concurrent.Executor;
 
@@ -19,10 +19,10 @@ public class AsyncExcutor extends AsyncConfigurerSupport
     public Executor getAsyncExecutor()
     {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(50);
-        executor.setQueueCapacity(20);
-        executor.setThreadNamePrefix("sparkJobManager");
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(30);
+        executor.setQueueCapacity(15);
+        executor.setWaitForTasksToCompleteOnShutdown(false);
         executor.initialize();
         return executor;
     }

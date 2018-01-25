@@ -353,9 +353,6 @@ public class DataSourceAdapter
             case SPARK_DS_TYPE:
                 dsAttr.setSparkDs(true);
                 dsAttr.setSparkMaster(ods.getAddress());
-                dsAttr.setSparkHistoryServerIp(
-                    StringUtils.split(StringUtils.substringAfter(ods.getAddress(), "spark://"), ":")[0]);
-                dsAttr.setSparkHistoryServerPort(ods.getPort().toString());
                 if (StringUtils.isEmpty(dsAttr.getHdfsPrefixSchema()) && StringUtils.isNotEmpty(ods.getReserve4()))
                 {
                     dsAttr.setHdfsPrefixSchema(ods.getReserve4());

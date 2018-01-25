@@ -27,4 +27,14 @@ public interface ConfigParamKey
      * ssh远程连接主机地址键
      */
     String REMOTE_HOST = "remote_host";
+
+    /**
+     * spark核数
+     */
+    String CPU_CORE_NUM = "core_num";
+
+    /**
+     * spark executor内存大小
+     */
+    String MEM_SIZE = "memory_size";
 }

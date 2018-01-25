@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -423,16 +424,26 @@ public class JobRest implements ScheduleJobService
                         Thread rt = ThreadUtilities.getThread(StringUtils.join("region_", name));
                         if (null != rt)
                         {
-                            rt.interrupt();
+                            while(!rt.isInterrupted())
+                            {
+                                rt.interrupt();
+                            }
                             jobTasksService.setJobTaskCtxFlag(name, "", DataConstants.JOB_INTERRUPT_FLAG, "1");
                             jobTasksService.closeHttpReq(name);
                         }
 
                         //single
                         Thread st = ThreadUtilities.getThread(StringUtils.join("single_", name));
+                        LogUtils.runLogError(st.getName()+","+st.getId());
+                        LogUtils.runLogError(String.valueOf(st.isInterrupted()));
                         if (null != st)
                         {
-                            st.interrupt();
+                            while(!st.isInterrupted())
+                            {
+                                st.interrupt();
+                            }
+
+                            LogUtils.runLogError(String.valueOf(st.isInterrupted()));
                             jobTasksService.setJobTaskCtxFlag(name, "", DataConstants.JOB_INTERRUPT_FLAG, "1");
                             jobTasksService.closeHttpReq(name);
                         }
@@ -490,6 +501,7 @@ public class JobRest implements ScheduleJobService
             try
             {
                 new Thread(new SpecJobPartRunThread(job, firstNode, "region", jobLogService, jobTasksService)).start();
+                //specJobPartRunThread.runRegion(job, firstNode);
             }
             catch (Exception e)
             {
@@ -536,6 +548,7 @@ public class JobRest implements ScheduleJobService
             {
                 
                 new Thread(new SpecJobPartRunThread(job, nodeCode, "single", jobLogService, jobTasksService)).start();
+                //specJobPartRunThread.runSingle(job, nodeCode);
             }
             catch (Exception e)
             {

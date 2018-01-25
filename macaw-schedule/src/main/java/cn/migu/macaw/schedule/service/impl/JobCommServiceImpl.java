@@ -36,7 +36,7 @@ import cn.migu.macaw.schedule.service.IJobCommService;
 public class JobCommServiceImpl implements IJobCommService
 {
     
-    private static final Log jobLogger = LogFactory.getLog("job");
+    private static final Log jobLogger = LogFactory.getLog("schedule-rest");
     
     @Resource
     private JdbcTemplate jdbcTemplate;

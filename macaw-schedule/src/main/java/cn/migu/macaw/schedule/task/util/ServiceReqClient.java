@@ -48,12 +48,14 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
      */
     private final int REQ_RETRY = 3;
 
-    
-    //默认运行类型
-    public static String DEFAULT_RUN_TYPE = "spark";
-    
+    /**
+     * hugetable类型
+     */
     public static String DATA_SOURCE_HUGETABLE = "hugetable";
-    
+
+    /**
+     * hive类型
+     */
     public static String DATA_SOURCE_HIVE = "hive";
 
     
@@ -422,7 +424,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
                         this.post(queryUrl, this.sparkAppEntity(entity, appName, appId, brief, true), brief);
                     
                     /*respPhaseLoop = StringUtil.getResp(respPhaseLoop);*/
-                    
+                    LogUtils.runLogError(respPhaseLoop);
                     Response qlobj = JSON.parseObject(respPhaseLoop, Response.class, Feature.InitStringFieldAsEmpty);
                     Entity qrl = qlobj.getResponse();
                     
@@ -785,7 +787,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         throws Exception
     {
         String stopUrl = ServiceUrlProvider.sparkJobMgrService(SPARK_STOP_APP);
-        String stopRet = this.post(stopUrl, this.sparkAppEntity(null, name, id, brief, false), brief);
+        String stopRet = this.post(stopUrl, this.sparkAppEntity(Maps.newHashMap(), name, id, brief, false), brief);
         
         Response resp = JSON.parseObject(stopRet, Response.class, Feature.InitStringFieldAsEmpty);
         
