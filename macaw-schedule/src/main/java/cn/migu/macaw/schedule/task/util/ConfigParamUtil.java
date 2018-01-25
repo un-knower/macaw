@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import cn.migu.macaw.schedule.api.model.JobParam;
 import cn.migu.macaw.schedule.api.model.NodeParam;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -25,105 +26,11 @@ import cn.migu.macaw.schedule.task.TaskNodeBrief;
  * @author  zhaocan
  */
 @Component("configParamUtil")
-public class ConfigParamUtil
+public class ConfigParamUtil implements ConfigParamKey,ConfigParamType
 {
-    public static final String USERNAME_KEY = "username";
+
     
-    public static final String PASSWD_KEY = "password";
-    
-    public static final String TOKEN_KEY = "token";
-    
-    public static final String PAYLOAD_KEY = "messages";
-    
-    //////////////////////////////////////
-    ///task运行参数键值
-    public static final String KAFKA_URL = "kafka_url";
-    
-    public static final String TOPIC = "topic";
-    
-    public static final String SYS_USERNAME = "sys_username";
-    
-    public static final String SYS_PASSWD = "sys_passwd";
-    
-    public static final String SEND_DATASET_SQL = "send_dataset_sql";
-    
-    public static final String COLUMN_SET = "column_set";
-    
-    public static final String CONSUMER_OUTPUT_TB = "output_tb";
-    
-    public static final String CONSUMER_DF_TB = "dataframe_tb";
-    
-    public static final String NUM_PER_MSG = "send_num";
-    
-    public static final String BATCH_NO = "batch_no";
-    
-    public static final String MODEL_CODE = "model_code";
-    
-    public static final String CPU_CORE_NUM = "core_num";
-    
-    public static final String MEM_SIZE = "memory_size";
-    
-    public static final String OS_CMD = "os_cmd";
-    
-    public static final String SSH_USER = "ssh_user";
-    
-    public static final String SSH_PASSWD = "ssh_passwd";
-    
-    public static final String REMOTE_HOST = "remote_host";
-    
-    ///////////////////////////////////
-    //系统参数键值
-    public static String SOA_PATH_KEY = "spark_soa_path";
-    
-    public static String HT_DATABASE_KEY = "ht_database";
-    
-    public static String HT_IP_KEY = "ht_ip";
-    
-    public static String HT_PORT_KEY = "ht_port";
-    
-    public static String HT_USERNAME_KEY = "ht_username";
-    
-    public static String HT_PASSWORD_KEY = "ht_password";
-    
-    public static String KMEANS_DATASET = "kmeans_dataset";
-    
-    public static String KMEANS_RESULT = "kmeans_result";
-    
-    public static String KMEANS_RESULT_HOST = "kmeans_result_host";
-    
-    public static String HDFS_HA_CONF_KEY = "hdfs_ha_conf";
-    
-    //public static String HDFS_URL_KEY = "hdfs_url";
-    
-    public static String SPARK_PATH_KEY = "spark_path";
-    
-    public static String SPARK_MGRPORT_KEY = "spark_mgr_port";
-    
-    //////////////////////////////////
-    //sql标签
-    public static final String PROVINCES = "\\$\\{province\\}";
-    
-    public static final String PRODUCTS = "\\$\\{product\\}";
-    
-    public static final String CHANNELS = "\\$\\{channel\\}";
-    
-    //系统类型
-    public static final String SYS_TYPE = "1";
-    
-    //自定义SQL标签替换类型
-    public static final String SQL_LABEL_TYPE = "2";
-    
-    //运行sql
-    public static final String RUN_SQL_TYPE = "3";
-    
-    //运行shell命令
-    public static final String RUN_SHELL_TYPE = "4";
-    
-    //存储过程变量
-    public static final String PROC_VAR = "5";
-    
-    //输出redis变量
-    public static final String REDIS_OUT_VAR = "6";
+
 
 
     /**
@@ -240,10 +147,10 @@ public class ConfigParamUtil
         
         List<JobParam> jobParams = jobParamDao.select(ujp);
         
-        Map<String, String> params = new HashMap<String, String>();
-        for (JobParam _ujp : jobParams)
+        Map<String, String> params = Maps.newHashMap();
+        for (JobParam jp : jobParams)
         {
-            String key = _ujp.getPkey();
+            String key = jp.getPkey();
             
             if (StringUtils.isNotEmpty(key))
             {
@@ -256,7 +163,7 @@ public class ConfigParamUtil
                         continue;
                     }
                 }
-                params.put(_ujp.getPkey(), _ujp.getValue());
+                params.put(jp.getPkey(), jp.getValue());
             }
         }
         
@@ -308,8 +215,8 @@ public class ConfigParamUtil
             return null;
         }
         
-        Map<String, String> paramMap = nps.stream().collect(HashMap::new, (m, _np) -> {
-            m.put(_np.getPkey(), _np.getValue());
+        Map<String, String> paramMap = nps.stream().collect(HashMap::new, (m, tnp) -> {
+            m.put(tnp.getPkey(), tnp.getValue());
         }, HashMap::putAll);
         
         return paramMap;

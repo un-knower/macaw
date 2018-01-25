@@ -48,6 +48,8 @@ import java.util.Map;
 public class JobRest implements ScheduleJobService
 {
 
+    private final String JOB_THREAD_POS = "local";
+
     @Resource
     private SchedulerTemplate schedulerTemplate;
     
@@ -402,7 +404,7 @@ public class JobRest implements ScheduleJobService
 
             if(null != redirectAddress)
             {
-                if(StringUtils.equals("local",redirectAddress))
+                if(StringUtils.equals(JOB_THREAD_POS,redirectAddress))
                 {
                     try
                     {

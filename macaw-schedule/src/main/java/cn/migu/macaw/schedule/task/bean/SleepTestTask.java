@@ -7,6 +7,11 @@ import cn.migu.macaw.schedule.task.ITask;
 import cn.migu.macaw.schedule.task.TaskNodeBrief;
 import cn.migu.macaw.schedule.util.ScheduleLogTrace;
 
+/**
+ * 测试task,带睡眠时间
+ *
+ * @author soy
+ */
 @Component("sleepTestTask")
 public class SleepTestTask implements ITask
 {

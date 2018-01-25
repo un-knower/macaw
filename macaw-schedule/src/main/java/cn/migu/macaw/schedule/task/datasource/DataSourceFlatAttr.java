@@ -7,86 +7,131 @@ package cn.migu.macaw.schedule.task.datasource;
  */
 public class DataSourceFlatAttr
 {
-    //spark master地址
+    /**
+     * spark master地址
+     */
     private String sparkMaster;
-    
-    //spark application查询ip
-    private String sparkHistoryServerIp;
-    
-    //spark appication历史服务器端口号
-    private String sparkHistoryServerPort;
-    
-    //hdfs文件系统前缀schema
+
+    /**
+     * hdfs文件系统前缀schema
+     */
     private String hdfsPrefixSchema;
-    
-    //hdfs HA配置json字符串
+
+
+    /**
+     * hdfs HA配置json字符串
+     */
     private String hdfsHaConfJsonStr;
 
-    //类型
+    /**
+     * 数据源类型
+     */
     private String dsType;
-    
-    //连接地址
+
+    /**
+     * 连接地址
+     */
     private String connectAddr;
 
-    //驱动名
+    /**
+     * 驱动名
+     */
     private String driverClass;
-    
-    //用户名
+
+    /**
+     * 用户名
+     */
     private String username;
-    
-    //密码
+
+    /**
+     * 密码
+     */
     private String password;
-    
-    //redis ip
+
+    /**
+     * redis ip
+     */
     private String redisHost;
-    
-    //redis密码
+
+    /**
+     * redis密码
+     */
     private String redisPasswd;
 
-    //端口
+    /**
+     * 端口
+     */
     private int port;
 
-    //db索引
+    /**
+     * redis db索引
+     */
     private int dbIndex;
-    
-    //是否是spark数据源
+
+    /**
+     * 是否是spark数据源
+     */
     private boolean sparkDs = false;
-    
-    //消息系统对外url地址
+
+    /**
+     * 消息系统对外url地址
+     */
     private String kafkaHttpUrl;
-    
-    //kafka zookeeper地址
+
+    /**
+     * kafka zookeeper地址
+     */
     private String kafkaZkUrl;
-    
-    //kafka broke地址
+
+    /**
+     * kafka broke地址
+     */
     private String kafkaBrokeUrl;
-    
-    //ssh连接主机地址
+
+    /**
+     * ssh连接主机地址
+     */
     private String sshHost;
-    
-    //ssh连接用户名
+
+    /**
+     * ssh连接用户名
+     */
     private String sshUser;
-    
-    //ssh连接密码
+
+    /**
+     * ssh连接密码
+     */
     private String sshPassword;
     
     ///////////数据同步(crossdata)时使用////////////
-    //驱动名
+    /**
+     * 目标驱动名
+     */
     private String targetDriverClass;
-    
-    //数据类型
+
+    /**
+     * 目标数据类型
+     */
     private String targetDsType;
-    
-    //连接地址
-    private String targetconnectAddr;
-    
-    //用户名
+
+    /**
+     * 目标连接地址
+     */
+    private String targetConnectAddr;
+
+    /**
+     * 用户名
+     */
     private String targetUsername;
-    
-    //密码
+
+    /**
+     * 密码
+     */
     private String targetPassword;
-    
-    //hdfs地址路径schema
+
+    /**
+     * 目标hdfs地址路径schema
+     */
     private String targetHdfsPrefixSchema;
     
     /////////////////////////////////////////
@@ -100,26 +145,7 @@ public class DataSourceFlatAttr
     {
         this.sparkMaster = sparkMaster;
     }
-    
-    public String getSparkHistoryServerIp()
-    {
-        return sparkHistoryServerIp;
-    }
-    
-    public void setSparkHistoryServerIp(String sparkHistoryServerIp)
-    {
-        this.sparkHistoryServerIp = sparkHistoryServerIp;
-    }
-    
-    public String getSparkHistoryServerPort()
-    {
-        return sparkHistoryServerPort;
-    }
-    
-    public void setSparkHistoryServerPort(String sparkHistoryServerPort)
-    {
-        this.sparkHistoryServerPort = sparkHistoryServerPort;
-    }
+
     
     public String getHdfsPrefixSchema()
     {
@@ -231,14 +257,14 @@ public class DataSourceFlatAttr
         this.targetDriverClass = targetDriverClass;
     }
     
-    public String getTargetconnectAddr()
+    public String getTargetonnectAddr()
     {
-        return targetconnectAddr;
+        return targetConnectAddr;
     }
     
-    public void setTargetconnectAddr(String targetconnectAddr)
+    public void setTargetconnectAddr(String targetConnectAddr)
     {
-        this.targetconnectAddr = targetconnectAddr;
+        this.targetConnectAddr = targetConnectAddr;
     }
     
     public String getTargetUsername()

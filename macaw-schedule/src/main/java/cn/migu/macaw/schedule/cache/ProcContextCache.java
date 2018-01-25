@@ -149,9 +149,9 @@ public class ProcContextCache
      */
     public Map<String, String> getProcVars(String jobCode)
     {
-        Map<String, String> _vars = this.get(jobCode);
+        Map<String, String> procVars = this.get(jobCode);
         
-        return _vars.entrySet().stream().filter(m -> StringUtils.startsWith(m.getKey(), SYMBOL)).collect(
+        return procVars.entrySet().stream().filter(m -> StringUtils.startsWith(m.getKey(), SYMBOL)).collect(
             Collectors.toMap(p -> (String)StringUtils.substringAfter(p.getKey(), SYMBOL),
                 p -> (String)p.getValue()));
         

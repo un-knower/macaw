@@ -23,14 +23,26 @@ import com.google.common.collect.Maps;
 /**
  * sql替换
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年1月12日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 @Component("stringTagReplaceUtil")
 public class StringTagReplaceUtil
 {
+    /**
+     * 自定义标签最小长度
+     */
+    private final int LABEL_MIN_LEN = 4;
+
+    /**
+     * 自定义标签开始字符
+     */
+    private final String LABEL_PREFIX = "${";
+
+    /**
+     * 自定义标签结束字符
+     */
+    private final String LABEL_SUFFIX = "}";
+
     @Resource
     private ConfigParamUtil configParamUtil;
     
@@ -260,17 +272,17 @@ public class StringTagReplaceUtil
             return false;
         }
         
-        if (StringUtils.length(key) < 4)
+        if (StringUtils.length(key) < LABEL_MIN_LEN)
         {
             return false;
         }
         
-        if (!StringUtils.startsWith(key, "${"))
+        if (!StringUtils.startsWith(key, LABEL_PREFIX))
         {
             return false;
         }
         
-        if (!StringUtils.endsWith(key, "}"))
+        if (!StringUtils.endsWith(key, LABEL_SUFFIX))
         {
             return false;
         }

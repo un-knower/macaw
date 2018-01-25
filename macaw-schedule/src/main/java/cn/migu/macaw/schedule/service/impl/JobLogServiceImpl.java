@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import cn.migu.macaw.schedule.log.State;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -61,14 +62,7 @@ public class JobLogServiceImpl implements IJobLogService
     
     @Resource
     private IJobCommService jobCommService;
-    
-    /**
-     * job状态枚举值
-     */
-    enum JobState
-    {
-        NOINIT, TERMINATION, RUNNING, EXCEPTION,
-    }
+
     
     /**
      * job日志初始化
@@ -88,7 +82,7 @@ public class JobLogServiceImpl implements IJobLogService
         jobLog.setJobCode(job.getCode());
         jobLog.setBatchno(batchNo);
         jobLog.setStartTime(new Date());
-        jobLog.setState(JobState.RUNNING.ordinal());
+        jobLog.setState(State.RUNNING.ordinal());
         jobLog.setProjectCode(job.getProjectCode());
         
         jobLog.setObjId(UUID.randomUUID().toString().replace("-", ""));
@@ -99,7 +93,7 @@ public class JobLogServiceImpl implements IJobLogService
         
         jobLog.setNote(this.getJobRunInfo(localIp, null));
         
-        this.updateRealState(job, JobState.RUNNING.ordinal());
+        this.updateRealState(job, State.RUNNING.ordinal());
         
         jobLogDao.insertSelective(jobLog);
         
@@ -124,7 +118,7 @@ public class JobLogServiceImpl implements IJobLogService
         }
         
         //设置job状态为TERMINATION
-        jobLog.setState(JobState.TERMINATION.ordinal());
+        jobLog.setState(State.TERMINATION.ordinal());
         jobLog.setEndTime(new Date());
         Date sysDate = new Date();
         
@@ -137,11 +131,11 @@ public class JobLogServiceImpl implements IJobLogService
         if (StringUtils.isNotEmpty(excepFlag))
         {
             excepMsg = jobTasksCache.get(jobLog.getJobCode(), "", DataConstants.JOB_EXCEP_MSG);
-            jobLog.setState(JobState.EXCEPTION.ordinal());
+            jobLog.setState(State.EXCEPTION.ordinal());
             
             this.updateJobCount(job, false);
             
-            this.updateRealState(job, JobState.EXCEPTION.ordinal());
+            this.updateRealState(job, State.EXCEPTION.ordinal());
             
         }
         else
@@ -149,11 +143,11 @@ public class JobLogServiceImpl implements IJobLogService
             String interruptFlag = jobTasksCache.get(jobLog.getJobCode(), "", DataConstants.JOB_INTERRUPT_FLAG);
             if (StringUtils.isNotEmpty(interruptFlag))
             {
-                jobLog.setState(JobState.EXCEPTION.ordinal());
+                jobLog.setState(State.EXCEPTION.ordinal());
                 
                 this.updateJobCount(job, false);
                 
-                this.updateRealState(job, JobState.EXCEPTION.ordinal());
+                this.updateRealState(job, State.EXCEPTION.ordinal());
                 
                 excepMsg = "中断执行";
             }
@@ -161,7 +155,7 @@ public class JobLogServiceImpl implements IJobLogService
             {
                 this.updateJobCount(job, true);
                 
-                this.updateRealState(job, JobState.TERMINATION.ordinal());
+                this.updateRealState(job, State.TERMINATION.ordinal());
                 
                 jobTasksService.jobCallbackIntf(job.getCode(), "success", false);
             }
@@ -199,8 +193,8 @@ public class JobLogServiceImpl implements IJobLogService
             //jobLogDao.selectByRowBounds()
             if (null != newJobLog)
             {
-                if (newJobLog.getState() != JobState.TERMINATION.ordinal()
-                    && newJobLog.getState() != JobState.EXCEPTION.ordinal())
+                if (newJobLog.getState() != State.TERMINATION.ordinal()
+                    && newJobLog.getState() != State.EXCEPTION.ordinal())
                 {
                     jobLog = newJobLog;
                 }
@@ -218,7 +212,7 @@ public class JobLogServiceImpl implements IJobLogService
             String batchCode = jobLog.getBatchno();
             
             jobLog.setBatchno(batchCode);
-            jobLog.setState(JobState.EXCEPTION.ordinal());
+            jobLog.setState(State.EXCEPTION.ordinal());
             jobLog.setEndTime(new Date());
             /*Date sysDate = simpleDate.parse(new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));*/
             long consumptionTime = System.currentTimeMillis() - jobLog.getBeginDate().getTime();
@@ -247,9 +241,9 @@ public class JobLogServiceImpl implements IJobLogService
         {
             this.updateJobCount(job, false);
             
-            this.updateRealState(job, JobState.EXCEPTION.ordinal());
+            this.updateRealState(job, State.EXCEPTION.ordinal());
             
-            this.updateProcRealState(job, String.valueOf(JobState.EXCEPTION.ordinal()));
+            this.updateProcRealState(job, String.valueOf(State.EXCEPTION.ordinal()));
         }
         
     }
@@ -320,11 +314,11 @@ public class JobLogServiceImpl implements IJobLogService
      */
     private void updateRealState(Job job, int state)
     {
-        Job _job = new Job();
-        _job.setObjId(job.getObjId());
-        _job.setRealState(state);
+        Job tJob = new Job();
+        tJob.setObjId(job.getObjId());
+        tJob.setRealState(state);
         
-        jobDao.updateByPrimaryKeySelective(_job);
+        jobDao.updateByPrimaryKeySelective(tJob);
     }
     
     /**
@@ -335,7 +329,7 @@ public class JobLogServiceImpl implements IJobLogService
      */
     private void updateProcRealState(Job job, String state)
     {
-        if (!StringUtils.equals(state, String.valueOf(JobState.EXCEPTION.ordinal())) || 0 != job.getKind())
+        if (!StringUtils.equals(state, String.valueOf(State.EXCEPTION.ordinal())) || 0 != job.getKind())
         {
             return;
         }

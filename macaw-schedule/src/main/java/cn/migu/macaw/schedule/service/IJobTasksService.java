@@ -31,8 +31,9 @@ public interface IJobTasksService
     /**
      * 
      * job执行业务方法入口
-     * @author zhaocan
      * @param jobCode 任务编码
+     * @param batchNo 任务运行批次号
+     *
      * @throws Exception 异常类
      */
     void jobRun(String jobCode, String batchNo)

@@ -346,25 +346,25 @@ public class DataSourceAdapter
     {
         dsEntity.setObjId(dsId.trim());
 
-        OfflineDataSource _ds = this.getDataSource(dsEntity);
+        OfflineDataSource ods = this.getDataSource(dsEntity);
         
         switch (dataSourceType)
         {
             case SPARK_DS_TYPE:
                 dsAttr.setSparkDs(true);
-                dsAttr.setSparkMaster(_ds.getAddress());
+                dsAttr.setSparkMaster(ods.getAddress());
                 dsAttr.setSparkHistoryServerIp(
-                    StringUtils.split(StringUtils.substringAfter(_ds.getAddress(), "spark://"), ":")[0]);
-                dsAttr.setSparkHistoryServerPort(_ds.getPort().toString());
-                if (StringUtils.isEmpty(dsAttr.getHdfsPrefixSchema()) && StringUtils.isNotEmpty(_ds.getReserve4()))
+                    StringUtils.split(StringUtils.substringAfter(ods.getAddress(), "spark://"), ":")[0]);
+                dsAttr.setSparkHistoryServerPort(ods.getPort().toString());
+                if (StringUtils.isEmpty(dsAttr.getHdfsPrefixSchema()) && StringUtils.isNotEmpty(ods.getReserve4()))
                 {
-                    dsAttr.setHdfsPrefixSchema(_ds.getReserve4());
+                    dsAttr.setHdfsPrefixSchema(ods.getReserve4());
                 }
                 
                 break;
             case HDFS_DS_TYPE:
-                dsAttr.setHdfsPrefixSchema(_ds.getAddress());
-                dsAttr.setHdfsHaConfJsonStr(_ds.getReserve1());
+                dsAttr.setHdfsPrefixSchema(ods.getAddress());
+                dsAttr.setHdfsHaConfJsonStr(ods.getReserve1());
                 break;
             case HUGETABLE_DS_TYPE:
             case ORACLE_DS_TYPE:
@@ -372,27 +372,27 @@ public class DataSourceAdapter
             case MYSQL_DS_TYPE:
             case FTP_DS_TYPE:
             case SFTP_DS_TYPE:
-                dsAttr.setConnectAddr(_ds.getAddress());
-                dsAttr.setUsername(_ds.getUsername());
-                dsAttr.setPassword(_ds.getPassword());
+                dsAttr.setConnectAddr(ods.getAddress());
+                dsAttr.setUsername(ods.getUsername());
+                dsAttr.setPassword(ods.getPassword());
                 break;
             case SSH_DS_TYPE:
-                dsAttr.setSshHost(_ds.getAddress());
-                dsAttr.setSshUser(_ds.getUsername());
-                dsAttr.setSshPassword(_ds.getPassword());
+                dsAttr.setSshHost(ods.getAddress());
+                dsAttr.setSshUser(ods.getUsername());
+                dsAttr.setSshPassword(ods.getPassword());
                 break;
             case KAFKA_DS_TYPE:
-                dsAttr.setKafkaHttpUrl(_ds.getAddress());
-                dsAttr.setKafkaZkUrl(_ds.getReserve2());
-                dsAttr.setUsername(_ds.getUsername());
-                dsAttr.setPassword(_ds.getPassword());
-                dsAttr.setKafkaBrokeUrl(_ds.getReserve3());
+                dsAttr.setKafkaHttpUrl(ods.getAddress());
+                dsAttr.setKafkaZkUrl(ods.getReserve2());
+                dsAttr.setUsername(ods.getUsername());
+                dsAttr.setPassword(ods.getPassword());
+                dsAttr.setKafkaBrokeUrl(ods.getReserve3());
                 break;
             case REDIS_DS_TYPE:
-                dsAttr.setRedisHost(_ds.getAddress());
-                dsAttr.setRedisPasswd(_ds.getPassword());
-                dsAttr.setPort(_ds.getPort().intValue());
-                dsAttr.setDbIndex(Integer.valueOf(_ds.getReserve1()));
+                dsAttr.setRedisHost(ods.getAddress());
+                dsAttr.setRedisPasswd(ods.getPassword());
+                dsAttr.setPort(ods.getPort().intValue());
+                dsAttr.setDbIndex(Integer.valueOf(ods.getReserve1()));
                 break;
             case T_HUGETABLE_DS_TYPE:
             case T_ORACLE_DS_TYPE:
@@ -400,15 +400,15 @@ public class DataSourceAdapter
             case T_MYSQL_DS_TYPE:
             case T_FTP_DS_TYPE:
             case T_SFTP_DS_TYPE:
-                dsAttr.setTargetconnectAddr((_ds.getAddress()));
-                dsAttr.setTargetUsername(_ds.getUsername());
-                dsAttr.setTargetPassword(_ds.getPassword());
+                dsAttr.setTargetconnectAddr((ods.getAddress()));
+                dsAttr.setTargetUsername(ods.getUsername());
+                dsAttr.setTargetPassword(ods.getPassword());
                 break;
             case T_HDFS_DS_TYPE:
-                dsAttr.setTargetHdfsPrefixSchema(_ds.getAddress());
+                dsAttr.setTargetHdfsPrefixSchema(ods.getAddress());
                 break;
             case T_HIVE_DS_TYPE:
-                dsAttr.setTargetconnectAddr(_ds.getAddress());
+                dsAttr.setTargetconnectAddr(ods.getAddress());
                 break;
             default:
                 break;

@@ -57,7 +57,7 @@ public class TaskExecutorShell implements TaskExecutor
                 JobTasksCache jobTasksCache = (JobTasksCache)ApplicationContextProvider.getBean("jobTasksCache");
                 
                 String isCustomCancel = jobTasksCache.get(jobCode, nodeId, DataConstants.CUSTOM_CANCEL_RUN);
-                if (StringUtils.equals(isCustomCancel, "1"))
+                if (StringUtils.equals(isCustomCancel, DataConstants.VALID))
                 {
                     ScheduleLogTrace.scheduleInfoLog(jobCode, nodeId, type, "被取消执行[配置]");
                     
@@ -65,7 +65,7 @@ public class TaskExecutorShell implements TaskExecutor
                 }
                 
                 String isCancel = jobTasksCache.get(jobCode, nodeId, DataConstants.CANCEL_RUN);
-                if (StringUtils.equals(isCancel, "1"))
+                if (StringUtils.equals(isCancel, DataConstants.VALID))
                 {
                     ScheduleLogTrace.scheduleInfoLog(jobCode, nodeId, type, "被取消执行[决策]");
                     

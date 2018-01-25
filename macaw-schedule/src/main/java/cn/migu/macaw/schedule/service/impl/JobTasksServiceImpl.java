@@ -386,14 +386,14 @@ public class JobTasksServiceImpl implements IJobTasksService
     
     /**
      * 查询quartz cluster中的job是否运行
-     * @param JobName
+     * @param jobName
      * @return
      * @see [类、类#方法、类#成员]
      */
-    private boolean isJobRunning(String JobName)
+    private boolean isJobRunning(String jobName)
     {
         StringBuffer querySql = new StringBuffer("select count(1) from qrtz_fired_triggers where job_name='");
-        querySql.append(JobName).append("'");
+        querySql.append(jobName).append("'");
         
         int count = jdbcTemplate.queryForObject(querySql.toString(), Integer.class);
         
@@ -665,12 +665,12 @@ public class JobTasksServiceImpl implements IJobTasksService
         Set<String> nodeSets = jns.stream().map(JobNode::getCode).collect(Collectors.toCollection(HashSet::new));
         
         // 节点关系
-        Multimap<String, String> id_childIds = HashMultimap.create();
+        Multimap<String, String> idChildIds = HashMultimap.create();
         
         jns.forEach(jn -> {
             if (StringUtils.isNotEmpty(jn.getParentCode()))
             {
-                id_childIds.put(jn.getParentCode(), jn.getCode());
+                idChildIds.put(jn.getParentCode(), jn.getCode());
             }
         });
         
@@ -682,7 +682,7 @@ public class JobTasksServiceImpl implements IJobTasksService
         });
         
         // 创建自定义管理有向图
-        IdDag<String> ids = IdDagLib.fromChildMap(nodeSets, id_childIds);
+        IdDag<String> ids = IdDagLib.fromChildMap(nodeSets, idChildIds);
         
         // 缓存失效节点
         List<String> fjns = jns.stream().filter(jn -> (jn.getState() == 0)).map(JobNode::getCode).collect(
@@ -708,18 +708,18 @@ public class JobTasksServiceImpl implements IJobTasksService
         Set<String> subSet = new HashSet<>();
         ImmutableSet<String> roots = ids.rootIdSet();
         roots.forEach(root -> {
-            id_childIds.put(DataConstants.FAKE_ROOT, root);
+            idChildIds.put(DataConstants.FAKE_ROOT, root);
         });
         nodeSets.add(DataConstants.FAKE_ROOT);
         subSet.add(DataConstants.FAKE_ROOT);
-        IdDag<String> _dag = IdDagLib.fromChildMap(nodeSets, id_childIds);
+        IdDag<String> tDag = IdDagLib.fromChildMap(nodeSets, idChildIds);
         
         Set<String> leftNodes = Sets.difference(nodeSets, subSet);
         
         for (String ln : leftNodes)
         {
             boolean valid = false;
-            List<List<String>> paths = PathsLib.getAllPaths(DataConstants.FAKE_ROOT, ln, _dag);
+            List<List<String>> paths = PathsLib.getAllPaths(DataConstants.FAKE_ROOT, ln, tDag);
             for (List<String> path : paths)
             {
                 if (this.isConnected(path, tnbs, subSet))
@@ -798,9 +798,9 @@ public class JobTasksServiceImpl implements IJobTasksService
         {
             return;
         }
-        JobNode _node = jobNodeDao.select(node).get(0);
+        JobNode tNode = jobNodeDao.select(node).get(0);
         
-        if (StringUtils.isNotEmpty(_node.getTemplateCode()))
+        if (StringUtils.isNotEmpty(tNode.getTemplateCode()))
         {
             /*UnifyTask t = new UnifyTask();
             t.setCode(_node.getTaskCode());
@@ -808,22 +808,22 @@ public class JobTasksServiceImpl implements IJobTasksService
             UnifyTask _t = taskDao.selectOne(t);*/
             
             TaskTemplate t = new TaskTemplate();
-            t.setCode(_node.getTemplateCode());
+            t.setCode(tNode.getTemplateCode());
             List<TaskTemplate> uttLs = taskTempletMapper.select(t);
-            TaskTemplate _t = uttLs.get(0);
+            TaskTemplate template = uttLs.get(0);
             
-            if (StringUtils.isNotEmpty(_t.getTaskClass()))
+            if (StringUtils.isNotEmpty(template.getTaskClass()))
             {
                 TaskNodeBrief brief = new TaskNodeBrief();
                 brief.setJobCode(jobCode);
                 brief.setNodeId(nodeCode);
-                brief.setTaskCode(_t.getCode());
-                brief.setTaskClassType(_t.getTaskClass());
+                brief.setTaskCode(template.getCode());
+                brief.setTaskClassType(template.getTaskClass());
                 brief.setBatchCode(batchNo);
                 
                 IJobTasksService jobTasksService =
                     (IJobTasksService)ApplicationContextProvider.getBean("jobTasksService");
-                jobTasksService.runNode(brief, null, _t.getTaskClass());
+                jobTasksService.runNode(brief, null, template.getTaskClass());
             }
         }
         

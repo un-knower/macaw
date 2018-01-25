@@ -1,14 +1,11 @@
 package cn.migu.macaw.schedule.task.util;
 
-import cn.migu.macaw.common.ServiceName;
-import cn.migu.macaw.common.ServiceUrlProvider;
-import cn.migu.macaw.schedule.cache.JobTasksCache;
-import cn.migu.macaw.schedule.task.TaskNodeBrief;
-import cn.migu.macaw.schedule.task.datasource.DataSourceAdapter;
-import cn.migu.macaw.schedule.task.datasource.DataSourceFlatAttr;
-import cn.migu.macaw.schedule.util.ScheduleLogTrace;
-import cn.migu.macaw.schedule.workflow.DataConstants;
-import com.google.common.collect.Maps;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.ArrayUtils;
@@ -17,45 +14,50 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Maps;
+
+import cn.migu.macaw.common.ServiceName;
+import cn.migu.macaw.common.ServiceUrlProvider;
+import cn.migu.macaw.schedule.cache.JobTasksCache;
+import cn.migu.macaw.schedule.task.TaskNodeBrief;
+import cn.migu.macaw.schedule.task.datasource.DataSourceAdapter;
+import cn.migu.macaw.schedule.task.datasource.DataSourceFlatAttr;
+import cn.migu.macaw.schedule.util.ScheduleLogTrace;
+import cn.migu.macaw.schedule.workflow.DataConstants;
 
 /**
  * 调度中心sql业务通用类
  *
- * @author zhaocan
- * @version [版本号, 2016年8月12日]
- * @see  [相关类/方法]
- * @since [产品/模块版本]
+ * @author soy
  */
-@Component("sqlServiceUtil") public class SqlServiceUtil
+@Component("sqlServiceUtil")
+public class SqlServiceUtil
 {
-    /*private String DATASOURCE_KEY = "datasource";
+    private final String SQL_SELECT = "select";
     
-    private String JDBCURL_KEY = "jdbcurl";
+    private final String SPARK_SQL_SELECT_KEY = "_sparksql_ret_val";
     
-    private String USERNAME_KEY = "username";
+    @Resource
+    private JdbcTemplate localJdbc;
     
-    private String PASSWORD_KEY = "password";*/
-
-    private String SPARK_SQL_SELECT_KEY = "_sparksql_ret_val";
-
-    @Resource private JdbcTemplate localJdbc;
-
-    @Resource private ServiceReqClient client;
-
-    @Resource private ConfigParamUtil configParamUtil;
-
-    @Resource private StringTagReplaceUtil convertSqlUtil;
-
-    @Resource private JobTasksCache jobTasksCache;
-
-    @Resource private DataSourceAdapter dataSourceAdapter;
-
-    @Resource private SparkResourceMgr srm;
-
+    @Resource
+    private ServiceReqClient client;
+    
+    @Resource
+    private ConfigParamUtil configParamUtil;
+    
+    @Resource
+    private StringTagReplaceUtil convertSqlUtil;
+    
+    @Resource
+    private JobTasksCache jobTasksCache;
+    
+    @Resource
+    private DataSourceAdapter dataSourceAdapter;
+    
+    @Resource
+    private SparkResourceMgr srm;
+    
     /**
      * 是否是spark sql
      * @param dsAttr
@@ -66,7 +68,7 @@ import java.util.Map;
     {
         return null == dsAttr || dsAttr.isSparkDs();
     }
-
+    
     /**
      * 是否为jdbc hugetable连接
      * @param dsAttr
@@ -77,7 +79,7 @@ import java.util.Map;
     {
         return ((null != dsAttr) && StringUtils.equals(dsAttr.getDriverClass(), "com.chinamobile.cmss.ht.Driver"));
     }
-
+    
     /**
      * jdbc查询
      * @param brief
@@ -92,7 +94,7 @@ import java.util.Map;
         String username = dsAttr.getUsername();
         String password = dsAttr.getPassword();
         String jdbcurl = dsAttr.getConnectAddr();
-
+        
         JdbcTemplate jdbc = new JdbcTemplate();
         //String driver = this.getDriver(datasource);
         BasicDataSource dataSource = new BasicDataSource();
@@ -101,11 +103,11 @@ import java.util.Map;
         dataSource.setUsername(username);
         dataSource.setUrl(jdbcurl);
         jdbc.setDataSource(dataSource);
-
+        
         ScheduleLogTrace.scheduleInfoLog(brief, StringUtils.join("查询sql:", sql));
-
+        
         String retValue = jdbc.queryForObject(sql, String.class);
-
+        
         try
         {
             dataSource.close();
@@ -113,11 +115,11 @@ import java.util.Map;
         catch (SQLException e)
         {
         }
-
+        
         return retValue;
-
+        
     }
-
+    
     /**
      * 本地数据库连接执行sql
      * @param sql
@@ -129,7 +131,7 @@ import java.util.Map;
         ScheduleLogTrace.scheduleInfoLog(brief, StringUtils.join("查询sql:", sql));
         return localJdbc.queryForObject(sql, String.class);
     }
-
+    
     /**
      * jdbc查询
      * @param brief
@@ -142,7 +144,7 @@ import java.util.Map;
     {
         return this.queryJdbc(brief, dsAttr, sql);
     }
-
+    
     /**
      * 执行关系型数据库sql
      * @param dsAttr
@@ -156,23 +158,23 @@ import java.util.Map;
         String username = dsAttr.getUsername();
         String password = dsAttr.getPassword();
         String jdbcurl = dsAttr.getConnectAddr();
-
+        
         JdbcTemplate jdbc = new JdbcTemplate();
-
+        
         //String driver = getDriver(driverClass);
-
+        
         BasicDataSource dataSource = new BasicDataSource();
-
+        
         dataSource.setDriverClassName(driverClass);
-
+        
         dataSource.setPassword(null == password ? "" : password);
-
+        
         dataSource.setUsername(username);
-
+        
         dataSource.setUrl(jdbcurl);
-
+        
         jdbc.setDataSource(dataSource);
-
+        
         ScheduleLogTrace.scheduleInfoLog(brief,
             StringUtils.join("运行参数[jdbcurl:",
                 jdbcurl,
@@ -183,22 +185,22 @@ import java.util.Map;
                 ",password:",
                 password,
                 "]"));
-
+        
         try
         {
             ScheduleLogTrace.scheduleInfoLog(brief, StringUtils.join("执行sql为==>", sql));
             jdbc.execute(sql);
-
+            
             ScheduleLogTrace.scheduleInfoLog(brief, "sql执行结束");
-
+            
         }
         catch (Exception e)
         {
-
+            
             ScheduleLogTrace.scheduleWarnLog(brief, ExceptionUtils.getStackTrace(e));
-
+            
             throw e;
-
+            
         }
         finally
         {
@@ -212,7 +214,7 @@ import java.util.Map;
             }
         }
     }
-
+    
     /**
      * 本地数据库执行sql
      * @param conf
@@ -223,10 +225,10 @@ import java.util.Map;
     public void executeLocal(Map<String, String> conf, String sql, TaskNodeBrief brief)
     {
         ScheduleLogTrace.scheduleInfoLog(brief, StringUtils.join("执行sql:", sql));
-
+        
         localJdbc.execute(sql);
     }
-
+    
     /**
      * spark查询并返回
      * @param brief
@@ -239,9 +241,9 @@ import java.util.Map;
     public String queryFromSpark(TaskNodeBrief brief, DataSourceFlatAttr dsAttr, String nodeRunSql)
         throws Exception
     {
-
+        
         String value = "";
-
+        
         String appId = srm.getSparkContextAppIdJobScope(brief.getJobCode());
         if (StringUtils.isNotEmpty(appId))
         {
@@ -249,11 +251,11 @@ import java.util.Map;
             if (isUnUsed)
             {
                 //spark查询
-                value =
-                    client.postCommonTaskForString(ServiceUrlProvider.sparkJobMgrService(ServiceReqClient.SPARK_SELECT_QUERY),
-                        client.sqlHiveEntity(nodeRunSql, appId),
-                        brief);
-
+                value = client.postCommonTaskForString(
+                    ServiceUrlProvider.sparkJobMgrService(ServiceReqClient.SPARK_SELECT_QUERY),
+                    client.sqlHiveEntity(nodeRunSql, appId),
+                    brief);
+                
                 srm.setSparkCtxUnusedJobScope(brief.getJobCode());
             }
             else
@@ -265,11 +267,11 @@ import java.util.Map;
         {
             value = queryFromHt(brief, dsAttr, nodeRunSql);
         }
-
+        
         return value;
-
+        
     }
-
+    
     /**
      * 执行ht sql
      * @param brief
@@ -295,10 +297,10 @@ import java.util.Map;
                 retValue = ov[0].toString();
             }
         }
-
+        
         return retValue;
     }
-
+    
     /**
      * 执行ht sql
      * @param brief
@@ -309,7 +311,7 @@ import java.util.Map;
         throws Exception
     {
         String url = StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", "/SparkSQL/executeSql.do");
-
+        
         for (int i = 0; i < 3; i++)
         {
             try
@@ -320,9 +322,8 @@ import java.util.Map;
             {
                 String errorStack = e.getMessage();
                 if (StringUtils.contains(errorStack,
-                    "com.chinamobile.cmss.ht.jdbc.JdbcSQLException: Connection is broken") && StringUtils.contains(
-                    errorStack,
-                    "session closed"))
+                    "com.chinamobile.cmss.ht.jdbc.JdbcSQLException: Connection is broken")
+                    && StringUtils.contains(errorStack, "session closed"))
                 {
                     if (2 == i)
                     {
@@ -336,13 +337,13 @@ import java.util.Map;
                     throw e;
                 }
             }
-
+            
             break;
-
+            
         }
-
+        
     }
-
+    
     /**
      * 业务返回值sql查询通用方法
      * @param brief
@@ -360,31 +361,31 @@ import java.util.Map;
             ScheduleLogTrace.scheduleWarnLog(brief, "没有配置运行sql");
             return null;
         }
-
+        
         if (nodeRunSqls.size() > 1)
         {
             ScheduleLogTrace.scheduleWarnLog(brief, "运行sql数量大于1");
             throw new IllegalArgumentException("运行sql数量大于1");
         }
-
+        
         String nodeRunSql = nodeRunSqls.get(0);
-
+        
         //node运行时系统配置参数
         Map<String, String> nodeSysConf = configParamUtil.getJobNodeSysParams(brief);
-
+        
         DataSourceFlatAttr dsAttr = dataSourceAdapter.getNodeDataSourceConf(brief.getJobCode(), brief.getNodeId());
-
+        
         nodeRunSql = convertSqlUtil.replaceLabelsInNode(nodeRunSql, brief);
-
+        
         nodeRunSql = convertSqlUtil.replaceLabelsInCtx(brief.getJobCode(), nodeRunSql);
-
+        
         jobTasksCache.append(brief.getJobCode(),
             brief.getNodeId(),
             DataConstants.NODE_RUNNING_TRACE,
             StringUtils.join("运行sql:", nodeRunSql));
-
+        
         String retValue = null;
-
+        
         if (null != dsAttr && !this.isHtConnection(dsAttr))
         {
             retValue = this.query(brief, dsAttr, nodeRunSql);
@@ -392,7 +393,7 @@ import java.util.Map;
         else
         {
             //RequestConfig reqConf = HttpConfigUtil.getHttpReqConf(brief, nodeSysConf);
-
+            
             try
             {
                 boolean isSparkSql = (null == nodeSysConf) ? false : nodeSysConf.containsKey(SPARK_SQL_SELECT_KEY);
@@ -409,15 +410,15 @@ import java.util.Map;
             catch (Exception e)
             {
                 String excepStr = ExceptionUtils.getStackTrace(e);
-
+                
                 ScheduleLogTrace.scheduleWarnLog(brief, StringUtils.join("查询hugetable异常=>", excepStr));
                 throw e;
             }
         }
-
+        
         return retValue;
     }
-
+    
     /**
      * jdbc执行ht sql
      * @param sql
@@ -432,7 +433,7 @@ import java.util.Map;
         
         return params;
     }*/
-
+    
     /**
      * 发送到spark集群上执行
      * @param sql
@@ -441,8 +442,8 @@ import java.util.Map;
      */
     private boolean isAbleToSparkQuery(String sql, boolean isSparkSql)
     {
-
-        if (isSparkSql && StringUtils.startsWithIgnoreCase(StringUtils.trim(sql), "select"))
+        
+        if (isSparkSql && StringUtils.startsWithIgnoreCase(StringUtils.trim(sql), SQL_SELECT))
         {
             /*if (StringUtils.containsIgnoreCase(sql, "count(") || StringUtils.containsIgnoreCase(sql, "sum(")
                 || StringUtils.containsIgnoreCase(sql, "avg(") || StringUtils.containsIgnoreCase(sql, "max(")
@@ -452,11 +453,11 @@ import java.util.Map;
             }*/
             return true;
         }
-
+        
         return false;
-
+        
     }
-
+    
     /**
      * jdbc执行ht sql
      * @param sql
@@ -468,17 +469,17 @@ import java.util.Map;
         Map<String, String> params = Maps.newHashMap();
         params.put(RequestKey.SQL, sql);
         params.put(RequestKey.DATA_SOURCE, ServiceReqClient.DATA_SOURCE_HUGETABLE);
-
+        
         if (this.isHtConnection(dsAttr))
         {
             params.put(RequestKey.DATA_BASE_NAME, dsAttr.getConnectAddr());
             params.put(RequestKey.USER_NAME, dsAttr.getUsername());
             params.put(RequestKey.PASSWORD, dsAttr.getPassword());
         }
-
+        
         return params;
     }
-
+    
     /**
      * 驱动匹配
      * @param datasource
@@ -487,12 +488,12 @@ import java.util.Map;
      */
     public String getDriver(String datasource)
     {
-
+        
         String driv = "";
-
+        
         switch (datasource)
         {
-
+            
             case "oracle":
                 driv = "oracle.jdbc.driver.OracleDriver";
                 break;
@@ -509,8 +510,8 @@ import java.util.Map;
                 driv = datasource;
                 break;
         }
-
+        
         return driv;
     }
-
+    
 }

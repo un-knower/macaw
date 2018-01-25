@@ -47,14 +47,14 @@ public class RunJob extends BaseJob implements InterruptableJob
         this.jobCode = jobCode;
         
         //4.从上下文中得到jobService实例
-        IJobTasksService _jobTasksService = (IJobTasksService)getBean(context, "jobTasksService");
+        IJobTasksService jobTasksService = (IJobTasksService)getBean(context, "jobTasksService");
         
-        this.jobTasksService = _jobTasksService;
+        this.jobTasksService = jobTasksService;
         
         try
         {
             
-            _jobTasksService.jobRun(jobCode, batchNo);
+            jobTasksService.jobRun(jobCode, batchNo);
             
         }
         catch (Exception e)
@@ -75,8 +75,8 @@ public class RunJob extends BaseJob implements InterruptableJob
         if (thread != null)
         {
             //判断线程是否存在
-            Thread _t = ThreadUtilities.getThread(thread.getId());
-            if (null != _t)
+            Thread t = ThreadUtilities.getThread(thread.getId());
+            if (null != t)
             {
                 this.jobTasksService.setJobTaskCtxFlag(this.jobCode, "", DataConstants.JOB_INTERRUPT_FLAG, "1");
                 

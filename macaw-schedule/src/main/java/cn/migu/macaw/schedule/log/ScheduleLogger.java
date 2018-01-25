@@ -42,11 +42,6 @@ public class ScheduleLogger
     
     @Resource
     private IJobCommService jobCommService;
-    
-    enum NodeState
-    {
-        NOINIT, TERMINATION, RUNNING, EXCEPTION,
-    }
 
     
     /**
@@ -86,7 +81,7 @@ public class ScheduleLogger
             nodeLog.setNodeCode(brief.getNodeId());
             nodeLog.setStartTime(new Date());
             nodeLog.setBatchno(brief.getBatchCode());
-            nodeLog.setState(NodeState.RUNNING.ordinal());
+            nodeLog.setState(State.RUNNING.ordinal());
             
             Job job = jobCommService.getJob(brief.getJobCode());
             nodeLog.setProjectCode(job.getProjectCode());
@@ -102,7 +97,7 @@ public class ScheduleLogger
             obj = pjp.proceed();
             long end = System.currentTimeMillis();
             
-            nodeLog.setState(NodeState.TERMINATION.ordinal());
+            nodeLog.setState(State.TERMINATION.ordinal());
             nodeLog.setEndTime(new Date());
             nodeLog.setElapse(end - start);
             
@@ -129,7 +124,7 @@ public class ScheduleLogger
             
             nodeLog.setNote(StringUtils.join(nodeRunningMsg, "==>异常信息:", errMsg));
             
-            nodeLog.setState(NodeState.EXCEPTION.ordinal());
+            nodeLog.setState(State.EXCEPTION.ordinal());
             nodeLog.setEndTime(new Date());
             long end = System.currentTimeMillis();
             nodeLog.setElapse(end - start);

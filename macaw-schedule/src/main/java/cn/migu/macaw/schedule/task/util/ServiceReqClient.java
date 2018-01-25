@@ -43,15 +43,10 @@ import cn.migu.macaw.schedule.workflow.DataConstants;
 public class ServiceReqClient implements RequestKey,RequestServiceUri
 {
 
-    
-    //spark任务请求返回状态
-    public static final String FINISHED = "00";
-    
-    public static final String RUNNING = "01";
-    
-    public static final String FAILED = "02";
-    
-    public static final String KILLED = "03";
+    /**
+     * 请求重试次数
+     */
+    private final int REQ_RETRY = 3;
 
     
     //默认运行类型
@@ -204,7 +199,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         
         redisService.setForHashKeyCounter(brief.getJobCode(), FieldKey.CROSSDATA_JOB_EXISTED);
         
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < REQ_RETRY; i++)
         {
             response = this.post(url, postParams, brief);
             
@@ -290,7 +285,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     {
         
         //目前支持重新尝试3次提交
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < REQ_RETRY; i++)
         {
             try
             {
@@ -363,7 +358,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         //扩展请求参数
         this.postFormExtend(entity, brief);
         
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < REQ_RETRY; i++)
         {
             respPhase1 = this.post(url, entity, brief);
             /*respPhase1 = StringUtil.getResp(respPhase1);*/
@@ -371,8 +366,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
             Response response = JSON.parseObject(respPhase1, Response.class, Feature.InitStringFieldAsEmpty);
             
             context = response.getResponse();
-            if (StringUtils.isNotEmpty(context.getCode()) && ((StringUtils.equals(context.getCode(), FINISHED)
-                || StringUtils.equals(context.getCode(), SysRetCode.SUCCESS))))
+            if (StringUtils.isNotEmpty(context.getCode()) && StringUtils.equals(context.getCode(), SysRetCode.SUCCESS))
             {
                 
                 //记录appid
@@ -384,8 +378,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
             Thread.sleep(2000);
         }
         
-        if (StringUtils.equals(context.getCode(), FINISHED)
-            || StringUtils.equals(context.getCode(), SysRetCode.SUCCESS))
+        if (StringUtils.equals(context.getCode(), SysRetCode.SUCCESS))
         {
             //2.等待任务执行结果
             appName = context.getAppname();
@@ -400,15 +393,13 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
             Response qobj = JSON.parseObject(respPhase2, Response.class, Feature.InitStringFieldAsEmpty);
             Entity qr = qobj.getResponse();
             
-            if (StringUtils.equals(qr.getCode(), FINISHED)
-                || StringUtils.equals(qr.getCode(), SysRetCode.SPARK_APP_FINISHED))
+            if (StringUtils.equals(qr.getCode(), SysRetCode.SPARK_APP_FINISHED))
             {
                 runningResMgr.delSparkAppRecord(brief.getJobCode(), appName);
                 return appName;
             }
             
-            if (StringUtils.equals(qr.getCode(), FAILED) || StringUtils.equals(qr.getCode(), KILLED)
-                || StringUtils.equals(qr.getCode(), SysRetCode.SPARK_APP_KILLED)
+            if (StringUtils.equals(qr.getCode(), SysRetCode.SPARK_APP_KILLED)
                 || StringUtils.equals(qr.getCode(), SysRetCode.SPARK_APP_FAILED))
             {
                 runningResMgr.delSparkAppRecord(brief.getJobCode(), appName);
@@ -417,8 +408,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
                     StringUtils.isEmpty(qr.getErrorStack()) ? "spark任务执行失败,具体信息请查询后台日志" : qr.getErrorStack();
                 throw new RuntimeException(errMsg);
             }
-            if (StringUtils.isEmpty(qr.getCode()) || StringUtils.equals(qr.getCode(), RUNNING)
-                || StringUtils.equals(qr.getCode(), SysRetCode.SPARK_APP_RUNNING))
+            if (StringUtils.isEmpty(qr.getCode()) || StringUtils.equals(qr.getCode(), SysRetCode.SPARK_APP_RUNNING))
             {
                 String retryNumStr =
                     jobTasksCache.get(brief.getJobCode(), brief.getNodeId(), DataConstants.SPARK_QUERY_RETRY_TIME);
@@ -436,14 +426,12 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
                     Response qlobj = JSON.parseObject(respPhaseLoop, Response.class, Feature.InitStringFieldAsEmpty);
                     Entity qrl = qlobj.getResponse();
                     
-                    if (StringUtils.equals(qrl.getCode(), FINISHED)
-                        || StringUtils.equals(qrl.getCode(), SysRetCode.SPARK_APP_FINISHED))
+                    if (StringUtils.equals(qrl.getCode(), SysRetCode.SPARK_APP_FINISHED))
                     {
                         runningResMgr.delSparkAppRecord(brief.getJobCode(), appName);
                         return appName;
                     }
-                    if (StringUtils.isNotEmpty(qrl.getCode()) && !StringUtils.equals(qrl.getCode(), RUNNING)
-                        && !StringUtils.equals(qrl.getCode(), SysRetCode.SPARK_APP_RUNNING))
+                    if (StringUtils.isNotEmpty(qrl.getCode()) && !StringUtils.equals(qrl.getCode(), SysRetCode.SPARK_APP_RUNNING))
                     {
                         runningResMgr.delSparkAppRecord(brief.getJobCode(), appName);
                         
@@ -667,7 +655,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         
         JSONArray jsonArray = null;
         
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < REQ_RETRY; i++)
         {
             String qryUrl = StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
             String result = this.post(qryUrl, entity, brief);
