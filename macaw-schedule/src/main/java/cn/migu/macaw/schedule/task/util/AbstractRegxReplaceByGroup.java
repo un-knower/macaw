@@ -78,16 +78,7 @@ public abstract class AbstractRegxReplaceByGroup
             }
         };
         System.out.println(tripler.rewrite(str));
-        
-        // inline subclass
-        /*System.out.println(new RegxReplaceByGroup("(\\d{1,2})")
-        {
-            public String replacement()
-            {
-                int intValue = Integer.valueOf(group(1));
-                return String.valueOf(intValue * 3);
-            }
-        }.rewrite(str));*/
+
         
     }
 }
