@@ -46,7 +46,7 @@ import java.util.Map;
  * @author soy
  */
 @RestController
-public class JobRest implements ScheduleJobService
+public class JobRestImpl implements ScheduleJobService
 {
 
     private final String JOB_THREAD_POS = "local";
