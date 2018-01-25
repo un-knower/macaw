@@ -69,7 +69,7 @@ public abstract class AbstractRegxReplaceByGroup
         String str = "select xx from yy where msisdn=${msisdn}";
         
         // anonymous subclass
-        RegxReplaceByGroup tripler = new RegxReplaceByGroup("([$][{]msisdn[}])", "13912952636")
+        AbstractRegxReplaceByGroup tripler = new AbstractRegxReplaceByGroup("([$][{]msisdn[}])", "13912952636")
         {
             @Override
             public String replacement()

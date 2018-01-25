@@ -111,7 +111,7 @@ public class StringTagReplaceUtil
         
         Preconditions.checkNotNull(regEx, "替换的正则表达式为空");
         
-        RegxReplaceByGroup tripler = new RegxReplaceByGroup(regEx, replaceStr)
+        AbstractRegxReplaceByGroup tripler = new AbstractRegxReplaceByGroup(regEx, replaceStr)
         {
             @Override
             public String replacement()
