@@ -129,7 +129,14 @@ public class TaskGroupWorkflow implements Closeable
     public void close()
         throws IOException
     {
-        System.out.println("adasdasdsadasdasdasdasdsadasdasd");
+        try
+        {
+            Thread.sleep(100);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         CloseableUtils.closeQuietly(curator);
         CloseableUtils.closeQuietly(testingServer);
     }

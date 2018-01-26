@@ -8,8 +8,10 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
+import cn.migu.macaw.schedule.PlatformAttr;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -93,7 +95,13 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     private SqlServiceUtil sqlServiceUtil;
     
     @Resource(name = "restTemplateForLoadBalance")
+    private RestTemplate restTemplateForLoadBalance;
+
+    @Resource(name = "restTemplate")
     private RestTemplate restTemplate;
+
+    @Autowired
+    private PlatformAttr platformAttr;
     
     /**
      *
@@ -474,8 +482,14 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     {
         //记录post log信息
         taskTraceLogUtil.reqPostLog(url, entity, brief);
-        
-        String result = RestTemplateProvider.postFormForEntity(restTemplate, url, String.class, entity);
+
+        RestTemplate tRestTemplate = restTemplateForLoadBalance;
+        if(StringUtils.contains(StringUtils.substringAfter(url,"http://"),":"))
+        {
+            tRestTemplate = restTemplate;
+        }
+
+        String result = RestTemplateProvider.postFormForEntity(tRestTemplate, url, String.class, entity);
         
         taskTraceLogUtil.resqPostLog(url, brief, result);
         
@@ -609,7 +623,8 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     public String excuteQuery(Map<String, String> params, TaskNodeBrief brief)
         throws Exception
     {
-        String realUrl = StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
+        String realUrl = StringUtils.join(platformAttr.getBasePlatformUrl(), JDBC_EXECUTE_QUERY);
+            //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
         //sysParamCache.get(brief.getJobCode(), ModuleUrlKey.DATA_EXTRAC_URL_KEY) + JDBC_EXECUTE_QUERY;
         String response = post(realUrl, params, brief);
         
@@ -656,7 +671,8 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         
         for (int i = 0; i < REQ_RETRY; i++)
         {
-            String qryUrl = StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
+            String qryUrl = StringUtils.join(platformAttr.getBasePlatformUrl(), JDBC_EXECUTE_QUERY);
+                //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
             String result = this.post(qryUrl, entity, brief);
             
             JSONObject jsonObject = JSONObject.parseObject(result);

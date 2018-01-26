@@ -25,6 +25,9 @@ public class PlatformAttr
     @Value("${crossdata.port}")
     private String crossdataPort;
 
+    @Value("${base-platform.url}")
+    private String basePlatformUrl;
+
     public String getSparkMaster()
     {
         return sparkMaster;
@@ -73,5 +76,15 @@ public class PlatformAttr
     public void setCrossdataPort(String crossdataPort)
     {
         this.crossdataPort = crossdataPort;
+    }
+
+    public String getBasePlatformUrl()
+    {
+        return basePlatformUrl;
+    }
+
+    public void setBasePlatformUrl(String basePlatformUrl)
+    {
+        this.basePlatformUrl = basePlatformUrl;
     }
 }

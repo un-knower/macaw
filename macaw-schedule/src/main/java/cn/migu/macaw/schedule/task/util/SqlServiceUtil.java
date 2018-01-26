@@ -6,11 +6,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import cn.migu.macaw.schedule.PlatformAttr;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -59,6 +61,9 @@ public class SqlServiceUtil
     
     @Resource
     private SparkResourceMgr srm;
+
+    @Autowired
+    private PlatformAttr platformAttr;
     
     /**
      * 是否是spark sql
@@ -312,7 +317,8 @@ public class SqlServiceUtil
     public void executeForHt(TaskNodeBrief brief, DataSourceFlatAttr dsAttr, String nodeRunSql)
         throws Exception
     {
-        String url = StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", "/SparkSQL/executeSql.do");
+        String url = StringUtils.join(platformAttr.getBasePlatformUrl(), RequestServiceUri.JDBC_EXECUTE_QUERY);
+            //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", "/SparkSQL/executeSql.do");
         
         for (int i = 0; i < RETRY_TIME; i++)
         {

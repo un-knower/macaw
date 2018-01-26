@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import cn.migu.macaw.common.NetUtils;
+import cn.migu.macaw.schedule.PlatformAttr;
+import cn.migu.macaw.schedule.task.util.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,10 +43,6 @@ import cn.migu.macaw.schedule.service.IJobTasksService;
 import cn.migu.macaw.schedule.task.ITask;
 import cn.migu.macaw.schedule.task.TaskNodeBrief;
 import cn.migu.macaw.schedule.task.datasource.DataSourceAdapter;
-import cn.migu.macaw.schedule.task.util.FieldKey;
-import cn.migu.macaw.schedule.task.util.RunningResMgr;
-import cn.migu.macaw.schedule.task.util.SparkEventHandler;
-import cn.migu.macaw.schedule.task.util.TaskTraceLogUtil;
 import cn.migu.macaw.schedule.util.ScheduleLogTrace;
 import cn.migu.macaw.schedule.workflow.DataConstants;
 import cn.migu.macaw.schedule.workflow.TaskGroupWorkflow;
@@ -96,11 +94,14 @@ public class JobTasksServiceImpl implements IJobTasksService
     @Resource
     private TaskTemplateMapper taskTempletMapper;
     
-    @Resource(name = "restTemplateForLoadBalance")
-    private RestTemplate restTemplateForLoadBalance;
+    @Resource(name = "restTemplate")
+    private RestTemplate restTemplate;
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private PlatformAttr platformAttr;
     
     private Log log = LogFactory.getLog("scheduler");
     
@@ -308,7 +309,7 @@ public class JobTasksServiceImpl implements IJobTasksService
         try
         {
             taskTraceLogUtil.reqPostLog(url, params, "", batchNo);
-            String resp = RestTemplateProvider.postFormForEntity(restTemplateForLoadBalance, url, String.class, params);
+            String resp = RestTemplateProvider.postFormForEntity(restTemplate, url, String.class, params);
             taskTraceLogUtil.resqPostLog(url, resp, batchNo);
         }
         catch (Exception e)
@@ -324,14 +325,13 @@ public class JobTasksServiceImpl implements IJobTasksService
      */
     public void freeServiceResource(String jobCode, String batchNo)
     {
-        //crossdata
         boolean hasCrossdata = jobTasksCache.queryForHashKeyCounterExisted(jobCode, FieldKey.CROSSDATA_JOB_EXISTED);
         if (hasCrossdata)
         {
             Map<String, String> params = Maps.newHashMap();
             
-            String crossdataServiceUrl =
-                StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/crossdatajob/shutdown.do");
+            String crossdataServiceUrl = StringUtils.join(platformAttr.getBasePlatformUrl(),RequestServiceUri.DB_CROSSDATA_KILL);
+                //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/crossdatajob/shutdown.do");
             params.put("batchNum", jobCode);
             httpRequest(crossdataServiceUrl, params, batchNo);
         }
