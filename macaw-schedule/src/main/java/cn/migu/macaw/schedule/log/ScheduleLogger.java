@@ -137,8 +137,7 @@ public class ScheduleLogger
             {
                 LogUtils.runLogError("[异常结束]更新job_node_log时主键为空");
             }
-            
-            //resetJobCtxCache(brief.getJobCode());
+
             
             throw e;
         }

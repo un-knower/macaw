@@ -98,7 +98,7 @@ public class SqlServiceUtil
         String jdbcurl = dsAttr.getConnectAddr();
         
         JdbcTemplate jdbc = new JdbcTemplate();
-        //String driver = this.getDriver(datasource);
+
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(driverClassName);
         dataSource.setPassword(null == password ? "" : password);
@@ -394,8 +394,6 @@ public class SqlServiceUtil
         }
         else
         {
-            //RequestConfig reqConf = HttpConfigUtil.getHttpReqConf(brief, nodeSysConf);
-            
             try
             {
                 boolean isSparkSql = (null == nodeSysConf) ? false : nodeSysConf.containsKey(SPARK_SQL_SELECT_KEY);

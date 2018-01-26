@@ -1,9 +1,11 @@
 package cn.migu.macaw.schedule.util;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.migu.macaw.schedule.api.model.Job;
 import cn.migu.macaw.schedule.api.model.JobLog;
+import cn.migu.macaw.schedule.workflow.DataConstants;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +20,12 @@ import cn.migu.macaw.schedule.service.IJobTasksService;
  */
 public class SpecJobPartRunThread implements Runnable
 {
+    /**
+     * 单节点或指定节点执行
+     * 线程计数器
+     */
+    static final AtomicInteger NODE_EXECUTOR_THREAD_LIMIT = new AtomicInteger(0);
+
     private Job job;
     
     private String nodeCode;
@@ -41,6 +49,16 @@ public class SpecJobPartRunThread implements Runnable
     @Override
     public void run()
     {
+        AtomicInteger counter = NODE_EXECUTOR_THREAD_LIMIT;
+        if(counter.get() >= DataConstants.MAX_NODE_THREAD)
+        {
+            throw new IllegalStateException("threads num exceeds the maximum limit");
+        }
+        else
+        {
+            NODE_EXECUTOR_THREAD_LIMIT.getAndIncrement();
+        }
+
         switch (type)
         {
             case "region":
@@ -79,6 +97,7 @@ public class SpecJobPartRunThread implements Runnable
         }
         finally
         {
+            NODE_EXECUTOR_THREAD_LIMIT.getAndDecrement();
             jobTasksService.freeResource(job.getCode(), batchNo);
         }
     }
@@ -108,6 +127,7 @@ public class SpecJobPartRunThread implements Runnable
         }
         finally
         {
+            NODE_EXECUTOR_THREAD_LIMIT.getAndDecrement();
             jobTasksService.freeResource(job.getCode(), batchNo);
         }
     }

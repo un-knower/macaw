@@ -180,6 +180,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
+                <!-- 如无特殊需求请不要随意升级这个版本 -->
                 <version>1.2.12</version>
             </dependency>
             <dependency>

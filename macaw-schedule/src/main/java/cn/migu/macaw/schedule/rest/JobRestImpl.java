@@ -8,15 +8,8 @@ import cn.migu.macaw.schedule.api.service.ScheduleJobService;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 
@@ -37,8 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
-
-//import cn.migu.unify..NetUtils;
 
 /**
  * quartz job触发执行controller
@@ -434,16 +425,12 @@ public class JobRestImpl implements ScheduleJobService
 
                         //single
                         Thread st = ThreadUtilities.getThread(StringUtils.join("single_", name));
-                        LogUtils.runLogError(st.getName()+","+st.getId());
-                        LogUtils.runLogError(String.valueOf(st.isInterrupted()));
                         if (null != st)
                         {
                             while(!st.isInterrupted())
                             {
                                 st.interrupt();
                             }
-
-                            LogUtils.runLogError(String.valueOf(st.isInterrupted()));
                             jobTasksService.setJobTaskCtxFlag(name, "", DataConstants.JOB_INTERRUPT_FLAG, "1");
                             jobTasksService.closeHttpReq(name);
                         }
@@ -500,8 +487,13 @@ public class JobRestImpl implements ScheduleJobService
         {
             try
             {
+                /**
+                 * 现在没有创建线程池来管理这些线程,此接口没有性能要求,
+                 * 并且实现流程中使用计数器限制了创建线程数,如使用线程池方式，
+                 * 可参考
+                 * https://github.com/eclipse/jetty.project/issues/1788
+                 */
                 new Thread(new SpecJobPartRunThread(job, firstNode, "region", jobLogService, jobTasksService)).start();
-                //specJobPartRunThread.runRegion(job, firstNode);
             }
             catch (Exception e)
             {
@@ -546,9 +538,13 @@ public class JobRestImpl implements ScheduleJobService
         {
             try
             {
-                
+                /**
+                 * 现在没有创建线程池来管理这些线程,此接口没有性能要求,
+                 * 并且实现流程中使用计数器限制了创建线程数,如使用线程池
+                 * 可参考方式
+                 * https://github.com/eclipse/jetty.project/issues/1788
+                 */
                 new Thread(new SpecJobPartRunThread(job, nodeCode, "single", jobLogService, jobTasksService)).start();
-                //specJobPartRunThread.runSingle(job, nodeCode);
             }
             catch (Exception e)
             {

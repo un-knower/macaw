@@ -1,5 +1,7 @@
 package cn.migu.macaw.schedule.workflow;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * workflow执行过程中需要使用的常量
  * 
@@ -217,5 +219,9 @@ public interface DataConstants
      */
     String VALID = "1";
 
+    /**
+     * 可以并发执行的节点线程数
+     */
+    int MAX_NODE_THREAD = 50;
 
 }

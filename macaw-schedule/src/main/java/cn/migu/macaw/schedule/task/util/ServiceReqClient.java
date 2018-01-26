@@ -493,8 +493,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     public Map<String, String> sqlHiveEntity(String sql)
     {
         Map<String, String> entity = Maps.newHashMap();
-        
-        //entity.put(runType, DEFAULT_RUN_TYPE);
+
         entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
         entity.put(SQL, sql);
         
@@ -511,8 +510,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     public Map<String, String> sqlHiveEntity(String sql, String appId)
     {
         Map<String, String> entity = Maps.newHashMap();
-        
-        //entity.put(runType, DEFAULT_RUN_TYPE);
+
         entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
         entity.put(SQL, sql);
         entity.put(APP_ID, appId);
@@ -572,8 +570,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         Map<String, String> entity = Maps.newHashMap();
         
         String jsonString = JSONArray.toJSONString(sqls).replaceAll("\n", " ").replace("\\n", " ");
-        
-        //entity.put(runType, DEFAULT_RUN_TYPE);
+
         entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
         entity.put(SQL_LIST, jsonString);
         

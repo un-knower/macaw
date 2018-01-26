@@ -14,6 +14,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import tk.mybatis.spring.annotation.MapperScan;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 任务调度
  * @author soy

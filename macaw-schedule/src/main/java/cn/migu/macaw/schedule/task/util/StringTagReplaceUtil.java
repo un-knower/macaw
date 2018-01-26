@@ -333,11 +333,6 @@ public class StringTagReplaceUtil
     
     public static void main(String[] args)
     {
-        /*ConvertSqlUtil csu = new ConvertSqlUtil();
-        String regexKey = StringUtil.escapeExprSpecialWord("${model_id}");
-        System.out.println(csu.replaceSpecRegEx("select ${model_id} as id,msisdn as userID, real_sort as labelID, START_TIME as applyTime, END_TIME as expireTime from hbase_test.ods_model_output limit 20",
-            regexKey,
-            StringUtils.join("'test'")));*/
         
         String abc = StringUtils.replace("${i} == 3 || ${i} == 4", "${i}", "3");
         System.out.println(abc);
