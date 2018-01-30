@@ -2,10 +2,8 @@ package cn.migu.macaw.common;
 
 import java.util.Map;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import cn.migu.macaw.common.log.LogUtils;
+import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -19,24 +17,6 @@ import com.alibaba.fastjson.parser.Feature;
  */
 public class RestTemplateProvider
 {
-    
-    public static <T> T postFormForEntity(RestTemplate restTemplate, String url, Class<T> clazz, String... kvs)
-    {
-        if (null == kvs || 0 == kvs.length || 0 != kvs.length % 2)
-        {
-            return null;
-        }
-        
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        
-        for (int i = 0; i < kvs.length - 1; i += 2)
-        {
-            map.add(kvs[i], kvs[i + 1]);
-        }
-        
-        return postFormForEntity(restTemplate, url, map, clazz);
-        
-    }
     
     public static <T> T postFormForEntity(RestTemplate restTemplate, String url, Class<T> clazz,
         Map<String, String> kvs)
@@ -65,7 +45,21 @@ public class RestTemplateProvider
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
         
         ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+        if(response.getStatusCode() != HttpStatus.OK)
+        {
+            LogUtils.runLogError(String.format("post request:%s,return status error:%d",url,response.getStatusCodeValue()));
+        }
         
+        return JSON.parseObject(response.getBody(), clazz, Feature.InitStringFieldAsEmpty);
+    }
+
+    public static <T> T getForEntity(RestTemplate restTemplate, String url,Class<T> clazz)
+    {
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        if(response.getStatusCode() != HttpStatus.OK)
+        {
+            LogUtils.runLogError(String.format("get request:%s,return status error:%d",url,response.getStatusCodeValue()));
+        }
         return JSON.parseObject(response.getBody(), clazz, Feature.InitStringFieldAsEmpty);
     }
 }

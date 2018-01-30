@@ -10,10 +10,5 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface JobLogMapper extends CommonMapper<JobLog>
 {
-    /**
-     * 根据开始时间获取最新的记录
-     * @param jobCode
-     * @return
-     */
-    JobLog getRecentJobLog(@Param("jobCode") String jobCode);
+
 }

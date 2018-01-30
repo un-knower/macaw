@@ -8,10 +8,14 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import cn.migu.macaw.schedule.api.model.NodeLog;
+import cn.migu.macaw.schedule.dao.*;
 import cn.migu.macaw.schedule.log.State;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.migu.macaw.common.NetUtils;
@@ -20,10 +24,6 @@ import cn.migu.macaw.schedule.api.model.Job;
 import cn.migu.macaw.schedule.api.model.JobLog;
 import cn.migu.macaw.schedule.api.model.ProcLog;
 import cn.migu.macaw.schedule.cache.JobTasksCache;
-import cn.migu.macaw.schedule.dao.JobLogMapper;
-import cn.migu.macaw.schedule.dao.JobMapper;
-import cn.migu.macaw.schedule.dao.ProcLogMapper;
-import cn.migu.macaw.schedule.dao.ProcVariableMapper;
 import cn.migu.macaw.schedule.service.IJobCommService;
 import cn.migu.macaw.schedule.service.IJobLogService;
 import cn.migu.macaw.schedule.service.IJobTasksService;
@@ -34,10 +34,7 @@ import tk.mybatis.mapper.entity.Example;
 /**
  * job日志实现
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年11月4日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 @Service("jobLogService")
 public class JobLogServiceImpl implements IJobLogService
@@ -47,6 +44,9 @@ public class JobLogServiceImpl implements IJobLogService
     
     @Resource
     private JobMapper jobDao;
+
+    @Autowired
+    private NodeLogMapper nodeLogDao;
     
     @Resource
     private ProcVariableMapper procVarsDao;
@@ -189,7 +189,7 @@ public class JobLogServiceImpl implements IJobLogService
         if (null == jobLog && StringUtils.isNotEmpty(jobCode))
         {
             //查找时间最新的并且状态为运行中的日志,然后设置异常状态
-            JobLog newJobLog = jobLogDao.getRecentJobLog(jobCode);
+            JobLog newJobLog = getRecentJobLog(jobCode);
             //jobLogDao.selectByRowBounds()
             if (null != newJobLog)
             {
@@ -247,7 +247,40 @@ public class JobLogServiceImpl implements IJobLogService
         }
         
     }
-    
+
+    @Override
+    public JobLog getRecentJobLog(String jobCode)
+    {
+        PageHelper.startPage(1,1);
+        Example example = new Example(JobLog.class);
+        example.createCriteria().andEqualTo("jobCode",jobCode);
+        example.setOrderByClause("start_time desc");
+
+        return jobLogDao.selectOneByExample(example);
+    }
+
+    @Override
+    public NodeLog getRecentNodeLog(String jobCode, String nodeCode)
+    {
+        PageHelper.startPage(1,1);
+        Example example = new Example(NodeLog.class);
+        example.createCriteria().andEqualTo("nodeCode",nodeCode).andEqualTo("jobCode",jobCode);
+        example.setOrderByClause("start_time desc");
+
+        return nodeLogDao.selectOneByExample(example);
+    }
+
+    @Override
+    public JobLog getEarliestJobLogByStartTimeRange(String jobCode, Date begin, Date end)
+    {
+        PageHelper.startPage(1,1);
+        Example example = new Example(JobLog.class);
+        example.createCriteria().andBetween("startTime",begin,end).andEqualTo("jobCode",jobCode);
+        example.setOrderByClause("start_time asc");
+
+        return jobLogDao.selectOneByExample(example);
+    }
+
     /**
      * 更新成功失败计数
      * @param pJob 任务对象

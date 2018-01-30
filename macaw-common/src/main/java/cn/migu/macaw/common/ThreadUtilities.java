@@ -361,7 +361,7 @@ public final class ThreadUtilities
         }
         if (nNotNulls == infos.length)
         {
-            return infos; // Original had no nulls
+            return infos;
         }
         return java.util.Arrays.copyOf(notNulls, nNotNulls);
     }

@@ -21,11 +21,12 @@ import cn.migu.macaw.schedule.workflow.DataConstants;
 
 /**
  * sql语句返回一个value
+ * sql格式必须为select xx as value ...
  * 
  * @author  soy
  */
 @Component("singleSqlOutworkTask")
-public class SingleSqlOutwordTask implements ITask
+public class OneSqlOneRetTask implements ITask
 {
     @Resource
     private ConfigParamUtil configParamUtil;

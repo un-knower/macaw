@@ -71,6 +71,8 @@ hdfs:
 crossdata:
   address: 192.168.129.186,192.168.129.187
   port: 9099
+base-platform:
+  url: 'http://192.168.129.188:8086/'
 
 # mybatis配置
 mybatis:

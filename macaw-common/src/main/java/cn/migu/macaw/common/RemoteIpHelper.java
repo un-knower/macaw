@@ -11,9 +11,42 @@ public class RemoteIpHelper
 {
     public enum HttpHeader
     {
-        AUTHORIZATION("Authorization"), AUTHENTICATION_TYPE_BASIC("Basic"), X_AUTH_TOKEN("X-AUTH-TOKEN"), WWW_Authenticate(
-            "WWW-Authenticate"), X_FORWARDED_FOR("X-Forwarded-For"), PROXY_CLIENT_IP("Proxy-Client-IP"), WL_PROXY_CLIENT_IP(
-            "WL-Proxy-Client-IP"), HTTP_CLIENT_IP("HTTP_CLIENT_IP"), HTTP_X_FORWARDED_FOR("HTTP_X_FORWARDED_FOR");
+        /**
+         * HTTP授权的授权证书
+         */
+        AUTHORIZATION("Authorization"),
+        /**
+         * BASIC
+         */
+        AUTHENTICATION_TYPE_BASIC("Basic"),
+        /**
+         * 鉴权TOKEN
+         */
+        X_AUTH_TOKEN("X-AUTH-TOKEN"),
+        /**
+         * 表明客户端请求实体应该使用的授权方案
+         */
+        WWW_Authenticate("WWW-Authenticate"),
+        /**
+         * 扩展头,通过代理时记录客户端真实ip
+         */
+        X_FORWARDED_FOR("X-Forwarded-For"),
+        /**
+         * Proxy-Client-IP
+         */
+        PROXY_CLIENT_IP("Proxy-Client-IP"),
+        /**
+         * WL-Proxy-Client-IP
+         */
+        WL_PROXY_CLIENT_IP("WL-Proxy-Client-IP"),
+        /**
+         * HTTP_CLIENT_IP
+         */
+        HTTP_CLIENT_IP("HTTP_CLIENT_IP"),
+        /**
+         * HTTP_X_FORWARDED_FOR
+         */
+        HTTP_X_FORWARDED_FOR("HTTP_X_FORWARDED_FOR");
         
         private String key;
         

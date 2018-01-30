@@ -89,8 +89,8 @@ public class DateUtil
             return null;
         }
         c.setTime(date);
-        int _day = c.get(Calendar.DATE);
-        c.set(Calendar.DATE, _day - n);
+        int day = c.get(Calendar.DATE);
+        c.set(Calendar.DATE, day - n);
         
         String dayBefore = new SimpleDateFormat(format).format(c.getTime());
         return dayBefore;
@@ -144,7 +144,6 @@ public class DateUtil
      * @param format 格式
      * @return
      * @throws ParseException
-     * @see [类、类#方法、类#成员]
      */
     public static int compareCurrentDate(String dateStr, String format)
         throws ParseException
@@ -165,6 +164,31 @@ public class DateUtil
         
         return 0;
         
+    }
+
+    /**
+     * 输入一个日期字符串和格式,和当前日期比较
+     * @param compareDate 比较日期字符串
+     * @return
+     * @throws ParseException
+     */
+    public static int compareCurrentDate(Date compareDate)
+        throws ParseException
+    {
+        Date currentDate = new Date();
+
+        if (compareDate.after(currentDate))
+        {
+            return 1;
+        }
+
+        if (compareDate.before(currentDate))
+        {
+            return -1;
+        }
+
+        return 0;
+
     }
     
 }

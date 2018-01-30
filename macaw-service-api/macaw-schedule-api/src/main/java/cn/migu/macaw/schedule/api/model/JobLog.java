@@ -63,6 +63,12 @@ public class JobLog extends BaseEntity
     @Column(name = "GRAPH_XML")
     private String graphXml;
 
+    /**
+     * 统计日期,存储过程关联job使用
+     */
+    @Column(name = "SUM_DATE")
+    private String sumDate;
+
     @Transient
     private Date beginDate;
     
@@ -240,6 +246,24 @@ public class JobLog extends BaseEntity
     public void setGraphXml(String graphXml)
     {
         this.graphXml = graphXml == null ? null : graphXml.trim();
+    }
+
+    /**
+     * 获取统计日期
+     * @return String - 日期字符串
+     */
+    public String getSumDate()
+    {
+        return sumDate;
+    }
+
+    /**
+     * 设置统计日期
+     * @param sumDate 统计日期字符串
+     */
+    public void setSumDate(String sumDate)
+    {
+        this.sumDate = sumDate;
     }
 
     public Date getBeginDate()

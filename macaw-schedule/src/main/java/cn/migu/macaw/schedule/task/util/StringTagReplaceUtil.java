@@ -26,22 +26,8 @@ import com.google.common.collect.Maps;
  * @author soy
  */
 @Component("stringTagReplaceUtil")
-public class StringTagReplaceUtil
+public class StringTagReplaceUtil implements LabelTag
 {
-    /**
-     * 自定义标签最小长度
-     */
-    private final int LABEL_MIN_LEN = 4;
-
-    /**
-     * 自定义标签开始字符
-     */
-    private final String LABEL_PREFIX = "${";
-
-    /**
-     * 自定义标签结束字符
-     */
-    private final String LABEL_SUFFIX = "}";
 
     @Resource
     private ConfigParamUtil configParamUtil;

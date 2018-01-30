@@ -13,6 +13,7 @@
     <result column="STATE" jdbcType="INTEGER" property="state" />
     <result column="ELAPSE" jdbcType="BIGINT" property="elapse" />
     <result column="PROJECT_CODE" jdbcType="VARCHAR" property="projectCode" />
+    <result column="SUM_DATE" jdbcType="VARCHAR" property="sumDate" />
     <result column="NOTE" jdbcType="LONGVARCHAR" property="note" />
     <result column="GRAPH_XML" jdbcType="LONGVARCHAR" property="graphXml" />
   </resultMap>

@@ -45,4 +45,9 @@ public class ExpressionUtil
             return false;
         }
     }
+
+    public static void main(String[] args)
+    {
+        System.out.println(ExpressionUtil.getInstance().evalBool("6 > 5 || 1 >= 3"));
+    }
 }
