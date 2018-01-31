@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
-import cn.migu.macaw.schedule.PlatformAttr;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,12 @@ import com.google.common.collect.Maps;
 
 import cn.migu.common.redis.StringRedisService;
 import cn.migu.macaw.common.RestTemplateProvider;
-import cn.migu.macaw.common.ServiceName;
 import cn.migu.macaw.common.ServiceUrlProvider;
 import cn.migu.macaw.common.SysRetCode;
 import cn.migu.macaw.common.log.LogUtils;
 import cn.migu.macaw.common.message.Entity;
 import cn.migu.macaw.common.message.Response;
+import cn.migu.macaw.schedule.PlatformAttr;
 import cn.migu.macaw.schedule.cache.JobTasksCache;
 import cn.migu.macaw.schedule.task.TaskNodeBrief;
 import cn.migu.macaw.schedule.task.datasource.DataSourceAdapter;
@@ -42,24 +41,23 @@ import cn.migu.macaw.schedule.workflow.DataConstants;
  * @author soy
  */
 @Component("serviceReqClient")
-public class ServiceReqClient implements RequestKey,RequestServiceUri
+public class ServiceReqClient implements RequestKey, RequestServiceUri
 {
-
+    
     /**
      * 请求重试次数
      */
     private final int REQ_RETRY = 3;
-
+    
     /**
      * hugetable类型
      */
     public static String DATA_SOURCE_HUGETABLE = "hugetable";
-
+    
     /**
      * hive类型
      */
     public static String DATA_SOURCE_HIVE = "hive";
-
     
     /**
      * task trace tool
@@ -96,10 +94,10 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     
     @Resource(name = "restTemplateForLoadBalance")
     private RestTemplate restTemplateForLoadBalance;
-
+    
     @Resource(name = "restTemplate")
     private RestTemplate restTemplate;
-
+    
     @Autowired
     private PlatformAttr platformAttr;
     
@@ -299,7 +297,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         {
             try
             {
-                return postSparkTask(url, entity, brief);
+                return postSparkTaskPoll(url, entity, brief);
             }
             catch (Exception e)
             {
@@ -348,14 +346,23 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         throw new RuntimeException("[内部]spark任务重提交次数超限,最大3次");
         
     }
+
     
     /**
-     * spark任务提交请求
+     * spark任务提交请求,轮询方式实现
+     * 如使用异步阻塞方式,请考虑以下问题:
+     * 1.分布式环境中如何保证主线程正常流程执行,两种方式供参考；
+     *   1)分布式锁
+     *   2)根据spark job appname进行请求会话保持
+     * 2.需新开一个接口接口spark job管理中心的消息回调；
+     * 3.如spark job异常,本job异常信息的记录和本job的中断处理
      *
      * @param url    请求url地址
      * @param entity http报文中的自定义data信息
+     * @param brief  任务节点简明信息
+     * @return String - spark job名称
      */
-    public String postSparkTask(String url, Map<String, String> entity, TaskNodeBrief brief)
+    public String postSparkTaskPoll(String url, Map<String, String> entity, TaskNodeBrief brief)
         throws Exception
     {
         //1.提交spark任务执行请求
@@ -421,16 +428,14 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
                 String retryNumStr =
                     jobTasksCache.get(brief.getJobCode(), brief.getNodeId(), DataConstants.SPARK_QUERY_RETRY_TIME);
                 //默认查询时长3小时
-                int retryNum = StringUtils.isEmpty(retryNumStr) ? 1080 : Integer.parseInt(retryNumStr);
-                int waitTime = 10000;
+                int retryNum = StringUtils.isEmpty(retryNumStr) ? 10800 : Integer.parseInt(retryNumStr);
+                int waitTime = 1000;
                 
                 for (int i = 0; i < retryNum; i++)
                 {
                     String respPhaseLoop =
                         this.post(queryUrl, this.sparkAppEntity(entity, appName, appId, brief, true), brief);
                     
-                    /*respPhaseLoop = StringUtil.getResp(respPhaseLoop);*/
-                    LogUtils.runLogError(respPhaseLoop);
                     Response qlobj = JSON.parseObject(respPhaseLoop, Response.class, Feature.InitStringFieldAsEmpty);
                     Entity qrl = qlobj.getResponse();
                     
@@ -439,7 +444,8 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
                         runningResMgr.delSparkAppRecord(brief.getJobCode(), appName);
                         return appName;
                     }
-                    if (StringUtils.isNotEmpty(qrl.getCode()) && !StringUtils.equals(qrl.getCode(), SysRetCode.SPARK_APP_RUNNING))
+                    if (StringUtils.isNotEmpty(qrl.getCode())
+                        && !StringUtils.equals(qrl.getCode(), SysRetCode.SPARK_APP_RUNNING))
                     {
                         runningResMgr.delSparkAppRecord(brief.getJobCode(), appName);
                         
@@ -478,13 +484,13 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     {
         //记录post log信息
         taskTraceLogUtil.reqPostLog(url, entity, brief);
-
+        
         RestTemplate tRestTemplate = restTemplateForLoadBalance;
-        if(StringUtils.contains(StringUtils.substringAfter(url,"http://"),":"))
+        if (StringUtils.contains(StringUtils.substringAfter(url, "http://"), ":"))
         {
             tRestTemplate = restTemplate;
         }
-
+        
         String result = RestTemplateProvider.postFormForEntity(tRestTemplate, url, String.class, entity);
         
         taskTraceLogUtil.resqPostLog(url, brief, result);
@@ -503,7 +509,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     public Map<String, String> sqlHiveEntity(String sql)
     {
         Map<String, String> entity = Maps.newHashMap();
-
+        
         entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
         entity.put(SQL, sql);
         
@@ -520,7 +526,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
     public Map<String, String> sqlHiveEntity(String sql, String appId)
     {
         Map<String, String> entity = Maps.newHashMap();
-
+        
         entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
         entity.put(SQL, sql);
         entity.put(APP_ID, appId);
@@ -580,7 +586,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         Map<String, String> entity = Maps.newHashMap();
         
         String jsonString = JSONArray.toJSONString(sqls).replaceAll("\n", " ").replace("\\n", " ");
-
+        
         entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
         entity.put(SQL_LIST, jsonString);
         
@@ -618,7 +624,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         throws Exception
     {
         String realUrl = StringUtils.join(platformAttr.getBasePlatformUrl(), JDBC_EXECUTE_QUERY);
-            //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
+        //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
         //sysParamCache.get(brief.getJobCode(), ModuleUrlKey.DATA_EXTRAC_URL_KEY) + JDBC_EXECUTE_QUERY;
         String response = post(realUrl, params, brief);
         
@@ -664,7 +670,7 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
         for (int i = 0; i < REQ_RETRY; i++)
         {
             String qryUrl = StringUtils.join(platformAttr.getBasePlatformUrl(), JDBC_EXECUTE_QUERY);
-                //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
+            //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
             String result = this.post(qryUrl, entity, brief);
             
             JSONObject jsonObject = JSONObject.parseObject(result);
@@ -802,7 +808,5 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
             LogUtils.runLogError(msg);
         }
     }
-    
-
     
 }
