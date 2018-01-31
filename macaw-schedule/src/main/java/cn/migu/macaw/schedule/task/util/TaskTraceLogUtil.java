@@ -20,10 +20,7 @@ import cn.migu.macaw.schedule.util.ScheduleLogTrace;
 /**
  * Task跟踪日志类
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年3月2日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 @Component("taskTraceLogUtil")
 public class TaskTraceLogUtil

@@ -85,7 +85,6 @@ public class StringTagReplaceUtil implements LabelTag
      * 替换正则表达式指定的内容
      * 如果替换标签中带有需要转移符号如$,{,}等
      * 需先调用StringUtil.escapeExprSpecialWord(str)方法,然后再替换;
-     * @author zhaocan
      * @param origStr 传入原始sql
      * @param regEx   替换正则
      * @param replaceStr 替换内容

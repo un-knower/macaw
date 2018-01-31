@@ -14,10 +14,7 @@ import cn.migu.macaw.dag.util.StrLib;
 /**
  * 对象帮助类实现
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年5月30日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 class ObjectHelperClass implements ObjectHelper
 {

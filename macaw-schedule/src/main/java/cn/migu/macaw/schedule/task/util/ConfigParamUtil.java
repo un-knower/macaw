@@ -23,7 +23,7 @@ import cn.migu.macaw.schedule.task.TaskNodeBrief;
 /**
  * task配置运行时参数
  * 
- * @author  zhaocan
+ * @author soy
  */
 @Component("configParamUtil")
 public class ConfigParamUtil implements ConfigParamKey,ConfigParamType

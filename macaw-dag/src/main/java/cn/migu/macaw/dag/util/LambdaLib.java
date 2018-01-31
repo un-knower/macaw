@@ -5,10 +5,7 @@ import com.google.common.base.Function;
 /**
  * 匿名lambda接口
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年5月30日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 public abstract class LambdaLib
 {
@@ -20,10 +17,7 @@ public abstract class LambdaLib
     /**
      * 0个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Fn0<Out>
     {
@@ -33,10 +27,7 @@ public abstract class LambdaLib
     /**
      * 1个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Fn1<A, Out> extends Function<A, Out>
     {
@@ -47,10 +38,7 @@ public abstract class LambdaLib
     /**
      * 2个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Fn2<A, B, Out>
     {
@@ -60,10 +48,7 @@ public abstract class LambdaLib
     /**
      * 3个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public static interface Fn3<A, B, C, Out>
     {
@@ -73,10 +58,7 @@ public abstract class LambdaLib
     /**
      * 4个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Fn4<A, B, C, D, Out>
     {
@@ -86,10 +68,7 @@ public abstract class LambdaLib
     /**
      * 5个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Fn5<A, B, C, D, E, Out>
     {
@@ -99,10 +78,7 @@ public abstract class LambdaLib
     /**
      * 6个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Fn6<A, B, C, D, E, F, Out>
     {
@@ -112,10 +88,7 @@ public abstract class LambdaLib
     /**
      * 7个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Fn7<A, B, C, D, E, F, G, Out>
     {
@@ -125,10 +98,7 @@ public abstract class LambdaLib
     /**
      * 8个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Fn8<A, B, C, D, E, F, G, H, Out>
     {
@@ -138,10 +108,7 @@ public abstract class LambdaLib
     /**
      * 9个输入,1个输出函数
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Fn9<A, B, C, D, E, F, G, H, I, Out>
     {
@@ -155,10 +122,7 @@ public abstract class LambdaLib
     /**
      * 0个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act0
     {
@@ -168,10 +132,7 @@ public abstract class LambdaLib
     /**
      * 1个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act1<A>
     {
@@ -181,10 +142,7 @@ public abstract class LambdaLib
     /**
      * 2个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act2<A, B>
     {
@@ -194,10 +152,7 @@ public abstract class LambdaLib
     /**
      * 3个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act3<A, B, C>
     {
@@ -207,10 +162,7 @@ public abstract class LambdaLib
     /**
      * 4个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act4<A, B, C, D>
     {
@@ -220,10 +172,7 @@ public abstract class LambdaLib
     /**
      * 5个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act5<A, B, C, D, E>
     {
@@ -233,10 +182,7 @@ public abstract class LambdaLib
     /**
      * 6个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act6<A, B, C, D, E, F>
     {
@@ -246,10 +192,7 @@ public abstract class LambdaLib
     /**
      * 7个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act7<A, B, C, D, E, F, G>
     {
@@ -259,10 +202,7 @@ public abstract class LambdaLib
     /**
      * 8个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act8<A, B, C, D, E, F, G, H>
     {
@@ -272,10 +212,7 @@ public abstract class LambdaLib
     /**
      * 9个输入,0个输出
      * 
-     * @author  zhaocan
-     * @version  [版本号, 2016年5月30日]
-     * @see  [相关类/方法]
-     * @since  [产品/模块版本]
+     * @author soy
      */
     public interface Act9<A, B, C, D, E, F, G, H, I>
     {

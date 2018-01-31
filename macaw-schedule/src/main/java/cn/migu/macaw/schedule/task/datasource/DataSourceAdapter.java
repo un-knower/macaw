@@ -30,10 +30,7 @@ import tk.mybatis.mapper.entity.Example;
  * 1.spark master数据源
  * 2.ht jdbc数据源
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年11月2日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 @Component("dataSourceMgr")
 public class DataSourceAdapter

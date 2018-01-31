@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * 对象帮助类接口
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年5月30日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 public interface ObjectHelper
 {

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  * 调度任务restful接口
  * @author soy
  */
-@RequestMapping("/")
+@RequestMapping("/schedule")
 public interface ScheduleJobService
 {
     /**
@@ -19,7 +19,7 @@ public interface ScheduleJobService
      * @param request
      * @return
      */
-    @PostMapping("/schedule/startJob")
+    @PostMapping("/startJob")
     Response createJob(HttpServletRequest request);
 
     /**
@@ -27,7 +27,7 @@ public interface ScheduleJobService
      * @param request
      * @return
      */
-    @PostMapping("/schedule/updateJob")
+    @PostMapping("/updateJob")
     Response updateJobCron(HttpServletRequest request);
 
     /**
@@ -35,7 +35,7 @@ public interface ScheduleJobService
      * @param request
      * @return
      */
-    @PostMapping("/schedule/pauseJob")
+    @PostMapping("/pauseJob")
     Response pauseJob(HttpServletRequest request);
 
     /**
@@ -43,7 +43,7 @@ public interface ScheduleJobService
      * @param request
      * @return
      */
-    @PostMapping("/schedule/resumeJob")
+    @PostMapping("/resumeJob")
     Response resumeJob(HttpServletRequest request);
 
     /**
@@ -51,7 +51,7 @@ public interface ScheduleJobService
      * @param request
      * @return
      */
-    @PostMapping("/schedule/deleteJob")
+    @PostMapping("/deleteJob")
     Response deleteJob(HttpServletRequest request);
 
     /**
@@ -59,7 +59,7 @@ public interface ScheduleJobService
      * @param request
      * @return
      */
-    @PostMapping("/schedule/triggerJob")
+    @PostMapping("/triggerJob")
     Response triggerJob(HttpServletRequest request);
 
     /**
@@ -67,7 +67,7 @@ public interface ScheduleJobService
      * @param request
      * @return
      */
-    @PostMapping("/schedule/interruptJob")
+    @PostMapping("/interruptJob")
     Response interruptJob(HttpServletRequest request);
 
     /**
@@ -75,7 +75,7 @@ public interface ScheduleJobService
      * @param request
      * @return
      */
-    @PostMapping("/schedule/regionRun")
+    @PostMapping("/regionRun")
     Response runJobSpecNodes(HttpServletRequest request);
 
     /**
@@ -83,7 +83,7 @@ public interface ScheduleJobService
      * @param request
      * @return
      */
-    @PostMapping("/schedule/singleRun")
+    @PostMapping("/singleRun")
     Response runSingleJobNode(HttpServletRequest request);
 
 }

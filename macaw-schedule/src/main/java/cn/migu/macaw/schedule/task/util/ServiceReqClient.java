@@ -354,8 +354,6 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
      *
      * @param url    请求url地址
      * @param entity http报文中的自定义data信息
-     * @author zhaocan
-     * @see [类、类#方法、类#成员]
      */
     public String postSparkTask(String url, Map<String, String> entity, TaskNodeBrief brief)
         throws Exception
@@ -474,8 +472,6 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
      *
      * @param url 发送地址
      * @return String json字符串
-     * @author zhaocan
-     * @see [类、类#方法、类#成员]
      */
     public String post(String url, Map<String, String> entity, TaskNodeBrief brief)
         throws Exception
@@ -599,8 +595,6 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
      * @param brief  task执行上下文
      * @param flag true-带spark_sub_soa检测参数
      * @return
-     * @author zhaocan
-     * @see [类、类#方法、类#成员]
      */
     public Map<String, String> sparkAppEntity(Map<String, String> entity, String name, String id, TaskNodeBrief brief,
         boolean flag)
@@ -648,8 +642,6 @@ public class ServiceReqClient implements RequestKey,RequestServiceUri
      * @param dsAttr 数据源属性
      * @return
      * @throws Exception
-     * @author zhaocan
-     * @see [类、类#方法、类#成员]
      */
     public List<Object[]> executeJdbcQuery(String sql, TaskNodeBrief brief, DataSourceFlatAttr dsAttr,
         String... colNames)

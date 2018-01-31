@@ -8,10 +8,7 @@ import com.google.common.collect.Sets;
 /**
  * Set数据结构工具类
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年5月30日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 public abstract class SetLib
 {

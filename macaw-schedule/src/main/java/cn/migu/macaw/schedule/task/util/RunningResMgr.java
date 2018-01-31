@@ -26,10 +26,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * 运行时app资源管理
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年10月21日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 @Component("runningResMgr")
 public class RunningResMgr

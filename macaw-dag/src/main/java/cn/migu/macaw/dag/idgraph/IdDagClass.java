@@ -11,10 +11,7 @@ import cn.migu.macaw.dag.errors.DagCannotHaveCycle;
 /**
  * 有向图实现
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年5月27日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 public class IdDagClass<Id> extends IdGraphClass<Id> implements IdDag<Id>
 {

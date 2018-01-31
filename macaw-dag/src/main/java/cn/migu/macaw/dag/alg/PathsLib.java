@@ -12,10 +12,7 @@ import cn.migu.macaw.dag.idgraph.IdDag;
 /**
  * 图路径查找
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年6月5日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 public class PathsLib
 {

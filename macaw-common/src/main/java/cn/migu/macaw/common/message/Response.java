@@ -1,12 +1,9 @@
 package cn.migu.macaw.common.message;
 
 /**
- * 与unify module之间操作响应类
+ * 模块之间交互消息
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年3月25日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author  soy
  */
 public class Response
 {

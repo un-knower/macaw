@@ -6,10 +6,7 @@ import cn.migu.macaw.schedule.task.TaskNodeBrief;
 /**
  * job运行tasks接口
  * 
- * @author  zhaocan
- * @version  [版本号, 2016年2月14日]
- * @see  [相关类/方法]
- * @since  [产品/模块版本]
+ * @author soy
  */
 public interface IJobTasksService
 {
