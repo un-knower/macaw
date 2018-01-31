@@ -36,7 +36,7 @@ import cn.migu.macaw.schedule.task.datasource.DataSourceFlatAttr;
 import cn.migu.macaw.schedule.workflow.DataConstants;
 
 /**
- * http client工具类
+ * 服务请求客户端工具类
  *
  * @author soy
  */
@@ -48,16 +48,12 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
      * 请求重试次数
      */
     private final int REQ_RETRY = 3;
-    
+
     /**
      * hugetable类型
      */
-    public static String DATA_SOURCE_HUGETABLE = "hugetable";
-    
-    /**
-     * hive类型
-     */
-    public static String DATA_SOURCE_HIVE = "hive";
+    public static final String DATA_SOURCE_HUGETABLE = "hugetable";
+
     
     /**
      * task trace tool
@@ -376,7 +372,6 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         for (int i = 0; i < REQ_RETRY; i++)
         {
             respPhase1 = this.post(url, entity, brief);
-            /*respPhase1 = StringUtil.getResp(respPhase1);*/
             
             Response response = JSON.parseObject(respPhase1, Response.class, Feature.InitStringFieldAsEmpty);
             
@@ -403,8 +398,6 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
             //sysParamCache.get(brief.getJobCode(), ModuleUrlKey.RESOURCE_URL_KEY) + sparkTaskQuery;
             String respPhase2 = this.post(queryUrl, this.sparkAppEntity(entity, appName, appId, brief, true), brief);
             
-            /*respPhase2 = StringUtil.getResp(respPhase2);*/
-            
             Response qobj = JSON.parseObject(respPhase2, Response.class, Feature.InitStringFieldAsEmpty);
             Entity qr = qobj.getResponse();
             
@@ -428,8 +421,8 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
                 String retryNumStr =
                     jobTasksCache.get(brief.getJobCode(), brief.getNodeId(), DataConstants.SPARK_QUERY_RETRY_TIME);
                 //默认查询时长3小时
-                int retryNum = StringUtils.isEmpty(retryNumStr) ? 10800 : Integer.parseInt(retryNumStr);
-                int waitTime = 1000;
+                int retryNum = StringUtils.isEmpty(retryNumStr) ? 1080 : Integer.parseInt(retryNumStr);
+                int waitTime = 10000;
                 
                 for (int i = 0; i < retryNum; i++)
                 {
@@ -457,8 +450,6 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
                     
                     Thread.sleep(waitTime);
                 }
-                
-                /*this.stopSparkTask(appName, appId, brief);*/
                 
                 throw new RuntimeException("请求执行spark任务超时,目前最长查询时长为:" + (retryNum * waitTime) / 1000 + "s");
                 
@@ -509,8 +500,7 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
     public Map<String, String> sqlHiveEntity(String sql)
     {
         Map<String, String> entity = Maps.newHashMap();
-        
-        entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
+
         entity.put(SQL, sql);
         
         return entity;
@@ -526,8 +516,7 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
     public Map<String, String> sqlHiveEntity(String sql, String appId)
     {
         Map<String, String> entity = Maps.newHashMap();
-        
-        entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
+
         entity.put(SQL, sql);
         entity.put(APP_ID, appId);
         
@@ -551,8 +540,6 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         entity.put(EXECUTOR_MEMORY, memory);
         
         entity.put(JOB_CODE, procCode);
-        
-        entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
         
         this.getClusterMaster(entity, brief);
         
@@ -586,8 +573,7 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         Map<String, String> entity = Maps.newHashMap();
         
         String jsonString = JSONArray.toJSONString(sqls).replaceAll("\n", " ").replace("\\n", " ");
-        
-        entity.put(DATA_SOURCE, DATA_SOURCE_HIVE);
+
         entity.put(SQL_LIST, jsonString);
         
         return entity;
@@ -610,34 +596,7 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         
         return entity;
     }
-    
-    /**
-     * 查询方法-带返回值
-     * <功能详细描述>
-     *
-     * @param params
-     * @param brief
-     * @throws Exception
-     * @see [类、类#方法、类#成员]
-     */
-    public String excuteQuery(Map<String, String> params, TaskNodeBrief brief)
-        throws Exception
-    {
-        String realUrl = StringUtils.join(platformAttr.getBasePlatformUrl(), JDBC_EXECUTE_QUERY);
-        //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
-        //sysParamCache.get(brief.getJobCode(), ModuleUrlKey.DATA_EXTRAC_URL_KEY) + JDBC_EXECUTE_QUERY;
-        String response = post(realUrl, params, brief);
-        
-        Response sqlrObj = JSON.parseObject(response, Response.class, Feature.InitStringFieldAsEmpty);
-        
-        Entity sr = sqlrObj.getResponse();
-        if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS))
-        {
-            LogUtils.runLogError(response);
-            throw new RuntimeException("查询hugetable错误");
-        }
-        return response;
-    }
+
     
     /**
      * 1.当查询数量大于20时，应使用分页的方式调用
@@ -653,7 +612,7 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         String... colNames)
         throws Exception
     {
-        List<Object[]> rst = new ArrayList<Object[]>();
+        List<Object[]> rst = new ArrayList<>();
         Map<String, String> entity = Maps.newHashMap();
         entity.put(DATA_SOURCE, DATA_SOURCE_HUGETABLE);
         entity.put(SQL, sql);

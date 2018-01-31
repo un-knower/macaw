@@ -14,33 +14,15 @@ public interface RequestKey
 
     String SQL_LIST = "sqlList";
 
-    String FIELDS_LIST = "fieldsList";
-
-    String OBJECT_JSON = "objectJson";
-
     String APP_NAME = "appName";
 
     String APP_ID = "appId";
 
-    String TARGET_PATH = "targetPath";
-
     String DATA_BASE_NAME = "dataBaseName";
-
-    String TABLE_NAME = "tableName";
-
-    String IP = "ip";
-
-    String PORT = "port";
 
     String USER_NAME = "userName";
 
     String PASSWORD = "password";
-
-    String DATA_PATH = "dataPath";
-
-    String MODE = "mode";
-
-    String CODE = "code";
 
     String NOTE = "note";
 
