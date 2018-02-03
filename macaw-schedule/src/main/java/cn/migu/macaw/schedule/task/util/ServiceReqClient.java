@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
+import cn.migu.macaw.common.RequestKey;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

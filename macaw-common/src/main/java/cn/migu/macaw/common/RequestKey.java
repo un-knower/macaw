@@ -1,4 +1,4 @@
-package cn.migu.macaw.schedule.task.util;
+package cn.migu.macaw.common;
 
 /**
  * 请求参数键
@@ -31,6 +31,8 @@ public interface RequestKey
     String JOB_CODE = "jobCode";
 
     String TASK_CODE = "taskCode";
+
+    String IS_PROCEDURE = "isProcedure";
 
     String CORES_NUM = "coresNum";
 

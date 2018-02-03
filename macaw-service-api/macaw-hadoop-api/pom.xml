@@ -9,7 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>macaw-schedule-api</artifactId>
+    <artifactId>macaw-hadoop-api</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -24,5 +25,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
+
 
 </project>

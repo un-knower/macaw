@@ -18,7 +18,7 @@ public interface ServiceName
     String SPARK_DRIVER_RES_MGR = "spark-driver-manager";
 
     /**
-     * CROSSDATA-HUGETABLE服务实例
+     * HADOOP平台底层服务实例
      */
-    String DATA_SYN_AND_HT = "data-syn-ht";
+    String HADOOP_SERVICE = "hadoop-service";
 }

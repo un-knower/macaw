@@ -15,4 +15,9 @@ public interface ServiceModule
      * spark任务管理
      */
     String RESOURCE = "resource";
+
+    /**
+     * hadoop服务模块
+     */
+    String HADOOP = "hadoop";
 }

@@ -15,6 +15,7 @@
         <module>macaw-common-entity</module>
         <module>macaw-schedule-api</module>
         <module>macaw-sparkdriver-manager-api</module>
+        <module>macaw-hadoop-api</module>
     </modules>
 
     <dependencyManagement>

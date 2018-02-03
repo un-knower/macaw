@@ -22,5 +22,10 @@ public class ServiceUrlProvider implements ServiceName,ServiceModule
         return String.format("http://%s/%s/%s",JOB_SCHEDULE,SCHEDULE,service);
     }
 
+    public final static String hadoopService(String service)
+    {
+        return String.format("http://%s/%s/%s",HADOOP_SERVICE,HADOOP,service);
+    }
+
 
 }

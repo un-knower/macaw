@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.migu.macaw.common.RequestKey;
 import cn.migu.macaw.common.log.LogUtils;
 import cn.migu.macaw.schedule.api.model.Procedure;
 import cn.migu.macaw.schedule.task.TaskNodeBrief;
@@ -102,15 +103,15 @@ public class SparkClusterJobRestImpl implements SparkClusterJobEvent
     @Override
     public Response residualAppHandle(HttpServletRequest request)
     {
-        String jobCode = request.getParameter("jobCode");
+        String jobCode = request.getParameter(RequestKey.JOB_CODE);
 
-        String batchCode = request.getParameter("batchCode");
+        String batchCode = request.getParameter(RequestKey.BATCH_NO);
 
-        String appId = request.getParameter("appId");
+        String appId = request.getParameter(RequestKey.APP_ID);
 
-        String appName = request.getParameter("appName");
+        String appName = request.getParameter(RequestKey.APP_NAME);
 
-        String isProcedureStr = request.getParameter("isProcedure");
+        String isProcedureStr = request.getParameter(RequestKey.IS_PROCEDURE);
 
         boolean isProcedure = StringUtils.isNotEmpty(isProcedureStr) ? true : false;
 

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import cn.migu.macaw.common.RequestKey;
 import cn.migu.macaw.schedule.PlatformAttr;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.dbcp.BasicDataSource;

@@ -1,9 +1,6 @@
 package cn.migu.macaw.sparkdrivermgr.service.impl;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -108,7 +105,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
     {
         String retCode = SysRetCode.SUCCESS;
         
-        Map<String, String> form =  reqParamToMap(request);
+        Map<String, String> form = reqParamToMap(request);
         
         String targetUrl = request.getRequestURL().toString();
         
@@ -123,8 +120,9 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
             
             reqRespLog.requestLog(request, sparkDriverInterlog, logBean);
             String result = RestTemplateProvider.postFormForEntity(restTemplate, targetUrl, String.class, form);
-            reqRespLog
-                .responseLog(sparkDriverInterlog, logBean, StringUtils.join("[计算中心请求地址:", targetUrl, ",返回结果:", result, "]"));
+            reqRespLog.responseLog(sparkDriverInterlog,
+                logBean,
+                StringUtils.join("[计算中心请求地址:", targetUrl, ",返回结果:", result, "]"));
             
             Response response = JSON.parseObject(result, Response.class, Feature.InitStringFieldAsEmpty);
             
@@ -217,8 +215,9 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
             params.put("dataSource", "hive");
             reqRespLog.requestLog(request, sparkDriverInterlog, logBean);
             String result = RestTemplateProvider.postFormForEntity(restTemplate, stopScUrl, String.class, params);
-            reqRespLog
-                .responseLog(sparkDriverInterlog, logBean, StringUtils.join("[计算中心请求地址:", stopScUrl, ",返回结果:", result, "]"));
+            reqRespLog.responseLog(sparkDriverInterlog,
+                logBean,
+                StringUtils.join("[计算中心请求地址:", stopScUrl, ",返回结果:", result, "]"));
         }
         catch (Exception e)
         {
@@ -342,17 +341,18 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
     public void initSparkCtx(HttpServletRequest request, SparkJobMetaData resCtx, Entity entity,
         InterfaceLogBean logBean)
     {
-
-        Map<String,String> form = reqParamToMap(request);
-
+        
+        Map<String, String> form = reqParamToMap(request);
+        
         String targetUrl =
             StringUtils.join("http://", resCtx.getDriverIp(), ":", resCtx.getPort(), "/SparkSQL/startSparkSession.do");
         try
         {
             reqRespLog.requestLog(request, sparkDriverInterlog, logBean);
             String result = RestTemplateProvider.postFormForEntity(restTemplate, targetUrl, String.class, form);
-            reqRespLog
-                .responseLog(sparkDriverInterlog, logBean, StringUtils.join("[计算中心请求地址:", targetUrl, ",返回结果:", result, "]"));
+            reqRespLog.responseLog(sparkDriverInterlog,
+                logBean,
+                StringUtils.join("[计算中心请求地址:", targetUrl, ",返回结果:", result, "]"));
             
             Response response = JSON.parseObject(result, Response.class, Feature.InitStringFieldAsEmpty);
             
@@ -527,13 +527,13 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
             ctx.setAppId(StringUtils.join(sparkMasterIp, "-", DriverType.CALC));
         }
     }
-
+    
     /**
      * http请求参数转换为map
      * @param request http请求
      * @return map结构
      */
-    private Map<String,String> reqParamToMap(HttpServletRequest request)
+    private Map<String, String> reqParamToMap(HttpServletRequest request)
     {
         return request.getParameterMap()
             .entrySet()

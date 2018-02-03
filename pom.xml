@@ -18,6 +18,7 @@
         <module>macaw-schedule</module>
         <module>macaw-dag</module>
         <module>macaw-sparkdriver-manager</module>
+        <module>macaw-hadoop</module>
     </modules>
 
     <groupId>cn.migu</groupId>
@@ -34,6 +35,7 @@
         <cron-utils.version>5.0.5</cron-utils.version>
         <curator.version>3.2.1</curator.version>
         <guava.version>18.0</guava.version>
+        <hadoop.version>2.6.0</hadoop.version>
     </properties>
 
     <dependencyManagement>
@@ -57,6 +59,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>macaw-dag</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>macaw-hadoop-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -154,6 +161,19 @@
                 <version>${curator.version}</version>
             </dependency>
             <!-- 调度相关 End -->
+
+            <!-- hadoop相关 Start -->
+            <dependency>
+                <groupId>com.hugetable</groupId>
+                <artifactId>hugetable-driver-5.4.7-bc1.2.2</artifactId>
+                <version>5.4.7</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hugetable</groupId>
+                <artifactId>hugetable-common-5.4.7-bc1.2.2</artifactId>
+                <version>5.4.7</version>
+            </dependency>
+            <!-- hadoop相关 End -->
 
 
             <!-- 工具 -->

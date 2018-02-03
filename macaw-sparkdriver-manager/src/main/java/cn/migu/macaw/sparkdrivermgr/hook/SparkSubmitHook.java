@@ -2,6 +2,7 @@ package cn.migu.macaw.sparkdrivermgr.hook;
 
 import java.util.Map;
 
+import cn.migu.macaw.common.RequestKey;
 import cn.migu.macaw.common.RestTemplateProvider;
 import cn.migu.macaw.common.ServiceName;
 import cn.migu.macaw.common.ServiceUrlProvider;
@@ -50,18 +51,18 @@ public class SparkSubmitHook
         if (StringUtils.isNotEmpty(resCtx.getJobCode()) && StringUtils.isNotEmpty(resCtx.getAppId()))
         {
             Map<String, String> params = Maps.newHashMap();
-            params.put("jobCode", resCtx.getJobCode());
-            params.put("appId", resCtx.getAppId());
-            params.put("batchCode", resCtx.getBatchNo());
+            params.put(RequestKey.JOB_CODE, resCtx.getJobCode());
+            params.put(RequestKey.APP_ID, resCtx.getAppId());
+            params.put(RequestKey.BATCH_NO, resCtx.getBatchNo());
             if (isProcedure)
             {
-                params.put("isProcedure", "1");
+                params.put(RequestKey.IS_PROCEDURE, "1");
             }
             else
             {
                 if (StringUtils.isNotEmpty(resCtx.getAppName()))
                 {
-                    params.put("appName", resCtx.getAppName());
+                    params.put(RequestKey.APP_NAME, resCtx.getAppName());
                 }
             }
             
