@@ -1,0 +1,81 @@
+server:
+  # 端口
+  port: 8085
+
+eureka:
+  client:
+#    register-with-eureka: false
+#    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://MGXY-migudmzftp004:8001/eureka/,http://MGXY-migudmzftp005:8001/eureka/
+    healthcheck:
+        enabled: true
+        instance:
+            lease-expiration-duration-in-seconds: 30
+            lease-renewal-interval-in-seconds: 10
+
+spring:
+  application:
+    name: jar-boot
+  datasource:
+    name: macaw-jarboot-ds
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.18.111.8:3306/bigdata_platform?useSSL=false&characterEncoding=UTF-8
+    username: service
+    password: Emc20090
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 连接池最大使用连接数
+      max-active: 200
+      # 初始化连接大小
+      initial-size: 1
+      # 获取连接最大等待时间
+      max-wait: 60000
+      # 连接池最小空闲
+      min-idle: 3
+      # 自动清除无用连接
+      remove-abandoned: true
+      # 清除无用连接的等待时间
+      remove-abandoned-timeout: 180
+      # 连接属性
+      connection-properties: clientEncoding=UTF-8
+  jackson:
+    default-property-inclusion: NON_NULL
+
+
+# mybatis配置
+mybatis:
+  type-aliases-package: cn.migu.macaw.jarboot.api.model
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    database-id: bigdata_platform
+    # 开启字段名和属性名驼峰匹配
+    map-underscore-to-camel-case: true
+    # 全局启用或禁用延迟加载。当禁用时，所有关联对象都会即时加载
+    lazy-loading-enabled: true
+    # 当启用时，有延迟加载属性的对象在被调用时将会完全加载任意属性。否则，每种属性将会按需要加载
+    aggressive-lazy-loading: true
+
+mapper:
+  mappers: cn.migu.macaw.common.mapper.CommonMapper
+  not-empty: false
+  identity: MYSQL
+
+# 分页插件配置
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+spark:
+  master-url: spark://172.18.111.3:7077
+hdfs:
+  schema-prefix: hdfs://hadoop
+
+# 日志
+logging:
+  level:
+    cn.migu.macaw.jarboot: INFO
+

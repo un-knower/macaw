@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SpringBootApplication
 @MapperScan(basePackages = PackageInfo.SCHEDULE_DAO_BASE)
 @ComponentScan(PackageInfo.COMPONENT_SCAN_BASE)
-public class ScheduleApplicaiton implements CommandLineRunner
+public class ScheduleApplication implements CommandLineRunner
 {
 
     @LoadBalanced
@@ -53,7 +53,7 @@ public class ScheduleApplicaiton implements CommandLineRunner
 
     public static void main(String[] args)
     {
-        SpringApplication.run(ScheduleApplicaiton.class, args);
+        SpringApplication.run(ScheduleApplication.class, args);
     }
 
     @Override public void run(String... strings)

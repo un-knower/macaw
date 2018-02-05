@@ -19,6 +19,7 @@
         <module>macaw-dag</module>
         <module>macaw-sparkdriver-manager</module>
         <module>macaw-hadoop</module>
+        <module>macaw-jar-boot</module>
     </modules>
 
     <groupId>cn.migu</groupId>
@@ -74,6 +75,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>macaw-sparkdriver-manager-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>macaw-jar-boot-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

@@ -30,7 +30,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @MapperScan(basePackages = PackageInfo.SPARK_DRIVER_MGR_DAO_BASE)
 @ComponentScan(PackageInfo.COMPONENT_SCAN_BASE)
-public class SparkDriverManagerApplicaiton implements CommandLineRunner
+public class SparkDriverManagerApplication implements CommandLineRunner
 {
 
     @Autowired
@@ -67,7 +67,7 @@ public class SparkDriverManagerApplicaiton implements CommandLineRunner
 
     public static void main(String[] args)
     {
-        SpringApplication.run(SparkDriverManagerApplicaiton.class, args);
+        SpringApplication.run(SparkDriverManagerApplication.class, args);
     }
 
     @Override

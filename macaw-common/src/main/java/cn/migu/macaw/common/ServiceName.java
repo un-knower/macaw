@@ -21,4 +21,9 @@ public interface ServiceName
      * HADOOP平台底层服务实例
      */
     String HADOOP_SERVICE = "hadoop-service";
+
+    /**
+     * 系统服务jar启动实例
+     */
+    String JAR_BOOT = "jar-boot";
 }
