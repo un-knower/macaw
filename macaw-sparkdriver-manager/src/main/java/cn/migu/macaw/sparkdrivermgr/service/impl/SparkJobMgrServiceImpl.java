@@ -269,7 +269,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
                     return SysRetCode.SPARK_APP_STOP_FAIL;
                 }
                 
-                remoteJar.callback(appName, "KILLED", appLog.getDriverPort().intValue(), null);
+                remoteJar.callback(appName, SysRetCode.SPARK_APP_KILLED, appLog.getDriverPort().intValue(), null);
             }
             catch (Exception e)
             {

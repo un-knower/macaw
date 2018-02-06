@@ -3,6 +3,7 @@ package cn.migu.macaw.sparkdrivermgr.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
 import org.springframework.stereotype.Component;
 
 import cn.migu.macaw.common.SysRetCode;
@@ -18,7 +19,7 @@ public class RetCodeDesc
     
     public RetCodeDesc()
     {
-        desc = new HashMap<String, String>();
+        desc = Maps.newHashMap();
         desc.put(SysRetCode.SUCCESS, "操作成功");
         desc.put(SysRetCode.SPARK_CORENUM_EMPTY, "资源核数为空");
         desc.put(SysRetCode.SPARK_MEMSIZE_EMPTY, "资源内存数为空");

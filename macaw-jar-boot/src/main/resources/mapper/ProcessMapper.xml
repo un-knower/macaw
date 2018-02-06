@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.jarboot.dao.ProcessMapper">
+    <resultMap id="BaseResultMap" type="cn.migu.macaw.jarboot.api.model.Process">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="OBJ_ID" jdbcType="VARCHAR" property="objId"/>
+        <result column="APP_ID" jdbcType="VARCHAR" property="appId"/>
+        <result column="SERVER_ID" jdbcType="VARCHAR" property="serverId"/>
+        <result column="JAR_ID" jdbcType="VARCHAR" property="jarId"/>
+        <result column="PORT" jdbcType="INTEGER" property="port"/>
+        <result column="KIND" jdbcType="VARCHAR" property="kind"/>
+        <result column="PROCESS_NO" jdbcType="INTEGER" property="processNo"/>
+        <result column="STATUS" jdbcType="INTEGER" property="status"/>
+        <result column="MEMORY" jdbcType="VARCHAR" property="memory"/>
+        <result column="CPUS" jdbcType="INTEGER" property="cpus"/>
+        <result column="DEAL_TIME" jdbcType="TIMESTAMP" property="dealTime"/>
+        <result column="DEAL_USER" jdbcType="VARCHAR" property="dealUser"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="NOTE" jdbcType="LONGVARCHAR" property="note"/>
+    </resultMap>
+
+    <resultMap id="hostPidMap" type="cn.migu.macaw.jarboot.model.HostPid">
+        <result column="IP" jdbcType="VARCHAR" property="ip"/>
+        <result column="PORT" jdbcType="INTEGER" property="port"/>
+        <result column="USERNAME" jdbcType="VARCHAR" property="username"/>
+        <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
+        <result column="IP" jdbcType="VARCHAR" property="ip"/>
+        <result column="PID" jdbcType="INTEGER" property="pid"/>
+    </resultMap>
+
+    <select id="getHostPidForJar" resultMap="hostPidMap">
+        SELECT
+        s.ip,
+        s.port,
+        s.username,
+        s.password,
+        p.process_no AS pid
+        FROM
+        process p,
+        SERVER s
+        WHERE
+        p.app_id = #{appId}
+        AND p.server_id = #{serverId}
+        AND p.jar_id = #{jarId}
+        AND p.server_id = s.obj_id
+    </select>
+
+</mapper>

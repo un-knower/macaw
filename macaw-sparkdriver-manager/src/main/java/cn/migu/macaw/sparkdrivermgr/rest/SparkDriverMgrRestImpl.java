@@ -238,17 +238,17 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         String appId = request.getParameter("appId");
         String serverId = request.getParameter("serverId");
         String jarId = request.getParameter("jarId");
-        Process unifyP = new Process();
+        Process processEntity = new Process();
 
-        unifyP.setAppId(appId);
-        unifyP.setServerId(serverId);
-        unifyP.setJarId(jarId);
-        unifyP.setPort(Integer.valueOf(driverPort));
-        unifyP.setProcessNo(Integer.valueOf(pid));
-        unifyP.setStatus(ProcessStatus.PROCESS_WAITING);
-        unifyP.setKind("2");
+        processEntity.setAppId(appId);
+        processEntity.setServerId(serverId);
+        processEntity.setJarId(jarId);
+        processEntity.setPort(Integer.valueOf(driverPort));
+        processEntity.setProcessNo(Integer.valueOf(pid));
+        processEntity.setStatus(ProcessStatus.PROCESS_WAITING);
+        processEntity.setKind("2");
 
-        dataSheetHandler.addProcess(unifyP);
+        dataSheetHandler.addProcess(processEntity);
 
         reqRespLog.responseLog(sparkDriverLaunchLog, logBean, String.format("%s中进程%s启动成功",appId,pid));
 

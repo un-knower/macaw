@@ -1,4 +1,4 @@
-package cn.migu.macaw.sparkdrivermgr.api.model;
+package cn.migu.macaw.jarboot.api.model;
 
 import java.util.Date;
 

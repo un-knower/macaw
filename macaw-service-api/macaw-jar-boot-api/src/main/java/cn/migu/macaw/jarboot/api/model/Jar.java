@@ -1,10 +1,10 @@
-package cn.migu.macaw.sparkdrivermgr.api.model;
-
-import cn.migu.macaw.common.entity.BaseEntity;
+package cn.migu.macaw.jarboot.api.model;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import cn.migu.macaw.common.entity.BaseEntity;
 
 @Table(name = "jar")
 public class Jar extends BaseEntity
@@ -50,6 +50,11 @@ public class Jar extends BaseEntity
      */
     @Column(name = "PATH")
     private String path;
+
+    /**
+     * 操作人员
+     */
+    private String dealUser;
 
     /**
      * 用户名
@@ -268,4 +273,22 @@ public class Jar extends BaseEntity
         return maxJvm;
     }
 
+    /**
+     * 获取操作人员信息
+     *
+     * @return String - 操作人员
+     */
+    public String getDealUser()
+    {
+        return dealUser;
+    }
+
+    /**
+     * 设置操作人员信息
+     * @param dealUser 操作员
+     */
+    public void setDealUser(String dealUser)
+    {
+        this.dealUser = dealUser;
+    }
 }

@@ -36,6 +36,7 @@
         <cron-utils.version>5.0.5</cron-utils.version>
         <curator.version>3.2.1</curator.version>
         <guava.version>18.0</guava.version>
+        <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <hadoop.version>2.6.0</hadoop.version>
     </properties>
 
@@ -218,6 +219,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons-beanutils.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

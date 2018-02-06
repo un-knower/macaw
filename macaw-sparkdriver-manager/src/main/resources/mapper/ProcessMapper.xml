@@ -40,7 +40,7 @@
         <result column="DRIVER_IP" jdbcType="VARCHAR" property="driverIp"/>
         <result column="DRIVER_PORT" jdbcType="INTEGER" property="driverPort"/>
         <result column="USERNAME" jdbcType="VARCHAR" property="username"/>
-        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="PASSWORD" jdbcType="VARCHAR" property="password"/>
     </resultMap>
 
     <select id="queryDriverMeta" resultMap="driverMetaDataMap">

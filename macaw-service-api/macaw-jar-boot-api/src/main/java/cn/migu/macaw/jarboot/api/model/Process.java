@@ -1,4 +1,4 @@
-package cn.migu.macaw.sparkdrivermgr.api.model;
+package cn.migu.macaw.jarboot.api.model;
 
 import java.util.Date;
 
@@ -7,8 +7,8 @@ import javax.persistence.Table;
 
 import cn.migu.macaw.common.entity.BaseEntity;
 
-@Table(name = "process_log")
-public class ProcessLog extends BaseEntity
+@Table(name = "process")
+public class Process extends BaseEntity
 {
     /**
      * 系统id
@@ -29,16 +29,10 @@ public class ProcessLog extends BaseEntity
     private String jarId;
     
     /**
-     * 端口
+     * 进程端口
      */
     @Column(name = "PORT")
     private Integer port;
-    
-    /**
-     * 1:运行,0:停止,2:等待,3:异常
-     */
-    @Column(name = "STATUS")
-    private String status;
     
     /**
      * 1:flume,2:spark,3:自定义,4:kafka
@@ -51,16 +45,21 @@ public class ProcessLog extends BaseEntity
      */
     @Column(name = "PROCESS_NO")
     private Integer processNo;
-
     
     /**
-     * 占用内存,MB
+     * 1:使用,0:未使用
+     */
+    @Column(name = "STATUS")
+    private Integer status;
+    
+    /**
+     * 内存大小
      */
     @Column(name = "MEMORY")
     private String memory;
     
     /**
-     * 占用CPU,核数
+     * 核数
      */
     @Column(name = "CPUS")
     private Integer cpus;
@@ -76,6 +75,9 @@ public class ProcessLog extends BaseEntity
      */
     @Column(name = "DEAL_USER")
     private String dealUser;
+    
+    @Column(name = "UPDATE_TIME")
+    private Date updateTime;
     
     /**
      * 说明
@@ -144,9 +146,9 @@ public class ProcessLog extends BaseEntity
     }
     
     /**
-     * 获取端口
+     * 获取进程端口
      *
-     * @return PORT - 端口
+     * @return PORT - 进程端口
      */
     public Integer getPort()
     {
@@ -154,33 +156,13 @@ public class ProcessLog extends BaseEntity
     }
     
     /**
-     * 设置端口
+     * 设置进程端口
      *
-     * @param port 端口
+     * @param port 进程端口
      */
     public void setPort(Integer port)
     {
         this.port = port;
-    }
-    
-    /**
-     * 获取1:运行,0:停止,2:等待,3:异常
-     *
-     * @return STATUS - 1:运行,0:停止,2:等待,3:异常
-     */
-    public String getStatus()
-    {
-        return status;
-    }
-    
-    /**
-     * 设置1:运行,0:停止,2:等待,3:异常
-     *
-     * @param status 1:运行,0:停止,2:等待,3:异常
-     */
-    public void setStatus(String status)
-    {
-        this.status = status == null ? null : status.trim();
     }
     
     /**
@@ -222,11 +204,31 @@ public class ProcessLog extends BaseEntity
     {
         this.processNo = processNo;
     }
-
+    
     /**
-     * 获取占用内存,MB
+     * 获取1:使用,0:未使用
      *
-     * @return MEMORY - 占用内存,MB
+     * @return STATUS - 1:使用,0:未使用
+     */
+    public Integer getStatus()
+    {
+        return status;
+    }
+    
+    /**
+     * 设置1:使用,0:未使用
+     *
+     * @param status 1:使用,0:未使用
+     */
+    public void setStatus(Integer status)
+    {
+        this.status = status;
+    }
+    
+    /**
+     * 获取内存大小
+     *
+     * @return MEMORY - 内存大小
      */
     public String getMemory()
     {
@@ -234,9 +236,9 @@ public class ProcessLog extends BaseEntity
     }
     
     /**
-     * 设置占用内存,MB
+     * 设置内存大小
      *
-     * @param memory 占用内存,MB
+     * @param memory 内存大小
      */
     public void setMemory(String memory)
     {
@@ -244,9 +246,9 @@ public class ProcessLog extends BaseEntity
     }
     
     /**
-     * 获取占用CPU,核数
+     * 获取核数
      *
-     * @return CPUS - 占用CPU,核数
+     * @return CPUS - 核数
      */
     public Integer getCpus()
     {
@@ -254,9 +256,9 @@ public class ProcessLog extends BaseEntity
     }
     
     /**
-     * 设置占用CPU,核数
+     * 设置核数
      *
-     * @param cpus 占用CPU,核数
+     * @param cpus 核数
      */
     public void setCpus(Integer cpus)
     {
@@ -301,6 +303,22 @@ public class ProcessLog extends BaseEntity
     public void setDealUser(String dealUser)
     {
         this.dealUser = dealUser == null ? null : dealUser.trim();
+    }
+    
+    /**
+     * @return UPDATE_TIME
+     */
+    public Date getUpdateTime()
+    {
+        return updateTime;
+    }
+    
+    /**
+     * @param updateTime
+     */
+    public void setUpdateTime(Date updateTime)
+    {
+        this.updateTime = updateTime;
     }
     
     /**

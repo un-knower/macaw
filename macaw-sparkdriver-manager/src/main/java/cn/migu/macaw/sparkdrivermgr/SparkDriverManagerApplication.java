@@ -1,10 +1,5 @@
 package cn.migu.macaw.sparkdrivermgr;
 
-import cn.migu.macaw.common.ApplicationContextProvider;
-import cn.migu.macaw.sparkdrivermgr.cache.SparkJobContext;
-import cn.migu.macaw.sparkdrivermgr.manager.DataSheetHandler;
-import cn.migu.macaw.sparkdrivermgr.manager.RemoteLaunchJar;
-import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +14,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import cn.migu.macaw.common.PackageInfo;
+import cn.migu.macaw.sparkdrivermgr.cache.SparkJobContext;
+import cn.migu.macaw.sparkdrivermgr.manager.RemoteLaunchJar;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**

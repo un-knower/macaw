@@ -12,8 +12,6 @@
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="STATUS" jdbcType="INTEGER" property="status" />
     <result column="PATH" jdbcType="VARCHAR" property="path" />
-    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
-    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
     <result column="MAX_JVM" jdbcType="INTEGER" property="maxJvm" />
   </resultMap>
 
