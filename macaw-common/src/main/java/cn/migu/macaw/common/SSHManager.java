@@ -5,6 +5,7 @@ import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 import cn.migu.macaw.common.log.LogUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
@@ -73,6 +74,8 @@ public class SSHManager
 
         return "";
     }
+
+
 
     public static void main(String[] args)
     {
