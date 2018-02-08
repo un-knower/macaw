@@ -1,13 +1,13 @@
 package cn.migu.macaw.schedule;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * 平台属性
  * @author soy
  */
-@Component
+@Configuration
 public class PlatformAttr
 {
     @Value("${spark.master-url}")

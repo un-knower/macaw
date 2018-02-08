@@ -73,6 +73,10 @@ spark:
   master-url: spark://172.18.111.3:7077
 hdfs:
   schema-prefix: hdfs://hadoop
+macaw:
+  custom-etl-jar-name: migu-ext-etl.jar
+  custom-etl-jar-path: /apps/service/dst
+  custom-etl-class-name: cn.migu.ext.etl.DataHandle4JF
 
 # 日志
 logging:

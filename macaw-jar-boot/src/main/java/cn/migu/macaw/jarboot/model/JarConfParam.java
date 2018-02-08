@@ -44,6 +44,11 @@ public class JarConfParam
     private String dealUser;
 
     /**
+     * 部署jar路径
+     */
+    private String path;
+
+    /**
      * 说明
      */
     private String note;
@@ -126,6 +131,16 @@ public class JarConfParam
     public void setNote(String note)
     {
         this.note = note;
+    }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
     }
 
     @Override public String toString()

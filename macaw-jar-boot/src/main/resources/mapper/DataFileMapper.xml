@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.jarboot.dao.DataFileMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.jarboot.api.model.DataFile">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="APP_ID" jdbcType="VARCHAR" property="appId" />
+    <result column="SERVER_ID" jdbcType="VARCHAR" property="serverId" />
+    <result column="JAR_ID" jdbcType="VARCHAR" property="jarId" />
+    <result column="KIND" jdbcType="INTEGER" property="kind" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="INIT_PATH" jdbcType="VARCHAR" property="initPath" />
+    <result column="COLLECT_PATH" jdbcType="VARCHAR" property="collectPath" />
+    <result column="COPY_PATH" jdbcType="VARCHAR" property="copyPath" />
+    <result column="CLEAN_PERIOD" jdbcType="INTEGER" property="cleanPeriod" />
+    <result column="COLLECT_PERIOD" jdbcType="INTEGER" property="collectPeriod" />
+    <result column="UNIT_SIZE" jdbcType="BIGINT" property="unitSize" />
+    <result column="UNIT_PERIOD" jdbcType="INTEGER" property="unitPeriod" />
+    <result column="DECOLLATOR" jdbcType="VARCHAR" property="decollator" />
+    <result column="MAP_TABLE" jdbcType="VARCHAR" property="mapTable" />
+    <result column="CHARACTER" jdbcType="INTEGER" property="character" />
+    <result column="COL_NUM" jdbcType="INTEGER" property="colNum" />
+    <result column="CHAR_NUM" jdbcType="BIGINT" property="charNum" />
+    <result column="CLEAR_TIME" jdbcType="VARCHAR" property="clearTime" />
+    <result column="IS_VERIFY" jdbcType="INTEGER" property="isVerify" />
+    <result column="MONITOR_PERIOD" jdbcType="INTEGER" property="monitorPeriod" />
+    <result column="START_LINE" jdbcType="INTEGER" property="startLine" />
+    <result column="SPLIT_NUM" jdbcType="INTEGER" property="splitNum" />
+    <result column="PERIOD" jdbcType="INTEGER" property="period" />
+    <result column="SCOPE" jdbcType="INTEGER" property="scope" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="WAIT_TIME" jdbcType="BIGINT" property="waitTime" />
+    <result column="MERGE_NUM" jdbcType="BIGINT" property="mergeNum" />
+    <result column="MERGE_TIME" jdbcType="BIGINT" property="mergeTime" />
+    <result column="NOTE" jdbcType="LONGVARCHAR" property="note" />
+    <result column="EXT_FUNCTION" jdbcType="LONGVARCHAR" property="extFunction" />
+  </resultMap>
+
+  <select id="getExtFuncDataCollect" resultMap="BaseResultMap">
+    select a.ext_function, merge_num, merge_time from data_file a, jar_file b where a.obj_id = b.file_id and b.app_id = #{appId} and b.server_id = #{serverId} and b.jar_id = #{jarId} and a.kind=10 limit 1
+  </select>
+</mapper>

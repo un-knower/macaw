@@ -1,26 +1,30 @@
 package cn.migu.macaw.jarboot.service.impl;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import cn.migu.macaw.jarboot.dao.ProcessLogMapper;
+import cn.migu.macaw.jarboot.JarBootConfigAttribute;
+import cn.migu.macaw.jarboot.api.model.*;
+import cn.migu.macaw.jarboot.api.model.Process;
+import cn.migu.macaw.jarboot.common.SftpManager;
+import cn.migu.macaw.jarboot.dao.*;
+import com.jcraft.jsch.JSchException;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.migu.macaw.common.SSHManager;
 import cn.migu.macaw.common.log.LogUtils;
-import cn.migu.macaw.jarboot.api.model.Jar;
-import cn.migu.macaw.jarboot.api.model.Process;
-import cn.migu.macaw.jarboot.api.model.ProcessLog;
 import cn.migu.macaw.jarboot.common.JarFuncType;
 import cn.migu.macaw.jarboot.common.JarStatus;
-import cn.migu.macaw.jarboot.dao.JarMapper;
-import cn.migu.macaw.jarboot.dao.ProcessMapper;
 import cn.migu.macaw.jarboot.model.HostPid;
 import cn.migu.macaw.jarboot.model.JarConfParam;
 import cn.migu.macaw.jarboot.service.IDeployJarBootService;
@@ -42,6 +46,15 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
 
     @Autowired
     private ProcessLogMapper processLogDao;
+
+    @Autowired
+    private DataFileMapper dataFileDao;
+
+    @Autowired
+    private ServerMapper serverDao;
+
+    @Autowired
+    private JarBootConfigAttribute jarBootConfigAttribute;
     
     @Override
     public JarConfParam parseRequestParam(JarConfParam bean, HttpServletRequest request)
@@ -174,6 +187,19 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
     }
 
     /**
+     * 根据主键获取主机信息
+     * @param id 主键
+     * @return Server - 主机实例
+     */
+    private Server getHostInfo(String id)
+    {
+        Server s = new Server();
+        s.setObjId(id);
+        return serverDao.selectOne(s);
+    }
+
+
+    /**
      * 更新部署应用状态
      * @param param 配置参数
      * @param status 状态
@@ -230,4 +256,58 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
             processLogDao.insertSelective(log);
         }
     }
+
+    /**
+     * 自定义jar信息外部方法验证
+     * @param param
+     * @param hostInfo
+     * @return
+     */
+    private boolean checkCustomExtFuncMethod(JarConfParam param,Server hostInfo)
+    {
+
+
+        SftpManager sftpManager = new SftpManager();
+        try
+        {
+            String localJarPath = StringUtils.join(jarBootConfigAttribute.getCustomJarLocalPath(),"/",jarBootConfigAttribute.getCustomJarName());
+            String remoteJarFile = StringUtils.join(param.getPath(),"/",jarBootConfigAttribute.getCustomJarName());
+            File localFile = new File(localJarPath);
+            if(!localFile.exists())
+            {
+                //如果自定义文件采集jar本地不存在则下载
+                sftpManager.createChannel(hostInfo.getUsername(),hostInfo.getPassword(),hostInfo.getIp(),hostInfo.getPort());
+                sftpManager.download(remoteJarFile,localFile);
+            }
+
+            DataFile collectFileConf = dataFileDao.getExtFuncDataCollect(param.getAppId(),param.getServerId(),param.getObjId());
+
+            URL url = localFile.toURI().toURL();
+            ClassLoader loader = new URLClassLoader(new URL[] {url});
+            Class<?> cls = loader.loadClass(jarBootConfigAttribute.getCustomJarHandleClassName());
+            if(collectFileConf.getMergeNum() == null || collectFileConf.getMergeTime() == null)
+            {
+                cls.getMethod(collectFileConf.getExtFunction(), String.class, String.class);
+            }
+            else
+            {
+                cls.getMethod(collectFileConf.getExtFunction(), List.class, String.class);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            LogUtils.runLogError(e);
+
+            return false;
+        }
+        finally
+        {
+            sftpManager.closeChannel();
+        }
+
+        return true;
+
+    }
+
 }

@@ -38,6 +38,7 @@
         <guava.version>18.0</guava.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <hadoop.version>2.6.0</hadoop.version>
+        <jsch.version>0.1.54</jsch.version>
     </properties>
 
     <dependencyManagement>
@@ -224,6 +225,11 @@
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>${commons-beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>${jsch.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

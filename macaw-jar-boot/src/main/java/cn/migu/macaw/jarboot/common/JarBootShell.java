@@ -20,6 +20,39 @@ import cn.migu.macaw.common.log.LogUtils;
  */
 public class JarBootShell
 {
+    private final static String CUSTOM_JAR_BOOT_SUCCESS = "ZDY-Start-Successfully";
+
+    private final static String SQL_MONITOR_BOOT_SUCCESS = "SQJ-Monitored-Successfully";
+
+    private final static String STREAMING_BOOT_SUCCESS = "STREAING STARTED";
+
+    private final static String SPRINGBOOT_SUCCESS = "SPRINGBOOT-SUCCESS";
+
+    private final static String CLEAN_JAR_BOOT_SUCESS = "cleanjar Start Successfully";
+
+    private final static String PORT_ALREADY_USED = "Address already in use";
+
+    private final static String SOURCE_PATH_ERROR = "SQJ-Source-Path-Not-Exists";
+
+    private final static String COLLECT_PATH_ERROR = "SQJ-Collect-Path-Not-Exists";
+
+    private final static String PARAMS_LESS_EIGHT_ERROR = "args length less than 8";
+
+    private final static String PARAMS_LESS_FOUR_ERROR = "cleanjar args length less than 4";
+
+    private final static String CLEAN_JAR_BOOT_FAILED = "cleanjar Start failed";
+
+    private final static String NO_FILE_DIR = "No such file or directory";
+
+    private final static String DIR_NOT_EXISTED = "Directory does not exist";
+
+    private final static String PERMISSION_DENY = "Permission denied";
+
+    private final static String JAR_FILE_NOT_EXISTED = "Unable to access jarfile";
+
+    private final static String NOT_ANY_RESOURCES = "Initial job has not accepted any resources";
+
+    private final static String SPRINGBOOT_ERROR = "SPRINGBOOT-ERROR";
 
     /**
      * 服务启动命令解析
@@ -125,69 +158,69 @@ public class JarBootShell
      */
     public final static String parseRet(String ret)
     {
-        if(StringUtils.contains(ret,"ZDY-Start-Successfully") || StringUtils.contains(ret,"SQJ-Monitored-Successfully")
-            || StringUtils.contains(ret,"STREAING STARTED") || StringUtils.contains(ret,"SPRINGBOOT-SUCCESS")
-            || StringUtils.contains(ret,"cleanjar Start Successfully"))
+        if(StringUtils.contains(ret,CUSTOM_JAR_BOOT_SUCCESS) || StringUtils.contains(ret,SQL_MONITOR_BOOT_SUCCESS)
+            || StringUtils.contains(ret,STREAMING_BOOT_SUCCESS) || StringUtils.contains(ret,SPRINGBOOT_SUCCESS)
+            || StringUtils.contains(ret,CLEAN_JAR_BOOT_SUCESS))
         {
             return "启动成功";
         }
 
-        if(StringUtils.contains(ret,"Address already in use"))
+        if(StringUtils.contains(ret,PORT_ALREADY_USED))
         {
             return "端口占用";
         }
 
-        if(StringUtils.contains(ret,"SQJ-Source-Path-Not-Exists"))
+        if(StringUtils.contains(ret,SOURCE_PATH_ERROR))
         {
             return "原始路径有误";
         }
 
-        if(StringUtils.contains(ret,"SQJ-Collect-Path-Not-Exists"))
+        if(StringUtils.contains(ret,COLLECT_PATH_ERROR))
         {
             return "采集路径有误";
         }
 
-        if(StringUtils.contains(ret,"args length less than 8"))
+        if(StringUtils.contains(ret,PARAMS_LESS_EIGHT_ERROR))
         {
             return "输入参数少于8个";
         }
 
-        if(StringUtils.contains(ret,"cleanjar Start failed"))
+        if(StringUtils.contains(ret,CLEAN_JAR_BOOT_FAILED))
         {
             return "clean jar启动失败";
         }
 
-        if(StringUtils.contains(ret,"cleanjar args length less than 4"))
+        if(StringUtils.contains(ret,PARAMS_LESS_FOUR_ERROR))
         {
             return "参数长度不能小于4个,顺序为appID,serviceID,port,jarID";
         }
 
-        if(StringUtils.contains(ret,"No such file or directory"))
+        if(StringUtils.contains(ret,NO_FILE_DIR))
         {
             return "找不到路径，请检查部署路径或采集路径是否正确";
         }
 
-        if(StringUtils.contains(ret,"Directory does not exist"))
+        if(StringUtils.contains(ret,DIR_NOT_EXISTED))
         {
             return "采集目录不存在";
         }
 
-        if(StringUtils.contains(ret,"Permission denied"))
+        if(StringUtils.contains(ret,PERMISSION_DENY))
         {
             return "权限不足";
         }
 
-        if(StringUtils.contains(ret,"Unable to access jarfile"))
+        if(StringUtils.contains(ret,JAR_FILE_NOT_EXISTED))
         {
             return "部署路径不存在";
         }
 
-        if(StringUtils.contains(ret,"Initial job has not accepted any resources"))
+        if(StringUtils.contains(ret,NOT_ANY_RESOURCES))
         {
             return "启动成功,但当前集群无可用资源";
         }
 
-        if(StringUtils.contains(ret,"SPRINGBOOT-ERROR"))
+        if(StringUtils.contains(ret,SPRINGBOOT_ERROR))
         {
             return "该JAR已启动或启动有误";
         }
