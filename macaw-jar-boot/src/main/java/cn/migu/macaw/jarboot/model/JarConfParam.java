@@ -24,6 +24,16 @@ public class JarConfParam
     private String objId;
 
     /**
+     * 配置名称
+     */
+    private String name;
+
+    /**
+     * 启动端口
+     */
+    private String port;
+
+    /**
      * 配置应用类型
      */
     private String kind;
@@ -53,6 +63,41 @@ public class JarConfParam
      */
     private String note;
 
+    /**
+     * JMX端口
+     */
+    private String jmxPort;
+
+    /**
+     * streaming单个partition每秒可处理数量
+     */
+    private String dealNum;
+
+    /**
+     * streaming处理周期
+     */
+    private String refreshPeriod;
+
+    /**
+     * 离线数据源id
+     */
+    private String outSource;
+
+    /**
+     * 在线数据源id
+     */
+    private String inSource;
+
+    /**
+     * Xms
+     */
+    private String maxJvm;
+
+    /**
+     * Xmx
+     */
+    private String nowJvm;
+
     public String getAppId()
     {
         return appId;
@@ -81,6 +126,26 @@ public class JarConfParam
     public void setObjId(String objId)
     {
         this.objId = objId;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getPort()
+    {
+        return port;
+    }
+
+    public void setPort(String port)
+    {
+        this.port = port;
     }
 
     public String getKind()
@@ -141,6 +206,76 @@ public class JarConfParam
     public void setPath(String path)
     {
         this.path = path;
+    }
+
+    public String getJmxPort()
+    {
+        return jmxPort;
+    }
+
+    public void setJmxPort(String jmxPort)
+    {
+        this.jmxPort = jmxPort;
+    }
+
+    public String getDealNum()
+    {
+        return dealNum;
+    }
+
+    public void setDealNum(String dealNum)
+    {
+        this.dealNum = dealNum;
+    }
+
+    public String getRefreshPeriod()
+    {
+        return refreshPeriod;
+    }
+
+    public void setRefreshPeriod(String refreshPeriod)
+    {
+        this.refreshPeriod = refreshPeriod;
+    }
+
+    public String getOutSource()
+    {
+        return outSource;
+    }
+
+    public void setOutSource(String outSource)
+    {
+        this.outSource = outSource;
+    }
+
+    public String getInSource()
+    {
+        return inSource;
+    }
+
+    public void setInSource(String inSource)
+    {
+        this.inSource = inSource;
+    }
+
+    public String getMaxJvm()
+    {
+        return maxJvm;
+    }
+
+    public void setMaxJvm(String maxJvm)
+    {
+        this.maxJvm = maxJvm;
+    }
+
+    public String getNowJvm()
+    {
+        return nowJvm;
+    }
+
+    public void setNowJvm(String nowJvm)
+    {
+        this.nowJvm = nowJvm;
     }
 
     @Override public String toString()

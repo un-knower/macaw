@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.migu.macaw.common.ReturnCode;
 import cn.migu.macaw.jarboot.JarBootConfigAttribute;
 import cn.migu.macaw.jarboot.api.model.*;
 import cn.migu.macaw.jarboot.api.model.Process;
@@ -259,14 +260,12 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
 
     /**
      * 自定义jar信息外部方法验证
-     * @param param
-     * @param hostInfo
-     * @return
+     * @param param 部署服务配置参数
+     * @param hostInfo 部署主机信息
+     * @return boolean - 检测结果
      */
-    private boolean checkCustomExtFuncMethod(JarConfParam param,Server hostInfo)
+    private ReturnCode checkCustomExtFuncMethod(JarConfParam param,Server hostInfo)
     {
-
-
         SftpManager sftpManager = new SftpManager();
         try
         {
@@ -280,12 +279,19 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
                 sftpManager.download(remoteJarFile,localFile);
             }
 
+            //采集文件配置信息
             DataFile collectFileConf = dataFileDao.getExtFuncDataCollect(param.getAppId(),param.getServerId(),param.getObjId());
 
+            if(null == collectFileConf)
+            {
+                LogUtils.runLogError("app_id=%s,server_id=%s,jar_id=%s,data file configuration not found");
+                return ReturnCode.CUSTOM_ETL_JAR_EXT_FUNC_NOT_EXISTED;
+            }
+            //检测自定义外部方法是否存在
             URL url = localFile.toURI().toURL();
             ClassLoader loader = new URLClassLoader(new URL[] {url});
             Class<?> cls = loader.loadClass(jarBootConfigAttribute.getCustomJarHandleClassName());
-            if(collectFileConf.getMergeNum() == null || collectFileConf.getMergeTime() == null)
+            if(null == collectFileConf.getMergeNum() || null == collectFileConf.getMergeTime())
             {
                 cls.getMethod(collectFileConf.getExtFunction(), String.class, String.class);
             }
@@ -299,14 +305,14 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
             e.printStackTrace();
             LogUtils.runLogError(e);
 
-            return false;
+            return ReturnCode.FAILED;
         }
         finally
         {
             sftpManager.closeChannel();
         }
 
-        return true;
+        return ReturnCode.SUCCESS;
 
     }
 

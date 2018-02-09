@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.jarboot.dao.OnlineDataSourceMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.jarboot.api.model.OnlineDataSource">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="KIND" jdbcType="INTEGER" property="kind" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="CONNECT_URL" jdbcType="VARCHAR" property="connectUrl" />
+    <result column="DRIVER_NAME" jdbcType="VARCHAR" property="driverName" />
+    <result column="DRIVER_JAR" jdbcType="VARCHAR" property="driverJar" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="TOPIC" jdbcType="VARCHAR" property="topic" />
+    <result column="COL_NUM" jdbcType="INTEGER" property="colNum" />
+    <result column="DECOLLATOR" jdbcType="VARCHAR" property="decollator" />
+    <result column="PROJECT_CODE" jdbcType="VARCHAR" property="projectCode" />
+    <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
+    <result column="NOTE" jdbcType="LONGVARCHAR" property="note" />
+  </resultMap>
+</mapper>

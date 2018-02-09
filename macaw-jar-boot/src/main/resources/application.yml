@@ -77,6 +77,15 @@ macaw:
   custom-etl-jar-name: migu-ext-etl.jar
   custom-etl-jar-path: /apps/service/dst
   custom-etl-class-name: cn.migu.ext.etl.DataHandle4JF
+  custom-etl-jar-main: cn.migu.file.core.Mapp
+  sql-query-url: http://x.x.x.x:y/sql/query
+  sql-execute-url: http://x.x.x.x:y/sql/execute
+  zookeeper-url: 172.18.111.4:2182,172.18.111.5:2182,172.18.111.6:2182
+  process-add: http://x.x.x.x:y/insertProcess.do
+  data-file-log-update: http://x.x.x.x:y/modFlumeFileLog.do
+  hdfs-log-add: http://x.x.x.x:y/requestinsertHdfs.do
+  batch-sql-execute-url:  http://x.x.x.x:y/executeFlumeSqls.do
+
 
 # 日志
 logging:
