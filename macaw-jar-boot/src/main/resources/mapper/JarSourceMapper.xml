@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.jarboot.dao.JarSourceMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.jarboot.api.model.JarSource">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="APP_ID" jdbcType="VARCHAR" property="appId" />
+    <result column="SERVER_ID" jdbcType="VARCHAR" property="serverId" />
+    <result column="JAR_ID" jdbcType="VARCHAR" property="jarId" />
+    <result column="SOURCE_ID" jdbcType="VARCHAR" property="sourceId" />
+    <result column="COLLECT_PATH" jdbcType="VARCHAR" property="collectPath" />
+    <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
+  </resultMap>
+
+  <resultMap id="DataFileCollectResultMap" type="cn.migu.macaw.jarboot.model.DataFileCollectConf">
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="COLLECT_PATH" jdbcType="VARCHAR" property="collectPath" />
+    <result column="KIND" jdbcType="INTEGER" property="kind" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="TOPIC" jdbcType="VARCHAR" property="topic" />
+    <result column="CONNECT_URL" jdbcType="VARCHAR" property="connectUrl" />
+    <result column="SPLIT_NUM" jdbcType="INTEGER" property="splitNum" />
+    <result column="FILE_CODE" jdbcType="VARCHAR" property="fileCode" />
+    <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+    <result column="WAIT_TIME" jdbcType="BIGINT" property="waitTime" />
+  </resultMap>
+
+    <select id="getDataFileCollectConf" resultMap="DataFileCollectResultMap">
+        SELECT
+        a.obj_id,
+        a.collect_path,
+        b.kind,
+        b.address,
+        b.topic,
+        b.connect_url,
+        c.split_num,
+        c.CODE file_code,
+        c.NAME file_name,
+        c.wait_time wait_time
+        FROM
+        jar_source a,
+        online_data_source b,
+        data_file c,
+        ( SELECT * FROM jar_file a WHERE a.server_id = #{serverId} AND a.jar_kind = 3 ) d
+        WHERE
+        a.source_id = b.obj_id
+        AND a.collect_path = c.collect_path
+        AND d.file_id = c.obj_id
+        AND a.app_id = #{appId}
+        AND a.server_id = #{serverId}
+        AND a.jar_id = #{jarId}
+    </select>
+
+</mapper>

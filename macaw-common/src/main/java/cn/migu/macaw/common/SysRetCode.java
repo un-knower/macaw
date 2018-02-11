@@ -233,6 +233,126 @@ public interface SysRetCode
      */
     String CUSTOM_ETL_JAR_EXT_FUNC_NOT_EXISTED = "0701";
 
+    /**
+     * jar id为空
+     */
+    String JAR_ID_EMPTY = "0702";
+
+    /**
+     * 部署服务id为空
+     */
+    String DEPLOY_APP_ID_EMPTY = "0703";
+
+    /**
+     * 部署服务器id为空
+     */
+    String DEPLOY_SERVER_ID_EMPTY = "0704";
+
+    /**
+     * 部署路径为空
+     */
+    String DEPLOY_PATH_EMPTY = "0705";
+
+    /**
+     * jar类型错误
+     */
+    String DEPLOY_JAR_TYPE_ERROR = "0706";
+
+    /**
+     * jar名称为空
+     */
+    String DEPLOY_JAR_NAME_EMPTY = "0707";
+
+    /**
+     * 服务部署操作人为空
+     */
+    String DEPLOY_USER_EMPTY = "0708";
+
+    /**
+     * 部署服务端口号为空
+     */
+    String DEPLOY_JAR_PORT_EMPTY = "0709";
+
+    /**
+     * 数据采集时间为空
+     */
+    String DATA_COLLECT_TIME_EMPTY = "0710";
+
+    /**
+     * 启动参数解析错误
+     */
+    String BOOT_PARAM_PARSE_ERROR = "0711";
+
+    /**
+     * 部署主机信息不存在
+     */
+    String DEPLOY_HOST_NOT_EXISTED = "0712";
+
+    /**
+     * 登录主机用户名或密码错误
+     */
+    String LOGIN_USERNAME_OR_PASSWD_ERROR = "0713";
+
+    /**
+     * 执行shell命令异常
+     */
+    String EXECUTE_SHELL_EXCEPTION = "0714";
+
+    /**
+     * 端口被占用
+     */
+    String PORT_ALREADY_USED = "0715";
+
+    /**
+     * 原始文件路径错误
+     */
+    String SOURCE_PATH_ERROR = "0716";
+
+    /**
+     * 采集文件路径错误
+     */
+    String COLLECT_PATH_ERROR = "0717";
+
+    /**
+     * 输入参数少于8个
+     */
+    String PARAMS_LESS_EIGHT_ERROR = "0718";
+
+    /**
+     * 启动失败
+     */
+    String BOOT_FAILED = "0719";
+
+    /**
+     * 参数个数不能小于4个,顺序为appID,serviceID,port,jarID
+     */
+    String PARAMS_LESS_FOUR_ERROR = "0720";
+
+    /**
+     * 部署路径错误
+     */
+    String DEPLOY_PATH_ERROR = "0721";
+
+    /**
+     * 系统权限不足
+     */
+    String PERMISSION_DENY = "0722";
+
+    /**
+     * 无系统资源可用
+     */
+    String NOT_ANY_RESOURCES = "0723";
+
+    /**
+     * 不支持命令启动
+     */
+    String NOT_SUPPORT_BOOT = "0724";
+
+    /**
+     * 继续分析下一行
+     */
+    String NEXT_LINE_PARSE = "0725";
+
     ////////////////////////////////////////////////////
     
     String ERROR = "ffff";

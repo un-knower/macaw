@@ -85,6 +85,7 @@ macaw:
   data-file-log-update: http://x.x.x.x:y/modFlumeFileLog.do
   hdfs-log-add: http://x.x.x.x:y/requestinsertHdfs.do
   batch-sql-execute-url:  http://x.x.x.x:y/executeFlumeSqls.do
+  data-collect-roll-interval: 10
 
 
 # 日志

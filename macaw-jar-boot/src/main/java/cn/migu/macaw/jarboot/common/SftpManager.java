@@ -24,7 +24,7 @@ public class SftpManager
     
     private ChannelSftp channel = null;
     
-    private int TIMEOUT = 60000;
+    private final int TIME_OUT = 60000;
     
     /**
      * 创建sftp通道连接
@@ -48,7 +48,7 @@ public class SftpManager
         Properties config = new Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
-        session.setTimeout(TIMEOUT);
+        session.setTimeout(TIME_OUT);
         session.connect(); // 通过Session建立链接
         
         channel = (ChannelSftp)session.openChannel("sftp");

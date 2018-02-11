@@ -49,6 +49,9 @@ public class JarBootConfigAttribute
     @Value("${macaw.batch-sql-execute-url}")
     private String batchSqlExecuteUrl;
 
+    @Value("${macaw.data-collect-roll-interval}")
+    private String rollInterval;
+
     public String getSparkMaster()
     {
         return sparkMaster;
@@ -177,5 +180,15 @@ public class JarBootConfigAttribute
     public void setBatchSqlExecuteUrl(String batchSqlExecuteUrl)
     {
         this.batchSqlExecuteUrl = batchSqlExecuteUrl;
+    }
+
+    public String getRollInterval()
+    {
+        return rollInterval;
+    }
+
+    public void setRollInterval(String rollInterval)
+    {
+        this.rollInterval = rollInterval;
     }
 }

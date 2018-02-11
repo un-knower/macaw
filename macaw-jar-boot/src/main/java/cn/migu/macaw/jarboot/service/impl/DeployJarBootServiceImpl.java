@@ -13,19 +13,19 @@ import cn.migu.macaw.common.ReturnCode;
 import cn.migu.macaw.jarboot.JarBootConfigAttribute;
 import cn.migu.macaw.jarboot.api.model.*;
 import cn.migu.macaw.jarboot.api.model.Process;
-import cn.migu.macaw.jarboot.common.SftpManager;
+import cn.migu.macaw.jarboot.common.*;
 import cn.migu.macaw.jarboot.dao.*;
 import com.jcraft.jsch.JSchException;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.migu.macaw.common.SSHManager;
 import cn.migu.macaw.common.log.LogUtils;
-import cn.migu.macaw.jarboot.common.JarFuncType;
-import cn.migu.macaw.jarboot.common.JarStatus;
 import cn.migu.macaw.jarboot.model.HostPid;
 import cn.migu.macaw.jarboot.model.JarConfParam;
 import cn.migu.macaw.jarboot.service.IDeployJarBootService;
@@ -56,6 +56,9 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
 
     @Autowired
     private JarBootConfigAttribute jarBootConfigAttribute;
+
+    @Autowired
+    private BootCommandGenerator bootCommandGenerator;
     
     @Override
     public JarConfParam parseRequestParam(JarConfParam bean, HttpServletRequest request)
@@ -149,25 +152,121 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
     }
 
     @Override
-    public String bootProcess(JarConfParam param)
+    public ReturnCode bootProcess(JarConfParam param)
     {
-        JarFuncType jarType = JarFuncType.values()[Integer.valueOf(param.getKind())];
+        if(null != param)
+        {
+            return ReturnCode.BOOT_PARAM_PARSE_ERROR;
+        }
 
-        switch(jarType)
+        ReturnCode retCode = bootConfigParamCheck(param);
+        if(retCode == ReturnCode.SUCCESS)
+        {
+            Server s = getHostInfo(param.getServerId());
+            if(null == s)
+            {
+                return ReturnCode.DEPLOY_HOST_NOT_EXISTED;
+            }
+
+            return bootJar(param,s);
+
+        }
+        else
+        {
+            return retCode;
+        }
+    }
+
+    /**
+     * 启动参数基本检测
+     * @param param
+     * @return
+     */
+    private ReturnCode bootConfigParamCheck(JarConfParam param)
+    {
+        if(StringUtils.isBlank(param.getObjId()))
+        {
+            return ReturnCode.JAR_ID_EMPTY;
+        }
+
+        if(StringUtils.isBlank(param.getAppId()))
+        {
+            return ReturnCode.DEPLOY_APP_ID_EMPTY;
+        }
+
+        if(StringUtils.isBlank(param.getServerId()))
+        {
+            return ReturnCode.DEPLOY_SERVER_ID_EMPTY;
+        }
+
+        if(StringUtils.isBlank(param.getPath()))
+        {
+            return ReturnCode.DEPLOY_PATH_EMPTY;
+        }
+
+        if(!NumberUtils.isNumber(param.getKind()))
+        {
+            return ReturnCode.DEPLOY_JAR_TYPE_ERROR;
+        }
+
+        //不同功能jar指定参数检测
+        JarFuncType type = JarFuncType.values()[Integer.valueOf(param.getKind())];
+
+        switch(type)
         {
             case CUSTOM:
             case CUSTOM_CHECK_FILE:
+                if(StringUtils.isBlank(param.getName()))
+                {
+                    return ReturnCode.DEPLOY_JAR_NAME_EMPTY;
+                }
+                if(StringUtils.isBlank(param.getDealUser()))
+                {
+                    return ReturnCode.DEPLOY_USER_EMPTY;
+                }
+                if(StringUtils.isBlank(param.getNote()))
+                {
+                    return ReturnCode.DATA_COLLECT_TIME_EMPTY;
+                }
+                if(StringUtils.isBlank(param.getPort()))
+                {
+                    return ReturnCode.DEPLOY_JAR_PORT_EMPTY;
+                }
                 break;
             case FLUME:
+                if(StringUtils.isBlank(param.getDealUser()))
+                {
+                    return ReturnCode.DEPLOY_USER_EMPTY;
+                }
+                if(StringUtils.isBlank(param.getPort()))
+                {
+                    return ReturnCode.DEPLOY_JAR_PORT_EMPTY;
+                }
                 break;
             case NORMAL_STREAMING:
             case MERGE_STREAMING:
+                if(StringUtils.isBlank(param.getName()))
+                {
+                    return ReturnCode.DEPLOY_JAR_NAME_EMPTY;
+                }
+                if(StringUtils.isBlank(param.getDealUser()))
+                {
+                    return ReturnCode.DEPLOY_USER_EMPTY;
+                }
+                if(StringUtils.isBlank(param.getPort()))
+                {
+                    return ReturnCode.DEPLOY_JAR_PORT_EMPTY;
+                }
+                break;
+            case SPRINGBOOT:
+                return ReturnCode.NOT_SUPPORT_BOOT;
+            case CLEAN:
                 break;
             default:
-                break;
+                return ReturnCode.DEPLOY_JAR_TYPE_ERROR;
         }
 
-        return null;
+        return ReturnCode.SUCCESS;
     }
 
     /**
@@ -213,6 +312,25 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
         jarEntity.setDealUser(param.getDealUser());
         jarDao.updateByPrimaryKey(jarEntity);
 
+    }
+
+    /**
+     * 增加进程
+     * @param param 部署服务配置参数
+     * @param pid 进程号
+     */
+    private void addProcess(JarConfParam param,String pid)
+    {
+        Process tProcess = new Process();
+        tProcess.setAppId(param.getAppId());
+        tProcess.setServerId(param.getServerId());
+        tProcess.setJarId(param.getObjId());
+        tProcess.setPort(Integer.valueOf(param.getPort()));
+        tProcess.setKind(param.getKind());
+        tProcess.setProcessNo(Integer.valueOf(pid));
+        tProcess.setStatus(JarStatus.RUNNING.ordinal());
+        tProcess.setDealUser(param.getDealUser());
+        processDao.insertSelective(tProcess);
     }
 
     /**
@@ -284,7 +402,6 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
 
             if(null == collectFileConf)
             {
-                LogUtils.runLogError("app_id=%s,server_id=%s,jar_id=%s,data file configuration not found");
                 return ReturnCode.CUSTOM_ETL_JAR_EXT_FUNC_NOT_EXISTED;
             }
             //检测自定义外部方法是否存在
@@ -314,6 +431,84 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
 
         return ReturnCode.SUCCESS;
 
+    }
+
+    /**
+     * 启动功能jar
+     * @param param 部署服务配置参数
+     * @param hostInfo 部署主机信息
+     * @return ReturnCode - 返回信息码
+     */
+    private ReturnCode bootJar(JarConfParam param,Server hostInfo)
+    {
+        String shell = "";
+        JarFuncType type = JarFuncType.values()[Integer.valueOf(param.getKind())];
+        switch(type)
+        {
+            case CUSTOM:
+                ReturnCode retCode = checkCustomExtFuncMethod(param,hostInfo);
+                if(ReturnCode.SUCCESS == retCode)
+                {
+                    shell = bootCommandGenerator.customEtlJarWithExtFuncBoot(param,hostInfo);
+                }
+                else if(ReturnCode.CUSTOM_ETL_JAR_EXT_FUNC_NOT_EXISTED == retCode)
+                {
+                    shell = bootCommandGenerator.customEtlJarBoot(param,hostInfo);
+                }
+                else
+                {
+                    return retCode;
+                }
+                break;
+            case CUSTOM_CHECK_FILE:
+                shell = bootCommandGenerator.customEtlJarBoot(param,hostInfo);
+                break;
+            case FLUME:
+                shell = bootCommandGenerator.flumeJarBoot(param);
+                break;
+            case NORMAL_STREAMING:
+            case MERGE_STREAMING:
+                shell = bootCommandGenerator.streamingBoot(param);
+                break;
+            case CLEAN:
+                shell = bootCommandGenerator.cleanJarBoot(param,hostInfo);
+                break;
+            default:
+                break;
+        }
+
+        Pair<ReturnCode,String> pairRet = JarBootShell.execCommandForParseRetLine(hostInfo.getIp(),hostInfo.getUsername(),hostInfo.getPassword(),shell);
+        ReturnCode retCode = pairRet.getLeft();
+        if(JarFuncType.CLEAN == type && ReturnCode.SUCCESS == retCode)
+        {
+            //进程信息
+            addProcess(param,pairRet.getRight());
+            addProcessLog(param,JarStatus.RUNNING.ordinal());
+        }
+
+        return retCode;
+    }
+
+    /**
+     * 监控信息设置
+     * @param param
+     */
+    private void monitorConf(JarConfParam param)
+    {
+        JarFuncType type = JarFuncType.values()[Integer.valueOf(param.getKind())];
+        switch(type)
+        {
+            case FLUME:
+                break;
+            case CUSTOM:
+                break;
+            case NORMAL_STREAMING:
+            case MERGE_STREAMING:
+                break;
+            case CLEAN:
+                break;
+            default:
+        }
     }
 
 }

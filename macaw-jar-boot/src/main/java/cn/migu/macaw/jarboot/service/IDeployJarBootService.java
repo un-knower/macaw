@@ -1,5 +1,6 @@
 package cn.migu.macaw.jarboot.service;
 
+import cn.migu.macaw.common.ReturnCode;
 import cn.migu.macaw.jarboot.model.HostPid;
 import cn.migu.macaw.jarboot.model.JarConfParam;
 
@@ -35,5 +36,5 @@ public interface IDeployJarBootService
      * @param param 配置部署服务参数
      * @return String - 返回码
      */
-    String bootProcess(JarConfParam param);
+    ReturnCode bootProcess(JarConfParam param);
 }

@@ -9,6 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <curator.version>3.2.1</curator.version>
+    </properties>
+
     <artifactId>macaw-schedule</artifactId>
     <dependencies>
         <dependency>
@@ -98,10 +102,12 @@
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
+            <version>${curator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-test</artifactId>
+            <version>${curator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

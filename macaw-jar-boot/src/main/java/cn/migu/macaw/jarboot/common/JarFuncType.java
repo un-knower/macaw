@@ -12,9 +12,9 @@ public enum JarFuncType
      */
     FLUME(1),
     /**
-     * spark driver
+     * spring boot
      */
-    SPARK_DRIVER(2),
+    SPRINGBOOT(2),
     /**
      * 自定义jar
      */

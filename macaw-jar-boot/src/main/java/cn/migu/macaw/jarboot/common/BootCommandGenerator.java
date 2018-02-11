@@ -127,7 +127,7 @@ public class BootCommandGenerator
         bootShell.append(param.getPath()).append("bin;").append(param.getPath());
         bootShell.append("bin/flume-ng agent --conf ../conf --no-reload-conf -z ")
             .append(jarBootConfigAttribute.getZkUrl());
-        bootShell.append(" -p /flumeconfig -n ").append(param.getObjId());
+        bootShell.append(" -p ").append(ZkNodeInfo.FLUME_CONFIG).append(" -n ").append(param.getObjId());
         bootShell.append(" -Dflume.monitoring.type=http -Dfile.encoding=UTF-8 -Dflume.monitoring.port=")
             .append(monitorPort);
         bootShell.append(" -Dmigu.flume.rpc.type=http -Dmigu.flume.rpc.url.insert.pid=")

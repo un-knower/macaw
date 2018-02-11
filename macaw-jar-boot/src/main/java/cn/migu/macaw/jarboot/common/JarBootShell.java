@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import cn.migu.macaw.common.ReturnCode;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +13,7 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 import cn.migu.macaw.common.log.LogUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * 部署服务jar启动shell封装
@@ -63,7 +65,7 @@ public class JarBootShell
      * @param command shell命令
      * @return String - 返回信息
      */
-    public static String execCommandForParseRetLine(String host, String username, String password, String command)
+    public static Pair<ReturnCode,String> execCommandForParseRetLine(String host, String username, String password, String command)
     {
         Connection conn = new Connection(host);
         Session session = null;
@@ -75,7 +77,7 @@ public class JarBootShell
             if (!isConn)
             {
                 LogUtils.runLogError(String.format("login on %s username[%s] or password[%s] error",host,username,password));
-                return "启动服务使用的用户名或密码错误";
+                return Pair.of(ReturnCode.LOGIN_USERNAME_OR_PASSWD_ERROR,null);
             }
             else
             {
@@ -91,15 +93,16 @@ public class JarBootShell
                         String line = lineIterator.nextLine();
                         System.out.println(line);
 
-                        String parseInfo = parseRet(line);
-                        if(StringUtils.isNotEmpty(parseInfo))
+                        Pair<ReturnCode,String> retPair  = parseRet(line);
+                        ReturnCode parseInfo = retPair.getLeft();
+                        if(ReturnCode.NEXT_LINE_PARSE != parseInfo)
                         {
-                            return parseInfo;
+                            return retPair;
                         }
 
                         if(null == line)
                         {
-                            return "启动异常";
+                            return Pair.of(ReturnCode.EXECUTE_SHELL_EXCEPTION,null);
                         }
                     }
 
@@ -110,7 +113,7 @@ public class JarBootShell
         {
             e.printStackTrace();
             LogUtils.runLogError(e);
-            return "启动异常:内部错误";
+            return Pair.of(ReturnCode.EXECUTE_SHELL_EXCEPTION,null);
         }
         finally
         {
@@ -132,105 +135,94 @@ public class JarBootShell
             conn.close();
         }
 
-        return "启动异常";
+        return Pair.of(ReturnCode.EXECUTE_SHELL_EXCEPTION,null);
     }
 
-    /**
-     * 应用启动
-     * @param shell 启动命令
-     * @param host 主机
-     * @param username 用户名
-     * @param password 密码
-     * @return String - 返回值
-     */
-    public final static String startShell(String shell,String host,String username,String password)
-    {
-        String response = execCommandForParseRetLine(host,username,password,shell);
-
-        return parseRet(response);
-
-    }
 
     /**
      * 解析返回消息
      * @param ret 返回字符串
      * @return String - 返回信息
      */
-    public final static String parseRet(String ret)
+    public final static Pair<ReturnCode,String> parseRet(String ret)
     {
         if(StringUtils.contains(ret,CUSTOM_JAR_BOOT_SUCCESS) || StringUtils.contains(ret,SQL_MONITOR_BOOT_SUCCESS)
-            || StringUtils.contains(ret,STREAMING_BOOT_SUCCESS) || StringUtils.contains(ret,SPRINGBOOT_SUCCESS)
-            || StringUtils.contains(ret,CLEAN_JAR_BOOT_SUCESS))
+            || StringUtils.contains(ret,STREAMING_BOOT_SUCCESS) || StringUtils.contains(ret,SPRINGBOOT_SUCCESS))
         {
-            return "启动成功";
+            return Pair.of(ReturnCode.SUCCESS,null);
+        }
+
+        if(StringUtils.contains(ret,CLEAN_JAR_BOOT_SUCESS))
+        {
+            return Pair.of(ReturnCode.SUCCESS,StringUtils.substringAfter(ret,":"));
         }
 
         if(StringUtils.contains(ret,PORT_ALREADY_USED))
         {
-            return "端口占用";
+            return Pair.of(ReturnCode.PORT_ALREADY_USED,null);
         }
 
         if(StringUtils.contains(ret,SOURCE_PATH_ERROR))
         {
-            return "原始路径有误";
+            return Pair.of(ReturnCode.SOURCE_PATH_ERROR,null);
         }
 
         if(StringUtils.contains(ret,COLLECT_PATH_ERROR))
         {
-            return "采集路径有误";
+            return Pair.of(ReturnCode.COLLECT_PATH_ERROR,null);
         }
 
         if(StringUtils.contains(ret,PARAMS_LESS_EIGHT_ERROR))
         {
-            return "输入参数少于8个";
+            return Pair.of(ReturnCode.PARAMS_LESS_EIGHT_ERROR,null);
         }
 
         if(StringUtils.contains(ret,CLEAN_JAR_BOOT_FAILED))
         {
-            return "clean jar启动失败";
+            return Pair.of(ReturnCode.BOOT_FAILED,null);
         }
 
         if(StringUtils.contains(ret,PARAMS_LESS_FOUR_ERROR))
         {
-            return "参数长度不能小于4个,顺序为appID,serviceID,port,jarID";
+            return Pair.of(ReturnCode.PARAMS_LESS_FOUR_ERROR,null);
         }
 
         if(StringUtils.contains(ret,NO_FILE_DIR))
         {
-            return "找不到路径，请检查部署路径或采集路径是否正确";
+            return Pair.of(ReturnCode.DEPLOY_PATH_ERROR,null);
         }
 
         if(StringUtils.contains(ret,DIR_NOT_EXISTED))
         {
-            return "采集目录不存在";
+            return Pair.of(ReturnCode.COLLECT_PATH_ERROR,null);
         }
 
         if(StringUtils.contains(ret,PERMISSION_DENY))
         {
-            return "权限不足";
+            return Pair.of(ReturnCode.PERMISSION_DENY,null);
         }
 
         if(StringUtils.contains(ret,JAR_FILE_NOT_EXISTED))
         {
-            return "部署路径不存在";
+            return Pair.of(ReturnCode.DEPLOY_PATH_ERROR,null);
         }
 
         if(StringUtils.contains(ret,NOT_ANY_RESOURCES))
         {
-            return "启动成功,但当前集群无可用资源";
+            return Pair.of(ReturnCode.NOT_ANY_RESOURCES,null);
         }
 
         if(StringUtils.contains(ret,SPRINGBOOT_ERROR))
         {
-            return "该JAR已启动或启动有误";
+            return Pair.of(ReturnCode.BOOT_FAILED,null);
         }
 
-        return "";
+        return Pair.of(ReturnCode.NEXT_LINE_PARSE,null);
     }
 
     public static void main(String[] args)
     {
         String shell  = "/apps/service/t1.sh shanpao ff14af92-6b26-4e9d-afa1-56e557c91a1e 22ebbf65-f8ea-4126-b13e-bc3b4c27fb9c spark://192.168.129.186:7077 hdfs://hadoop 10004 sp_ugc_new.jar wy 1 1024 10 null";
-        System.out.println(JarBootShell.startShell(shell,"192.168.129.186","root","Emc20090"));
+        System.out.println(JarBootShell.execCommandForParseRetLine(shell,"192.168.129.186","root","Emc20090"));
     }
 }
