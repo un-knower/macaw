@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.jarboot.dao.JarFileMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.jarboot.api.model.JarFile">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="APP_ID" jdbcType="VARCHAR" property="appId" />
+    <result column="JAR_ID" jdbcType="VARCHAR" property="jarId" />
+    <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
+    <result column="JAR_KIND" jdbcType="INTEGER" property="jarKind" />
+    <result column="SERVER_ID" jdbcType="VARCHAR" property="serverId" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+  </resultMap>
+
+  <resultMap id="CollectHandleFileMap" type="cn.migu.macaw.jarboot.model.CollectHandleFile">
+    <id column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
+    <result column="FILE_CODE" jdbcType="VARCHAR" property="fileCode" />
+    <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+    <result column="PERIOD" jdbcType="INTEGER" property="period" />
+    <result column="SCOPE" jdbcType="INTEGER" property="scope" />
+  </resultMap>
+
+  <select id="getCollectHandleFiles" resultMap="CollectHandleFileMap">
+    SELECT
+    a.file_id,
+    b.CODE file_code,
+    b.NAME file_name,
+    b.period,
+    b.scope
+    FROM
+    jar_file a,
+    data_file b
+    WHERE
+    a.file_id = b.obj_id
+    AND a.app_id = #{appId}
+    AND a.server_id = #{serverId}
+    AND a.jar_id = #{jarId}
+  </select>
+</mapper>

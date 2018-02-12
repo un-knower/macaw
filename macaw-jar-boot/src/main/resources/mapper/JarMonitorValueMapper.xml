@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.jarboot.dao.JarMonitorValueMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.jarboot.api.model.JarMonitorValue">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="FILE_ID" jdbcType="VARCHAR" property="fileId" />
+    <result column="KIND" jdbcType="INTEGER" property="kind" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="KEY_VALUE" jdbcType="VARCHAR" property="keyValue" />
+    <result column="MONITOR_VALUE" jdbcType="VARCHAR" property="monitorValue" />
+    <result column="REFRESH_TIME" jdbcType="TIMESTAMP" property="refreshTime" />
+    <result column="PERIOD" jdbcType="INTEGER" property="period" />
+    <result column="SCOPE" jdbcType="INTEGER" property="scope" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="NOTE" jdbcType="LONGVARCHAR" property="note" />
+  </resultMap>
+</mapper>
