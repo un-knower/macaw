@@ -80,12 +80,12 @@ macaw:
   custom-etl-jar-main: cn.migu.file.core.Mapp
   zookeeper-url: 172.18.111.4:2182,172.18.111.5:2182,172.18.111.6:2182
   data-collect-roll-interval: 10
-  sql-query-url: http://x.x.x.x:y/sql/query
-  sql-execute-url: http://x.x.x.x:y/sql/execute
-  process-add: http://x.x.x.x:y/insertProcess.do
-  data-file-log-update: http://x.x.x.x:y/modFlumeFileLog.do
-  hdfs-log-add: http://x.x.x.x:y/requestinsertHdfs.do
-  batch-sql-execute-url:  http://x.x.x.x:y/executeFlumeSqls.do
+  sql-query-url: http://x.x.x.x:y/jarboot/sql-query
+  sql-execute-url: http://x.x.x.x:y/jarboot/sql-execute
+  batch-sql-execute-url:  http://x.x.x.x:y/jarboot/sql-batchUpdate
+  process-add: http://x.x.x.x:y/jarboot/insertProcess
+  data-file-log-update: http://x.x.x.x:y/jarboot/updateDataFileLog
+  hdfs-log-add: http://x.x.x.x:y/jarboot/addHdfsLogTmp
 
 
 # 日志

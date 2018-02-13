@@ -38,6 +38,7 @@ public enum ReturnCode
     NOT_ANY_RESOURCES(SysRetCode.NOT_ANY_RESOURCES,"无系统资源可用"),
     NOT_SUPPORT_BOOT(SysRetCode.NOT_SUPPORT_BOOT,"服务应用不支持启动"),
     NEXT_LINE_PARSE(SysRetCode.NEXT_LINE_PARSE,"继续分析下一行"),
+    STOP_FAILED(SysRetCode.STOP_FAILED,"停止服务失败"),
     FAILED(SysRetCode.ERROR,"操作失败"),
     ;
     
@@ -45,16 +46,10 @@ public enum ReturnCode
     
     private String name;
     
-    private ReturnCode(String code, String name)
+    ReturnCode(String code, String name)
     {
         this.code = code;
         this.name = name;
-    }
-    
-    public static final String getName(String code)
-    {
-        return Stream.of(ReturnCode.values()).filter(c -> StringUtils.equals(c.code, code)).map(e -> e.name).collect(
-            Collectors.joining(""));
     }
 
     public String getCode()
@@ -72,10 +67,4 @@ public enum ReturnCode
         this.name = name;
     }
 
-
-    public static void main(String[] args)
-    {
-        System.out.println(ReturnCode.getName(SysRetCode.HT_EXCEPTION));
-
-    }
 }

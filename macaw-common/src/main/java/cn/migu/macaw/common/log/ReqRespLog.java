@@ -1,4 +1,4 @@
-package cn.migu.macaw.sparkdrivermgr.common;
+package cn.migu.macaw.common.log;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -11,8 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Component;
 
-import cn.migu.macaw.common.log.InterfaceLog;
-import cn.migu.macaw.common.log.InterfaceLogBean;
 import cn.migu.macaw.common.RemoteIpHelper;
 
 /**
@@ -28,13 +26,13 @@ public class ReqRespLog
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public InterfaceLogBean initLogBean(HttpServletRequest request)
+    public InterfaceLogBean initLogBean(HttpServletRequest request,String moduleName)
     {
         InterfaceLogBean interfaceLogBean = new InterfaceLogBean();
         
         interfaceLogBean.setUniqueId(UUID.randomUUID().toString().replace("-",""));
         interfaceLogBean.setInterfaceName(request.getRequestURI());
-        interfaceLogBean.setSystemModuleName("spark-driver-manager");
+        interfaceLogBean.setSystemModuleName(moduleName);
         
         String ip = RemoteIpHelper.getRemoteIpFrom(request);
         String port = String.valueOf(request.getRemotePort());
@@ -86,7 +84,7 @@ public class ReqRespLog
     {
         interfaceLogBean.setReqResIdent("response");
         
-        interfaceLogBean.setMessage(StringUtils.join("结果信息->", respStr));
+        interfaceLogBean.setMessage(StringUtils.join("响应信息->", respStr));
         
         InterfaceLog.getInstance().info(paramLog, interfaceLogBean);
     }

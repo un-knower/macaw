@@ -1,22 +1,33 @@
 package cn.migu.macaw.jarboot.rest;
 
+import cn.migu.macaw.common.log.InterfaceLogBean;
 import cn.migu.macaw.common.log.LogUtils;
+import cn.migu.macaw.common.log.ReqRespLog;
+import cn.migu.macaw.jarboot.api.model.DataFileLog;
+import cn.migu.macaw.jarboot.api.model.HdfsLogTmp;
 import cn.migu.macaw.jarboot.api.model.ProcessLog;
 import cn.migu.macaw.jarboot.common.JarFuncType;
 import cn.migu.macaw.jarboot.common.JarStatus;
 import cn.migu.macaw.jarboot.common.RemainCode;
 import cn.migu.macaw.jarboot.api.model.Process;
+import cn.migu.macaw.jarboot.dao.DataFileLogMapper;
+import cn.migu.macaw.jarboot.dao.HdfsLogTmpMapper;
 import cn.migu.macaw.jarboot.dao.ProcessLogMapper;
 import cn.migu.macaw.jarboot.dao.ProcessMapper;
 import cn.migu.macaw.jarboot.model.BaseResponse;
 import cn.migu.macaw.jarboot.model.BaseResponseEntity;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +37,10 @@ import java.util.Map;
  * @author soy
  */
 @RestController
-public class ProvideFunction
+@RequestMapping("/jarboot")
+public class ProvideFunction extends PreLogger
 {
+    private static final Log provideFuncLog = LogFactory.getLog("jar-boot-provide-func");
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -37,14 +50,27 @@ public class ProvideFunction
     @Autowired
     private ProcessLogMapper processLogDao;
 
+    @Autowired
+    private DataFileLogMapper dataFileLogDao;
+
+    @Autowired
+    private HdfsLogTmpMapper hdfsLogTmpDao;
+
+    @Autowired
+    private ReqRespLog reqRespLog;
+
     /**
      * sql执行
      * @param request http请求
      * @return BaseResponse - 返回消息
      */
-    @RequestMapping("/sql/execute")
+    @RequestMapping("/sql-execute")
     public BaseResponse execute(HttpServletRequest request)
     {
+        InterfaceLogBean logBean = createLogBean(reqRespLog,request);
+
+        reqRespLog.requestLog(request,provideFuncLog,logBean);
+
         String sql = request.getParameter("sql");
         String param = request.getParameter("param");
         BaseResponseEntity content = new BaseResponseEntity();
@@ -68,8 +94,10 @@ public class ProvideFunction
             LogUtils.runLogError(e);
         }
         BaseResponse res = new BaseResponse(content);
-        return res;
 
+        reqRespLog.responseLog(provideFuncLog,logBean, JSON.toJSONString(content));
+
+        return res;
     }
 
     /**
@@ -77,9 +105,13 @@ public class ProvideFunction
      * @param request http请求
      * @return BaseResponse - 返回消息
      */
-    @RequestMapping("/sql/query")
+    @RequestMapping("/sql-query")
     public BaseResponse queryForList(HttpServletRequest request)
     {
+        InterfaceLogBean logBean = createLogBean(reqRespLog,request);
+
+        reqRespLog.requestLog(request,provideFuncLog,logBean);
+
         String sql = request.getParameter("sql");
         String param = request.getParameter("param");
         BaseResponseEntity content = new BaseResponseEntity();
@@ -107,6 +139,38 @@ public class ProvideFunction
             LogUtils.runLogError(e);
         }
         BaseResponse res = new BaseResponse(content);
+
+        reqRespLog.responseLog(provideFuncLog,logBean, JSON.toJSONString(content));
+        return res;
+    }
+
+    /**
+     * 批量处理sql
+     * @param request
+     * @return
+     */
+    @RequestMapping("/sql-batchUpdate")
+    public BaseResponse executeFlumeSqls(HttpServletRequest request)
+    {
+        InterfaceLogBean logBean = createLogBean(reqRespLog,request);
+        reqRespLog.requestLog(request,provideFuncLog,logBean);
+
+        String sql = request.getParameter("sql");
+        BaseResponseEntity content = new BaseResponseEntity();
+        try
+        {
+            String[] sqls = sql.split("~");
+            jdbcTemplate.batchUpdate(sqls);
+        }
+        catch (Exception e)
+        {
+            content.setCode(RemainCode.FAILED);
+            content.setDesc(e.toString());
+            LogUtils.runLogError(e);
+        }
+        BaseResponse res = new BaseResponse(content);
+
+        reqRespLog.responseLog(provideFuncLog,logBean, JSON.toJSONString(content));
         return res;
     }
 
@@ -118,6 +182,9 @@ public class ProvideFunction
     @RequestMapping("/insertProcess")
     public BaseResponse insertProcess(HttpServletRequest request)
     {
+        InterfaceLogBean logBean = createLogBean(reqRespLog,request);
+        reqRespLog.requestLog(request,provideFuncLog,logBean);
+
         BaseResponseEntity content = new BaseResponseEntity();
         String serverId = request.getParameter("sid");
         String appId = request.getParameter("aid");
@@ -160,6 +227,81 @@ public class ProvideFunction
         }
 
         BaseResponse res = new BaseResponse(content);
+        reqRespLog.responseLog(provideFuncLog,logBean, JSON.toJSONString(content));
         return res;
     }
+
+    /**
+     * 更新日志
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateDataFileLog")
+    public BaseResponse updateDataFileLog(HttpServletRequest request)
+    {
+        InterfaceLogBean logBean = createLogBean(reqRespLog,request);
+        reqRespLog.requestLog(request,provideFuncLog,logBean);
+
+        BaseResponseEntity content = new BaseResponseEntity();
+        String fn = request.getParameter("fn");
+
+        try
+        {
+
+            DataFileLog dataFileLog = new DataFileLog();
+            dataFileLog.setCollectTime(new Date());
+            Example example = new Example(DataFileLog.class);
+            example.createCriteria().andEqualTo("bname",fn);
+            dataFileLogDao.updateByExampleSelective(dataFileLog,example);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            content.setCode(RemainCode.FAILED);
+            content.setDesc(e.toString());
+            LogUtils.runLogError(e);
+        }
+
+        BaseResponse res = new BaseResponse(content);
+        reqRespLog.responseLog(provideFuncLog,logBean, JSON.toJSONString(content));
+        return res;
+    }
+
+    /**
+     * hdfs文件临时日志表
+     * @param request
+     * @return
+     */
+    @RequestMapping("/addHdfsLogTmp")
+    public BaseResponse addHdfsLogTmp(HttpServletRequest request)
+    {
+        InterfaceLogBean logBean = createLogBean(reqRespLog,request);
+        reqRespLog.requestLog(request,provideFuncLog,logBean);
+
+        BaseResponseEntity content = new BaseResponseEntity();
+        String sid = request.getParameter("sid");
+        String aid = request.getParameter("aid");
+        String jid = request.getParameter("jid");
+        String path = request.getParameter("path");
+        try
+        {
+            HdfsLogTmp hdfsLogTmp = new HdfsLogTmp();
+            hdfsLogTmp.setAppId(aid);
+            hdfsLogTmp.setServerId(sid);
+            hdfsLogTmp.setJarId(jid);
+            hdfsLogTmp.setHdfsPath(path);
+            hdfsLogTmpDao.insertSelective(hdfsLogTmp);
+        }
+        catch (Exception e)
+        {
+            LogUtils.runLogError(e);
+            content.setCode(RemainCode.FAILED);
+            content.setDesc(e.toString());
+        }
+
+        BaseResponse res = new BaseResponse(content);
+        reqRespLog.responseLog(provideFuncLog,logBean, JSON.toJSONString(content));
+        return res;
+    }
+
 }

@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.migu.macaw.common.ServiceName;
+import cn.migu.macaw.common.log.ReqRespLog;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -34,7 +36,6 @@ import cn.migu.macaw.sparkdrivermgr.api.service.SparkDriverManagerService;
 import cn.migu.macaw.sparkdrivermgr.cache.SparkJobContext;
 import cn.migu.macaw.sparkdrivermgr.common.DriverType;
 import cn.migu.macaw.sparkdrivermgr.common.ProcessStatus;
-import cn.migu.macaw.sparkdrivermgr.common.ReqRespLog;
 import cn.migu.macaw.sparkdrivermgr.common.RetCodeDesc;
 import cn.migu.macaw.sparkdrivermgr.hook.SparkSubmitHook;
 import cn.migu.macaw.sparkdrivermgr.manager.DataSheetHandler;
@@ -89,7 +90,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         Response resp = new Response();
         Entity entity = new Entity();
 
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
+        InterfaceLogBean logBean = createLogBean(request);
 
         reqRespLog.requestLog(request, sparkJobForwardLog, logBean);
 
@@ -176,7 +177,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         Response resp = new Response();
         Entity entity = new Entity();
 
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
+        InterfaceLogBean logBean = createLogBean(request);
 
         reqRespLog.requestLog(request, sparkJobForwardLog, logBean);
 
@@ -229,7 +230,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
     @Override
     public Response processAttachedStartCompleted(HttpServletRequest request)
     {
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
+        InterfaceLogBean logBean = createLogBean(request);
 
         reqRespLog.requestLog(request, sparkDriverLaunchLog, logBean);
 
@@ -261,7 +262,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         Response resp = new Response();
         Entity entity = new Entity();
 
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
+        InterfaceLogBean logBean = createLogBean(request);
 
         reqRespLog.requestLog(request, sparkJobForwardLog, logBean);
 
@@ -306,7 +307,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
     @Override
     public Response sparkJobCompleted(HttpServletRequest request)
     {
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
+        InterfaceLogBean logBean = createLogBean(request);
 
         reqRespLog.requestLog(request, sparkJobForwardLog, logBean);
 
@@ -337,7 +338,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         Response resp = new Response();
         Entity entity = new Entity();
 
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
+        InterfaceLogBean logBean = createLogBean(request);
 
         reqRespLog.requestLog(request, sparkJobForwardLog, logBean);
 
@@ -392,7 +393,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         Response resp = new Response();
         Entity entity = new Entity();
 
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
+        InterfaceLogBean logBean = createLogBean(request);
 
         reqRespLog.requestLog(request, sparkJobForwardLog, logBean);
 
@@ -454,7 +455,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         Response resp = new Response();
         Entity entity = new Entity();
 
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
+        InterfaceLogBean logBean = createLogBean(request);
 
         reqRespLog.requestLog(request, sparkJobForwardLog, logBean);
 
@@ -586,7 +587,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
     @Override
     public void sparkDriverShutDown(HttpServletRequest request)
     {
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request);
+        InterfaceLogBean logBean = createLogBean(request);
 
         reqRespLog.requestLog(request,sparkDriverInterlog , logBean);
 
@@ -618,6 +619,16 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
 
         reqRespLog.responseLog(sparkDriverInterlog, logBean, "处理结束");
 
+    }
+
+    /**
+     * 初始化log对象
+     * @param request
+     * @return
+     */
+    private InterfaceLogBean createLogBean(HttpServletRequest request)
+    {
+        return reqRespLog.initLogBean(request, ServiceName.SPARK_DRIVER_RES_MGR);
     }
 
     /**

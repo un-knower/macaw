@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.jarboot.dao.HdfsLogTmpMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.jarboot.api.model.HdfsLogTmp">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="APP_ID" jdbcType="VARCHAR" property="appId" />
+    <result column="SERVER_ID" jdbcType="VARCHAR" property="serverId" />
+    <result column="JAR_ID" jdbcType="VARCHAR" property="jarId" />
+    <result column="UP_TIME" jdbcType="TIMESTAMP" property="upTime" />
+    <result column="HDFS_PATH" jdbcType="LONGVARCHAR" property="hdfsPath" />
+  </resultMap>
+</mapper>

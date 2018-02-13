@@ -22,6 +22,14 @@ public interface JarBootService
     String boot(HttpServletRequest request);
 
     /**
+     * 应用服务jar启动重启
+     * @param request http请求
+     * @return String - 返回信息
+     */
+    @PostMapping("/stopAndRunJar")
+    String reboot(HttpServletRequest request);
+
+    /**
      * 应用服务jar停止
      * @param request http请求
      * @return String - 返回信息

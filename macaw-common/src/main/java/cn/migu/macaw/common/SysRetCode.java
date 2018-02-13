@@ -353,6 +353,11 @@ public interface SysRetCode
      */
     String NEXT_LINE_PARSE = "0725";
 
+    /**
+     * 停止服务失败
+     */
+    String STOP_FAILED = "0726";
+
     ////////////////////////////////////////////////////
     
     String ERROR = "ffff";
