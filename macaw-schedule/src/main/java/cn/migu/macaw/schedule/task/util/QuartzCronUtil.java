@@ -27,12 +27,12 @@ public class QuartzCronUtil
     /**
      * 解析结果字符串格式
      */
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 解析器对象
      */
-    private static final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
+    private static final CronParser PARSER = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ));
     
     /**
      * 解析表达式返回上次和下次触发时间
@@ -41,7 +41,7 @@ public class QuartzCronUtil
      */
     public static String[] parseTriggerRangeToStr(String quartzStr)
     {
-        Cron cron = parser.parse(quartzStr);
+        Cron cron = PARSER.parse(quartzStr);
         
         ZonedDateTime now = ZonedDateTime.now();
         
@@ -51,7 +51,7 @@ public class QuartzCronUtil
         
         ZonedDateTime nextExecTime = executionTime.nextExecution(now);
         
-        return new String[] {lastExecTime.format(formatter), nextExecTime.format(formatter)};
+        return new String[] {lastExecTime.format(FORMATTER), nextExecTime.format(FORMATTER)};
         
     }
 
@@ -62,7 +62,7 @@ public class QuartzCronUtil
      */
     public static Date[] parseTriggerRangeToDate(String quartzStr)
     {
-        Cron cron = parser.parse(quartzStr);
+        Cron cron = PARSER.parse(quartzStr);
 
         ZonedDateTime now = ZonedDateTime.now();
 

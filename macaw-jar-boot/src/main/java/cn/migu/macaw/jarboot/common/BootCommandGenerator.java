@@ -163,12 +163,14 @@ public class BootCommandGenerator
         OfflineDataSource tOds = offlineDataSourceDao.selectOne(ods);
         if(null != tOds)
         {
-            if(StringUtils.isNotEmpty(tOds.getAddress())&&StringUtils.startsWith(tOds.getAddress(),"spark://"))
+            //spark master
+            if(StringUtils.isNotEmpty(tOds.getAddress()))
             {
                 sparkMaster = tOds.getAddress();
             }
 
-            if(StringUtils.isNotEmpty(tOds.getReserve4())&&StringUtils.startsWith(tOds.getAddress(),"hdfs://"))
+            //hdfs schema prefix
+            if(StringUtils.isNotEmpty(tOds.getReserve4()))
             {
                 hdfsSchema = tOds.getReserve4();
             }

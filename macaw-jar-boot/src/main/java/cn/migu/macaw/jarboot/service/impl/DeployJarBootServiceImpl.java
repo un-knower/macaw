@@ -538,7 +538,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
         return retCode;
     }
     
-    /*****************监控*************************/
+    /*****************监控值*************************/
     
     /**
      * 增加监控配置
@@ -640,7 +640,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
         if(null != tJarMonitorValue)
         {
             Example example = new Example(JarMonitorValue.class);
-            List<String> filterCodes = Arrays.asList(new String[]{"lastUpdateTime","lastFileTime","allFileNum"});
+            List<String> filterCodes = Arrays.asList("lastUpdateTime","lastFileTime","allFileNum");
             example.createCriteria().andNotIn("code",filterCodes);
             tJarMonitorValue.setMonitorValue("0");
             tJarMonitorValue.setStatus(StatusValue.VALID.ordinal());
