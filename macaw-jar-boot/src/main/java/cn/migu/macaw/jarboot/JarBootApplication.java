@@ -14,7 +14,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  *
  * @author soy
  */
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @SpringBootApplication
 @MapperScan(basePackages = PackageInfo.JAR_BOOT_DAO_BASE)
 @ComponentScan(PackageInfo.COMPONENT_SCAN_BASE)

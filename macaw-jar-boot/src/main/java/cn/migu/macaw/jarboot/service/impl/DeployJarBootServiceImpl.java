@@ -16,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +48,9 @@ import tk.mybatis.mapper.entity.Example;
 @Service("deployJarBootService")
 public class DeployJarBootServiceImpl implements IDeployJarBootService
 {
-    
+    private static final Log jarBootLog = LogFactory.getLog("jar-boot-interface");
+
+
     @Autowired
     private ProcessMapper processDao;
     
@@ -182,7 +186,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
     @Override
     public ReturnCode bootProcess(JarConfParam param)
     {
-        if (null != param)
+        if (null == param)
         {
             return ReturnCode.BOOT_PARAM_PARSE_ERROR;
         }
@@ -524,6 +528,8 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
             default:
                 break;
         }
+
+        jarBootLog.info(String.format("execute shell:%s in host %s",shell,hostInfo.getIp()));
         
         Pair<ReturnCode, String> pairRet = JarBootShell
             .execCommandForParseRetLine(hostInfo.getIp(), hostInfo.getUsername(), hostInfo.getPassword(), shell);
@@ -641,7 +647,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
         {
             Example example = new Example(JarMonitorValue.class);
             List<String> filterCodes = Arrays.asList("lastUpdateTime","lastFileTime","allFileNum");
-            example.createCriteria().andNotIn("code",filterCodes);
+            example.createCriteria().andNotIn("code",filterCodes).andEqualTo("objId",tJarMonitorValue.getObjId());
             tJarMonitorValue.setMonitorValue("0");
             tJarMonitorValue.setStatus(StatusValue.VALID.ordinal());
             jarMonitorValueDao.updateByExampleSelective(tJarMonitorValue,example);

@@ -33,6 +33,7 @@
         <mysql.version>5.1.44</mysql.version>
         <quartz.version>2.3.0</quartz.version>
         <workflow.version>0.9.0</workflow.version>
+        <curator.version>3.2.1</curator.version>
         <cron-utils.version>5.0.5</cron-utils.version>
         <guava.version>18.0</guava.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
@@ -139,6 +140,27 @@
                 <groupId>com.nirmata.workflow</groupId>
                 <artifactId>nirmata-workflow</artifactId>
                 <version>${workflow.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-test</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-client</artifactId>
+                <version>${curator.version}</version>
             </dependency>
 
             <dependency>

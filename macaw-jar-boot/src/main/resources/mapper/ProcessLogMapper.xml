@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.migu.macaw.sparkdrivermgr.dao.ProcessLogMapper">
-  <resultMap id="BaseResultMap" type="cn.migu.macaw.sparkdrivermgr.api.model.ProcessLog">
+<mapper namespace="cn.migu.macaw.jarboot.dao.ProcessLogMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.jarboot.api.model.ProcessLog">
     <!--
       WARNING - @mbg.generated
     -->
