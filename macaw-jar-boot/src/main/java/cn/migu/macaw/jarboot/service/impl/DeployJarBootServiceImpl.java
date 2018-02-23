@@ -529,7 +529,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
                 break;
         }
 
-        jarBootLog.info(String.format("execute shell:%s in host %s",shell,hostInfo.getIp()));
+        jarBootLog.info(String.format("execute shell:%s [in host %s]",shell,hostInfo.getIp()));
         
         Pair<ReturnCode, String> pairRet = JarBootShell
             .execCommandForParseRetLine(hostInfo.getIp(), hostInfo.getUsername(), hostInfo.getPassword(), shell);
@@ -539,6 +539,14 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
             //进程信息
             addProcess(param, pairRet.getRight());
             addProcessLog(param, JarStatus.RUNNING.ordinal());
+        }
+        else
+        {
+            String exceptionStr = pairRet.getRight();
+            if(StringUtils.isNotBlank(exceptionStr))
+            {
+                LogUtils.runLogError(exceptionStr);
+            }
         }
         
         return retCode;

@@ -56,6 +56,8 @@ public class JarBootShell
 
     private final static String SPRINGBOOT_ERROR = "SPRINGBOOT-ERROR";
 
+    private final static String BOOT_EXCEPTION = "Exception:";
+
     /**
      * 服务启动命令解析
      * 对于各个部署服务启动应在返回值中添加必要的返回成功或异常说明
@@ -91,7 +93,6 @@ public class JarBootShell
                     while(lineIterator.hasNext())
                     {
                         String line = lineIterator.nextLine();
-                        System.out.println(line);
 
                         Pair<ReturnCode,String> retPair  = parseRet(line);
                         ReturnCode parseInfo = retPair.getLeft();
@@ -215,6 +216,11 @@ public class JarBootShell
         if(StringUtils.contains(ret,SPRINGBOOT_ERROR))
         {
             return Pair.of(ReturnCode.BOOT_FAILED,null);
+        }
+
+        if(StringUtils.contains(ret,BOOT_EXCEPTION))
+        {
+            return Pair.of(ReturnCode.EXECUTE_SHELL_EXCEPTION,ret);
         }
 
         return Pair.of(ReturnCode.NEXT_LINE_PARSE,null);

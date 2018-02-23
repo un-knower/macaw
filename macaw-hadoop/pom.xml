@@ -49,6 +49,20 @@
         </dependency>
         <!-- hugetable操作必需包 End -->
 
+        <!-- 数据同步工具包 Start -->
+        <dependency>
+            <groupId>com.crossdata</groupId>
+            <artifactId>crossdata0.8</artifactId>
+            <version>0.8</version>
+        </dependency>
+        <!-- 数据同步工具包 End -->
+
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.6</version>
+        </dependency>
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
@@ -56,6 +70,11 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
         </dependency>
     </dependencies>
 

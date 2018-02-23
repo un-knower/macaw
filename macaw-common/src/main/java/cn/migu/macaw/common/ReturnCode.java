@@ -13,6 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 public enum ReturnCode
 {
     SUCCESS(SysRetCode.SUCCESS, "操作成功"),
+
+    DATA_SYNC_FUNC_NOT_SUPPORT(SysRetCode.DATA_SYNC_FUNC_NOT_SUPPORT,"数据同步功能不支持"),
+    DATA_SYNC_PARAM_PARSE_ERROR(SysRetCode.DATA_SYNC_PARAM_PARSE_ERROR,"数据同步参数解析错误"),
+
     CUSTOM_ETL_JAR_EXT_FUNC_NOT_EXISTED(SysRetCode.CUSTOM_ETL_JAR_EXT_FUNC_NOT_EXISTED,"自定义ETL jar外部扩展功能不存在"),
     JAR_ID_EMPTY(SysRetCode.JAR_ID_EMPTY,"部署jar id为空"),
     DEPLOY_APP_ID_EMPTY(SysRetCode.DEPLOY_APP_ID_EMPTY,"部署服务应用id为空"),
@@ -39,6 +43,7 @@ public enum ReturnCode
     NOT_SUPPORT_BOOT(SysRetCode.NOT_SUPPORT_BOOT,"服务应用不支持启动"),
     NEXT_LINE_PARSE(SysRetCode.NEXT_LINE_PARSE,"继续分析下一行"),
     STOP_FAILED(SysRetCode.STOP_FAILED,"停止服务失败"),
+
     FAILED(SysRetCode.ERROR,"操作失败"),
     ;
     
