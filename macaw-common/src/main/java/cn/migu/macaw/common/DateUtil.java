@@ -190,5 +190,19 @@ public class DateUtil
         return 0;
 
     }
+
+    /**
+     * 时间戳转字符串
+     * @param timestamp 时间戳
+     * @param format 格式
+     * @return String - 时间字符串
+     */
+    public final static String tsToStr(long timestamp,String format)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        String timeStr = sdf.format(new Date(timestamp));
+
+        return timeStr;
+    }
     
 }

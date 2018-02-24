@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.migu.macaw.common.log.ReqRespLog;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -32,7 +33,6 @@ import cn.migu.macaw.sparkdrivermgr.api.model.SparkApplicationLog;
 import cn.migu.macaw.sparkdrivermgr.cache.SparkJobContext;
 import cn.migu.macaw.sparkdrivermgr.common.DriverType;
 import cn.migu.macaw.sparkdrivermgr.common.ProcessStatus;
-import cn.migu.macaw.sparkdrivermgr.common.ReqRespLog;
 import cn.migu.macaw.sparkdrivermgr.common.RetCodeDesc;
 import cn.migu.macaw.sparkdrivermgr.manager.DataSheetHandler;
 import cn.migu.macaw.sparkdrivermgr.manager.RemoteLaunchJar;

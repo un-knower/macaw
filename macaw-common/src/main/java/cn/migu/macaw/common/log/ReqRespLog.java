@@ -88,4 +88,19 @@ public class ReqRespLog
         
         InterfaceLog.getInstance().info(paramLog, interfaceLogBean);
     }
+
+    /**
+     * 过程信息日志
+     * @param paramLog 日志对象
+     * @param interfaceLogBean 日志bean
+     * @param message 记录信息
+     */
+    public void otherLog(Log paramLog, InterfaceLogBean interfaceLogBean, String message)
+    {
+        interfaceLogBean.setReqResIdent("process");
+
+        interfaceLogBean.setMessage(message);
+
+        InterfaceLog.getInstance().info(paramLog, interfaceLogBean);
+    }
 }

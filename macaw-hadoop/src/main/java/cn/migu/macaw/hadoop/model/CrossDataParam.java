@@ -4,6 +4,8 @@ import cn.migu.macaw.hadoop.common.DataSourceType;
 import cn.migu.macaw.hadoop.common.DataSynMode;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+
 /**
  * 数据同步参数
  *
@@ -13,7 +15,7 @@ public class CrossDataParam
 {
     private String crossDataIp;
 
-    private String crossDataPort;
+    private Integer crossDataPort;
 
     private int recordPerStatement;
 
@@ -91,14 +93,14 @@ public class CrossDataParam
         this.crossDataIp = crossDataIp;
     }
 
-    public String getCrossDataPort()
+    public Integer getCrossDataPort()
     {
         return crossDataPort;
     }
 
     public void setCrossDataPort(String crossDataPort)
     {
-        this.crossDataPort = crossDataPort;
+        this.crossDataPort = StringUtils.isNotBlank(crossDataPort) ? Integer.valueOf(crossDataPort) : null;
     }
 
     public int getRecordPerStatement()
@@ -433,7 +435,7 @@ public class CrossDataParam
 
     public void setAuth(String auth)
     {
-        this.auth = StringUtils.split(auth,"/",2);
+        this.auth = StringUtils.splitByWholeSeparator(auth,"/");
     }
 
     public String[] getT_auth()
@@ -443,7 +445,7 @@ public class CrossDataParam
 
     public void setT_auth(String t_auth)
     {
-        this.t_auth = StringUtils.split(t_auth,"/",2);
+        this.t_auth = StringUtils.splitByWholeSeparator(t_auth,"/");
     }
 
     private DataSourceType parseDataSourceType(String dataSource)
@@ -463,5 +465,23 @@ public class CrossDataParam
             default:
                 return DataSourceType.ERROR;
         }
+    }
+
+    @Override public String toString()
+    {
+        return "CrossDataParam{" + "crossDataIp='" + crossDataIp + '\'' + ", crossDataPort=" + crossDataPort
+            + ", recordPerStatement=" + recordPerStatement + ", whereSql='" + whereSql + '\'' + ", columnNum="
+            + columnNum + ", writeType=" + writeType + ", lastSql='" + lastSql + '\'' + ", sql='" + sql + '\''
+            + ", fieldDelimiter='" + fieldDelimiter + '\'' + ", mapNum=" + mapNum + ", transferType='" + transferType
+            + '\'' + ", hdfsSource='" + hdfsSource + '\'' + ", hdfsTarget='" + hdfsTarget + '\'' + ", hadoopNode='"
+            + hadoopNode + '\'' + ", locationHdfs='" + locationHdfs + '\'' + ", locationFtp='" + locationFtp + '\''
+            + ", fileName='" + fileName + '\'' + ", DelimiterFtp='" + DelimiterFtp + '\'' + ", DelimiterHdfs='"
+            + DelimiterHdfs + '\'' + ", hiveServer2Url='" + hiveServer2Url + '\'' + ", jobCode='" + jobCode + '\''
+            + ", taskCode='" + taskCode + '\'' + ", nodeId='" + nodeId + '\'' + ", dataSource=" + dataSource
+            + ", partition='" + partition + '\'' + ", connectUrl='" + connectUrl + '\'' + ", tableName='" + tableName
+            + '\'' + ", databaseName='" + databaseName + '\'' + ", auth=" + Arrays.toString(auth) + ", t_dataSource="
+            + t_dataSource + ", t_connectUrl='" + t_connectUrl + '\'' + ", t_partition='" + t_partition + '\''
+            + ", t_tableName='" + t_tableName + '\'' + ", t_databaseName='" + t_databaseName + '\'' + ", t_auth="
+            + Arrays.toString(t_auth) + '}';
     }
 }

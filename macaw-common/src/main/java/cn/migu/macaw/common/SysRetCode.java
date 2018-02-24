@@ -223,6 +223,16 @@ public interface SysRetCode
      */
     String DATA_SYNC_PARAM_PARSE_ERROR = "0402";
 
+    /**
+     * 数据同步配置创建失败
+     */
+    String DATA_SYNC_JOB_CONFIG_CREATE_FAILED = "0403";
+
+    /**
+     * 数据同步客户端创建失败
+     */
+    String DATA_SYNC_CLIENT_CREATE_FAILED = "0404";
+
     ///////////////////////////////////////////////////////
 
     

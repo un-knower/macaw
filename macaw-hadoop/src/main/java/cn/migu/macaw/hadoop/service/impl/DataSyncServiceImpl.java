@@ -7,15 +7,29 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.migu.macaw.common.BeanUtilsEx;
+import cn.migu.macaw.common.DateUtil;
+import cn.migu.macaw.common.log.InterfaceLogBean;
+import cn.migu.macaw.common.log.ReqRespLog;
+import cn.migu.macaw.common.message.CrossDataResult;
+import cn.migu.macaw.common.message.Entity;
+import cn.migu.macaw.hadoop.service.IDataSyncService;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.hugetable.crossdata.client.CrossDataClient;
 import com.hugetable.crossdata.config.Column;
 import com.hugetable.crossdata.config.FileInfo;
 import com.hugetable.crossdata.config.JobConfig;
+import com.hugetable.crossdata.ipc.JobInfo;
+import com.hugetable.crossdata.ipc.JobStatus;
 
 import cn.migu.macaw.common.ReturnCode;
 import cn.migu.macaw.common.log.LogUtils;
@@ -31,26 +45,41 @@ import cn.migu.macaw.hadoop.model.CrossDataParam;
  * @author soy
  */
 @Service
-public class DataSyncServiceImpl
+public class DataSyncServiceImpl implements IDataSyncService
 {
+    private static final Log crossDataLog = LogFactory.getLog("crossdata");
+
     @Autowired
     private DbTool dbTool;
     
     @Autowired
     private PlatformAttribute platformAttri;
-    
-    public ReturnCode dataSync(HttpServletRequest request)
+
+    @Autowired
+    private ReqRespLog reqRespLog;
+
+    @Override
+    public ReturnCode dataSync(HttpServletRequest request,Entity entity,InterfaceLogBean logBean)
+        throws Exception
     {
         CrossDataParam params = parseDataSyncParam(request);
         if (null == params)
         {
             return ReturnCode.DATA_SYNC_PARAM_PARSE_ERROR;
         }
+
+        reqRespLog.otherLog(crossDataLog,logBean,params.toString());
         
         //特殊同步功能,暂不支持
         if (StringUtils.isNotBlank(params.getTransferType()))
         {
             return ReturnCode.DATA_SYNC_FUNC_NOT_SUPPORT;
+        }
+        
+        CrossDataClient client = createCrossDataClient(params);
+        if (null == client)
+        {
+            return ReturnCode.DATA_SYNC_CLIENT_CREATE_FAILED;
         }
         
         //源数据类型
@@ -67,9 +96,10 @@ public class DataSyncServiceImpl
                 {
                     case ORACLE:
                     case MYSQL:
-                        genJobConfigForHiveToDb(params);
+                        config = genJobConfigForHiveToDb(params);
                         break;
                     case FTP:
+                        config = genJobConfigForHdfsToFtp(params);
                         break;
                     default:
                         break;
@@ -79,31 +109,176 @@ public class DataSyncServiceImpl
                 switch (tData)
                 {
                     case HUGETABLE:
+                        config = genJobConfigForFtpToHdfs(params);
                         break;
                     default:
+                        config = genJobConfigForFtpToHive(params);
                         break;
-                }
-                break;
-            case ORACLE:
-            case MYSQL:
-            case GREENPLUM:
-                if (DataSourceType.HUGETABLE == tData)
-                {
-                    
                 }
                 break;
             default:
                 if (StringUtils.isBlank(params.getTableName()))
                 {
-                    
+                    config = genJobConfigForSqlToHdfs(params);
+                }
+                else if (DataSourceType.HUGETABLE == tData)
+                {
+                    config = genJobConfigForDbToHive(params);
+                }
+                else
+                {
+                    config = genJobConfigForDbToDb(params);
                 }
                 break;
         }
-
+        
+        if (null != config)
+        {
+            Map<String, String> baseConf = Maps.newHashMap();
+            baseConf.put("crossdata.job.user.name", platformAttri.getCrossdataJobUserName());
+            baseConf.put("mapreduce.job.queuename", platformAttri.getCrossdataJobQueueName());
+            
+            String jobId = client.submit(config, baseConf);
+            
+            while (true)
+            {
+                JobInfo info = client.getJobInfo(jobId);
+                JobStatus status = info.getStatus();
+                if (status == JobStatus.SUCCESS || status == JobStatus.FAILED || status == JobStatus.KILLED)
+                {
+                    if (JobStatus.SUCCESS == status)
+                    {
+                        String format = "yyyy-MM-dd HH:mm:ss";
+                        CrossDataResult rst = new CrossDataResult(DateUtil.tsToStr(info.getJobStartTime(),format),
+                            DateUtil.tsToStr(info.getJobEndTime(),format),jobId,String.valueOf(status.getValue()),
+                            info.getInputRecordNum(),info.outputRecordNum);
+                        entity.setContent(JSON.toJSONString(rst));
+                        entity.setAppid(jobId);
+                        if (StringUtils.isNotBlank(params.getLastSql()))
+                        {
+                            dbTool.execute(params.getT_dataSource().getDriverClass(),
+                                params.getT_connectUrl(),
+                                params.getT_auth()[0],
+                                params.getT_auth()[1],
+                                params.getLastSql().trim());
+                        }
+                    }
+                    else
+                    {
+                        entity.setErrorStack(String.format("error_code=%s,error_info=%s",info.getErrorCode(),info.getErrorInfo()));
+                    }
+                    break;
+                }
+            }
+            
+        }
+        else
+        {
+            return ReturnCode.DATA_SYNC_JOB_CONFIG_CREATE_FAILED;
+        }
+        
         return ReturnCode.SUCCESS;
         
     }
-
+    
+    /**
+     * 关系数据库数据同步到关系数据库配置
+     * @param params 请求参数
+     * @return JobConfig - hadoop job配置对象
+     */
+    private JobConfig genJobConfigForDbToDb(CrossDataParam params)
+    {
+        JobConfig config = null;
+        
+        Connection sConn = dbTool.createConnection(params.getDataSource().getDriverClass(),
+            params.getConnectUrl(),
+            params.getAuth()[0],
+            params.getAuth()[1]);
+        Connection tConn = dbTool.createConnection(params.getT_dataSource().getDriverClass(),
+            params.getT_connectUrl(),
+            params.getT_auth()[0],
+            params.getT_auth()[1]);
+        
+        try
+        {
+            config = new JobConfig(JobConfig.ResourceType.DB, JobConfig.ResourceType.DB,
+                dbTool.getColumnInfo(sConn, params.getTableName()),
+                dbTool.getColumnInfo(tConn, params.getT_tableName()));
+            //配置Input/output参数
+            config.getDbInput()
+                .setConnectUrl(params.getConnectUrl())
+                .setPassword(params.getAuth()[1])
+                .setUsername(params.getAuth()[0])
+                .setDriver(params.getDataSource().getDriverClass())
+                .setMapNum(params.getMapNum());
+            
+            //有筛选条件
+            if (StringUtils.isNotBlank(params.getWhereSql()))
+            {
+                config.getDbInput().setWhere(params.getWhereSql().trim());
+            }
+            //目标数据源是oracle 则表名大写 其余情况小写
+            if (DataSourceType.ORACLE == params.getDataSource())
+            {
+                config.getDbInput().setTableName(params.getTableName().toUpperCase());
+            }
+            else
+            {
+                config.getDbInput().setTableName(params.getTableName().toLowerCase());
+            }
+            
+            if (StringUtils.isNotBlank(params.getPartition()))
+            {
+                config.getDbInput().setDbPartition(params.getPartition());
+            }
+            
+            //目标数据
+            config.getDbOutput()
+                .setConnectUrl(params.getT_connectUrl())
+                .setPassword(params.getT_auth()[1])
+                .setUsername(params.getT_auth()[0])
+                .setDriver(params.getT_dataSource().getDriverClass())
+                .setRecordsPerStatement(params.getRecordPerStatement());
+            
+            //目标数据源是oracle 则表名大写 其余情况小写
+            if (DataSourceType.ORACLE == params.getT_dataSource())
+            {
+                config.getDbOutput().setTableName(params.getT_tableName().toUpperCase());
+            }
+            else
+            {
+                config.getDbOutput().setTableName(params.getT_tableName().toLowerCase());
+            }
+            if (StringUtils.isNotBlank(params.getT_partition()))
+            {
+                config.getDbOutput().setDbPartition(params.getT_partition());
+            }
+            
+            if (DataSynMode.OVERWRITE == params.getWriteType())
+            {
+                
+                if (DataSourceType.ORACLE == params.getT_dataSource()
+                    || DataSourceType.MYSQL == params.getT_dataSource())
+                {
+                    dbTool.truncate(tConn, params.getT_tableName(), params.getT_partition());
+                }
+                
+                config.getDbOutput().setIsOverwrite(true);
+            }
+            else if (DataSynMode.APPEND == params.getWriteType())
+            {
+                config.getDbOutput().setIsOverwrite(false);
+            }
+        }
+        finally
+        {
+            dbTool.close(sConn);
+            dbTool.close(tConn);
+        }
+        
+        return config;
+    }
+    
     /**
      * 关系数据库数据同步到HIVE配置
      * @param params 请求参数
@@ -144,15 +319,14 @@ public class DataSyncServiceImpl
                 .setPassword(params.getAuth()[1])
                 .setUsername(params.getAuth()[0])
                 .setMapNum(params.getMapNum());
-            
-            //目标数据源是oracle 则表名大写 其余情况小写
+
             if (DataSourceType.ORACLE == params.getDataSource())
             {
-                config.getDbOutput().setTableName(params.getTableName().trim().toUpperCase());
+                config.getDbInput().setTableName(params.getTableName().trim().toUpperCase());
             }
             else
             {
-                config.getDbOutput().setTableName(params.getTableName().toLowerCase());
+                config.getDbInput().setTableName(params.getTableName().toLowerCase());
             }
             
             config.getHiveOutput()
@@ -164,11 +338,11 @@ public class DataSyncServiceImpl
             
             if (DataSynMode.OVERWRITE == params.getWriteType())
             {
-                config.getDbOutput().setIsOverwrite(true);
+                config.getHiveOutput().setOverwrite(true);
             }
             else if (DataSynMode.APPEND == params.getWriteType())
             {
-                config.getDbOutput().setIsOverwrite(false);
+                config.getHiveOutput().setOverwrite(false);
             }
         }
         finally
@@ -279,6 +453,11 @@ public class DataSyncServiceImpl
             
             if (DataSynMode.OVERWRITE == params.getWriteType())
             {
+                if (DataSourceType.ORACLE == params.getT_dataSource()
+                    || DataSourceType.MYSQL == params.getT_dataSource())
+                {
+                    dbTool.truncate(tConn, params.getT_tableName(), params.getT_partition());
+                }
                 config.getDbOutput().setIsOverwrite(true);
             }
             else if (DataSynMode.APPEND == params.getWriteType())
@@ -432,6 +611,26 @@ public class DataSyncServiceImpl
     }
     
     /**
+     * 创建数据同步客户端
+     * @param params 请求参数
+     * @return CrossDataClient - 客户端对象
+     */
+    private CrossDataClient createCrossDataClient(CrossDataParam params)
+    {
+        CrossDataClient client = null;
+        try
+        {
+            client = new CrossDataClient(null, 0);
+        }
+        catch (Exception e)
+        {
+            LogUtils.runLogError(e);
+        }
+        
+        return client;
+    }
+    
+    /**
      * 解析数据同步参数
      * @param request http请求对象
      * @return CrossDataParam - 数据同步参数
@@ -453,7 +652,9 @@ public class DataSyncServiceImpl
                 .filter(e -> StringUtils.isNotBlank(e.getKey()) && keys.contains(e.getKey()))
                 .filter(e -> null != e.getValue() && e.getValue().length > 0)
                 .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()[0]));
-            BeanUtils.populate(bean, paramMap);
+
+            BeanUtilsEx.populate(bean, paramMap);
+
             
             return bean;
         }

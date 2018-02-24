@@ -17,6 +17,8 @@ eureka:
 spring:
   application:
     name: hadoop-service
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
   datasource:
     name: macaw-ht-ds
     driver-class-name: com.chinamobile.cmss.ht.Driver
@@ -70,6 +72,8 @@ spring:
 
 crossdata:
   default-ftp-path: /crossdata/test_ftp/
+  job-user-name: hugetable
+  job-queuename: root.hugetable.default
 
 # 日志
 logging:
