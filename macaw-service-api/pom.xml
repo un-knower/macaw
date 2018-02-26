@@ -18,6 +18,7 @@
         <module>macaw-hadoop-api</module>
         <module>macaw-supervisor-api</module>
         <module>macaw-jar-boot-api</module>
+        <module>macaw-crossdata-api</module>
     </modules>
 
     <dependencyManagement>

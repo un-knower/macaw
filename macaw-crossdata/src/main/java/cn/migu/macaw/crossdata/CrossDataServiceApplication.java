@@ -1,24 +1,23 @@
-package cn.migu.macaw.hadoop;
+package cn.migu.macaw.crossdata;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-
-import cn.migu.macaw.common.PackageInfo;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import cn.migu.macaw.common.PackageInfo;
+
 /**
- * hadoop服务
+ * 数据同步
  * @author soy
  */
 //@EnableDiscoveryClient
 @SpringBootApplication
 @ComponentScan(PackageInfo.COMPONENT_SCAN_BASE)
-public class HadoopServiceApplication implements CommandLineRunner
+public class CrossDataServiceApplication implements CommandLineRunner
 {
 
     @Bean
@@ -34,7 +33,7 @@ public class HadoopServiceApplication implements CommandLineRunner
 
     public static void main(String[] args)
     {
-        SpringApplication.run(HadoopServiceApplication.class, args);
+        SpringApplication.run(CrossDataServiceApplication.class, args);
     }
 
     @Override

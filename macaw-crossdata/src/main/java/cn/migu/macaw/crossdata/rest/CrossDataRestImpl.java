@@ -1,20 +1,8 @@
-package cn.migu.macaw.hadoop.rest;
+package cn.migu.macaw.crossdata.rest;
 
 import javax.servlet.http.HttpServletRequest;
 
-import cn.migu.macaw.common.RequestKey;
-import cn.migu.macaw.common.ReturnCode;
-import cn.migu.macaw.common.ServiceName;
-import cn.migu.macaw.common.log.InterfaceLogBean;
-import cn.migu.macaw.common.log.LogUtils;
-import cn.migu.macaw.common.log.ReqRespLog;
-import cn.migu.macaw.common.message.Entity;
-import cn.migu.macaw.common.message.Response;
-import cn.migu.macaw.hadoop.api.service.HadoopService;
-import cn.migu.macaw.hadoop.model.SqlParam;
-import cn.migu.macaw.hadoop.service.IDataSyncService;
-import cn.migu.macaw.hadoop.service.IHugetableService;
-import com.alibaba.fastjson.JSON;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -22,18 +10,28 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
+
+import cn.migu.macaw.common.RequestKey;
+import cn.migu.macaw.common.ReturnCode;
+import cn.migu.macaw.common.ServiceName;
+import cn.migu.macaw.crossdata.api.service.CrossDataService;
+import cn.migu.macaw.common.log.InterfaceLogBean;
+import cn.migu.macaw.common.log.LogUtils;
+import cn.migu.macaw.common.log.ReqRespLog;
+import cn.migu.macaw.common.message.Entity;
+import cn.migu.macaw.common.message.Response;
+import cn.migu.macaw.crossdata.service.IDataSyncService;
+
 /**
- * hadoop服务
+ * 数据同步服务
  *
  * @author soy
  */
 @RestController
-public class HadoopRestImpl implements HadoopService
+public class CrossDataRestImpl implements CrossDataService
 {
     private static final Log crossDataLog = LogFactory.getLog("crossdata");
-
-    @Autowired
-    private IHugetableService hugeTable;
 
     @Autowired
     private IDataSyncService dataSyncService;
@@ -41,23 +39,7 @@ public class HadoopRestImpl implements HadoopService
     @Autowired
     private ReqRespLog reqRespLog;
 
-    @Override
-    public Response hugetableSql(HttpServletRequest request)
-    {
-        SqlParam sqlParam = new SqlParam(request.getParameter(RequestKey.SQL),request.getParameter(RequestKey.DATA_BASE_NAME),request.getParameter(RequestKey.USER_NAME),request.getParameter(RequestKey.PASSWORD));
-        Response response = new Response();
-        Entity res = hugeTable.executeSql(sqlParam);
-        response.setResponse(res);
 
-        return response;
-    }
-    
-    @Override
-    public Response hugetableSqlSelect(HttpServletRequest request)
-    {
-        return null;
-    }
-    
     @Override
     public Response dataBaseSyncStart(HttpServletRequest request)
     {

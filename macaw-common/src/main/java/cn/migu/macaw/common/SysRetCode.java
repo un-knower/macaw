@@ -233,6 +233,26 @@ public interface SysRetCode
      */
     String DATA_SYNC_CLIENT_CREATE_FAILED = "0404";
 
+    /**
+     * 数据同步任务失败
+     */
+    String DATA_SYNC_JOB_FAILED = "0405";
+
+    /**
+     * 数据同步任务被停止
+     */
+    String DATA_SYNC_JOB_KILLED = "0406";
+
+    /**
+     * 停止数据同步任务失败
+     */
+    String DATA_SYNC_JOB_KILL_FAILED = "0407";
+
+    /**
+     * 数据同步任务id为空
+     */
+    String DATA_SYNC_JOB_ID_EMPTY = "0408";
+
     ///////////////////////////////////////////////////////
 
     

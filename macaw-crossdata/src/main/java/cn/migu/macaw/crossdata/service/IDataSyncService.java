@@ -1,11 +1,10 @@
-package cn.migu.macaw.hadoop.service;
+package cn.migu.macaw.crossdata.service;
+
+import javax.servlet.http.HttpServletRequest;
 
 import cn.migu.macaw.common.ReturnCode;
 import cn.migu.macaw.common.log.InterfaceLogBean;
 import cn.migu.macaw.common.message.Entity;
-import com.hugetable.crossdata.client.CrossDataClient;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 数据同步服务层
@@ -20,7 +19,7 @@ public interface IDataSyncService
      * @return ReturnCode - 返回码
      * @throws Exception 系统抛出异常
      */
-    ReturnCode dataSyncStart(HttpServletRequest request,Entity entity,InterfaceLogBean logBean) throws Exception;
+    ReturnCode dataSyncStart(HttpServletRequest request, Entity entity, InterfaceLogBean logBean) throws Exception;
 
     /**
      * 停止数据同步服务

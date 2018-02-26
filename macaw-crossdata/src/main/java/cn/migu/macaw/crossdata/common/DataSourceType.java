@@ -1,4 +1,4 @@
-package cn.migu.macaw.hadoop.common;
+package cn.migu.macaw.crossdata.common;
 
 /**
  * 数据源类型

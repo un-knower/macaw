@@ -45,4 +45,6 @@ public interface RequestKey
     String CROSS_DATA_IP = "crossDataIp";
 
     String CROSS_DATA_PORT = "crossDataPort";
+
+    String CROSS_DATA_JOB_ID = "crossDataJobId";
 }

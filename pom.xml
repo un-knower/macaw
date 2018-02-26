@@ -20,6 +20,7 @@
         <module>macaw-sparkdriver-manager</module>
         <module>macaw-hadoop</module>
         <module>macaw-jar-boot</module>
+        <module>macaw-crossdata</module>
     </modules>
 
     <groupId>cn.migu</groupId>
@@ -67,6 +68,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>macaw-hadoop-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>macaw-crossdata-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

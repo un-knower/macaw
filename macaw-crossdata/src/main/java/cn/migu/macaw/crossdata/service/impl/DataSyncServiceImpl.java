@@ -1,4 +1,4 @@
-package cn.migu.macaw.hadoop.service.impl;
+package cn.migu.macaw.crossdata.service.impl;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -9,14 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import cn.migu.common.redis.StringRedisService;
-import cn.migu.macaw.common.*;
-import cn.migu.macaw.common.log.InterfaceLogBean;
-import cn.migu.macaw.common.log.ReqRespLog;
-import cn.migu.macaw.common.message.CrossDataResult;
-import cn.migu.macaw.common.message.Entity;
-import cn.migu.macaw.hadoop.service.IDataSyncService;
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -24,7 +16,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hugetable.crossdata.client.CrossDataClient;
@@ -34,13 +28,19 @@ import com.hugetable.crossdata.config.JobConfig;
 import com.hugetable.crossdata.ipc.JobInfo;
 import com.hugetable.crossdata.ipc.JobStatus;
 
+import cn.migu.common.redis.StringRedisService;
+import cn.migu.macaw.common.*;
+import cn.migu.macaw.common.log.InterfaceLogBean;
 import cn.migu.macaw.common.log.LogUtils;
-import cn.migu.macaw.hadoop.PlatformAttribute;
-import cn.migu.macaw.hadoop.common.DataSourceType;
-import cn.migu.macaw.hadoop.common.DataSynMode;
-import cn.migu.macaw.hadoop.common.DbTool;
-import cn.migu.macaw.hadoop.model.CrossDataParam;
-import org.springframework.web.client.RestTemplate;
+import cn.migu.macaw.common.log.ReqRespLog;
+import cn.migu.macaw.common.message.CrossDataResult;
+import cn.migu.macaw.common.message.Entity;
+import cn.migu.macaw.crossdata.PlatformAttribute;
+import cn.migu.macaw.crossdata.common.DataSourceType;
+import cn.migu.macaw.crossdata.common.DataSynMode;
+import cn.migu.macaw.crossdata.common.DbTool;
+import cn.migu.macaw.crossdata.model.CrossDataParam;
+import cn.migu.macaw.crossdata.service.IDataSyncService;
 
 /**
  * 数据同步服务实现

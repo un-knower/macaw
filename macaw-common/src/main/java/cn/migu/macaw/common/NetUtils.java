@@ -17,6 +17,8 @@ import com.google.common.net.InetAddresses;
  */
 public class NetUtils
 {
+    public final static String LOCAL_FLAG = "local";
+
     // ------------------------------------------------------------------------
     //  Lookup of to free ports
     // ------------------------------------------------------------------------

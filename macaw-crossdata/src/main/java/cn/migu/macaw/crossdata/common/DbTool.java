@@ -1,16 +1,14 @@
-package cn.migu.macaw.hadoop.common;
+package cn.migu.macaw.crossdata.common;
 
 import java.sql.*;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
 import com.hugetable.crossdata.config.Column;
 
 import cn.migu.macaw.common.log.LogUtils;

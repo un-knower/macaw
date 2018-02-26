@@ -886,6 +886,20 @@ public class JobTasksServiceImpl implements IJobTasksService
     }
 
     /**
+     * job运行所在主机的地址端口
+     * @param jobCode 任务编码
+     * @return String - 地址端口(格式ip:port)
+     */
+    private String jobIpPort(String jobCode)
+        throws UnknownHostException
+    {
+        int port = env.getProperty("server.port",Integer.class);
+        String ipPort = NetUtils.ipAddressAndPortToUrlString(InetAddress.getLocalHost(),port);
+
+        return ipPort;
+    }
+
+    /**
      * 存job运行实例所在的地址端口
      * @param jobCode
      */
@@ -893,8 +907,7 @@ public class JobTasksServiceImpl implements IJobTasksService
     {
         try
         {
-            int port = env.getProperty("server.port",Integer.class);
-            String ipPort = NetUtils.ipAddressAndPortToUrlString(InetAddress.getLocalHost(),port);
+            String ipPort = jobIpPort(jobCode);
             jobTasksCache.put(jobCode,"-",DataConstants.JOB_INSTANCE_ADDRESS,StringUtils.join("http://",ipPort));
         }
         catch (Exception e)
@@ -914,13 +927,13 @@ public class JobTasksServiceImpl implements IJobTasksService
         String address = jobTasksCache.get(jobCode,"-",DataConstants.JOB_INSTANCE_ADDRESS);
         if(StringUtils.isNotEmpty(address))
         {
-            String ip = StringUtils.substringsBetween(address,"http://",":")[0];
             try
             {
-                String localIp = NetUtils.ipAddressToUrlString(InetAddress.getLocalHost());
-                if(StringUtils.equals(ip,localIp))
+
+                String localIp = jobIpPort(jobCode);
+                if(StringUtils.equals(address,localIp))
                 {
-                    return "local";
+                    return NetUtils.LOCAL_FLAG;
                 }
 
                 return address;

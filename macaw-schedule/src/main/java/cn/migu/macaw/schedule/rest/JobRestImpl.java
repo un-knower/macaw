@@ -3,6 +3,7 @@ package cn.migu.macaw.schedule.rest;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.migu.macaw.common.NetUtils;
 import cn.migu.macaw.common.RestTemplateProvider;
 import cn.migu.macaw.schedule.api.service.ScheduleJobService;
 import com.google.common.collect.Maps;
@@ -39,8 +40,6 @@ import java.util.Map;
 @RestController
 public class JobRestImpl implements ScheduleJobService
 {
-
-    private final String JOB_THREAD_POS = "local";
 
     @Resource
     private SchedulerTemplate schedulerTemplate;
@@ -396,7 +395,7 @@ public class JobRestImpl implements ScheduleJobService
 
             if(null != redirectAddress)
             {
-                if(StringUtils.equals(JOB_THREAD_POS,redirectAddress))
+                if(StringUtils.equals(NetUtils.LOCAL_FLAG,redirectAddress))
                 {
                     try
                     {
