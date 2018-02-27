@@ -195,6 +195,10 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         postParams.put(CROSS_DATA_IP, crossDataIp);
         
         postParams.put(CROSS_DATA_PORT, crossDataPort);
+
+        postParams.put("jobCode", brief.getJobCode());
+        postParams.put("taskCode", brief.getTaskCode());
+        postParams.put("nodeId", brief.getNodeId());
         
         String response = null;
         
@@ -203,13 +207,13 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         Entity sr = null;
         
         redisService.setForHashKeyCounter(brief.getJobCode(), FieldKey.CROSSDATA_JOB_EXISTED);
-        
+
         for (int i = 0; i < REQ_RETRY; i++)
         {
             response = this.post(url, postParams, brief);
-            
+
             sqlrObj = JSON.parseObject(response, Response.class, Feature.InitStringFieldAsEmpty);
-            
+
             sr = sqlrObj.getResponse();
             if (StringUtils.contains(sr.getErrorStack(), "org.apache.thrift.transport.TTransportException"))
             {
@@ -221,22 +225,23 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
                 {
                     Thread.sleep(30000);
                 }
-                
+
                 continue;
             }
             else
             {
                 if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS))
                 {
-                    LogUtils.runLogError(response);
+                    redisService.delForHashKeyCounter(brief.getJobCode(), FieldKey.CROSSDATA_JOB_EXISTED);
+                    throw new IllegalStateException(sr.getErrorStack());
                 }
                 break;
             }
-            
+
         }
-        
+
         redisService.delForHashKeyCounter(brief.getJobCode(), FieldKey.CROSSDATA_JOB_EXISTED);
-        
+
         return sr;
         
     }
@@ -629,8 +634,7 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         
         for (int i = 0; i < REQ_RETRY; i++)
         {
-            String qryUrl = StringUtils.join(platformAttr.getBasePlatformUrl(), JDBC_EXECUTE_QUERY);
-            //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", JDBC_EXECUTE_QUERY);
+            String qryUrl = ServiceUrlProvider.hugetableSqlService(JDBC_EXECUTE_QUERY);
             String result = this.post(qryUrl, entity, brief);
             
             JSONObject jsonObject = JSONObject.parseObject(result);

@@ -47,7 +47,14 @@ public class HugetableRestImpl implements HugetableSqlService
     @Override
     public Response hugetableSqlSelect(HttpServletRequest request)
     {
-        return null;
+        SqlParam sqlParam =
+            new SqlParam(request.getParameter(RequestKey.SQL), request.getParameter(RequestKey.DATA_BASE_NAME),
+                request.getParameter(RequestKey.USER_NAME), request.getParameter(RequestKey.PASSWORD));
+        Response response = new Response();
+        Entity res = hugeTable.executeQuery(sqlParam);
+        response.setResponse(res);
+
+        return response;
     }
     
 }

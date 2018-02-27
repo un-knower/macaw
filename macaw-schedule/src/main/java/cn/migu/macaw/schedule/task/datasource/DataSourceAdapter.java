@@ -394,7 +394,7 @@ public class DataSourceAdapter
             case T_MYSQL_DS_TYPE:
             case T_FTP_DS_TYPE:
             case T_SFTP_DS_TYPE:
-                dsAttr.setTargetconnectAddr((ods.getAddress()));
+                dsAttr.setTargetConnectAddr((ods.getAddress()));
                 dsAttr.setTargetUsername(ods.getUsername());
                 dsAttr.setTargetPassword(ods.getPassword());
                 break;
@@ -402,7 +402,7 @@ public class DataSourceAdapter
                 dsAttr.setTargetHdfsPrefixSchema(ods.getAddress());
                 break;
             case T_HIVE_DS_TYPE:
-                dsAttr.setTargetconnectAddr(ods.getAddress());
+                dsAttr.setTargetConnectAddr(ods.getAddress());
                 break;
             default:
                 break;

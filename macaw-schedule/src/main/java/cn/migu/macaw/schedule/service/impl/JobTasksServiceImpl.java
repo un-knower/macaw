@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import cn.migu.macaw.common.NetUtils;
+import cn.migu.macaw.common.*;
 import cn.migu.macaw.schedule.PlatformAttr;
 import cn.migu.macaw.schedule.task.util.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -27,9 +27,6 @@ import com.nirmata.workflow.models.Task;
 import com.nirmata.workflow.models.TaskId;
 import com.nirmata.workflow.models.TaskType;
 
-import cn.migu.macaw.common.ApplicationContextProvider;
-import cn.migu.macaw.common.RestTemplateProvider;
-import cn.migu.macaw.common.ServiceName;
 import cn.migu.macaw.common.log.LogUtils;
 import cn.migu.macaw.dag.alg.PathsLib;
 import cn.migu.macaw.dag.idgraph.IdDag;
@@ -93,8 +90,8 @@ public class JobTasksServiceImpl implements IJobTasksService
     
     @Resource
     private TaskTemplateMapper taskTempletMapper;
-    
-    @Resource(name = "restTemplate")
+
+    @Resource(name = "restTemplateForLoadBalance")
     private RestTemplate restTemplate;
 
     @Autowired
@@ -330,8 +327,7 @@ public class JobTasksServiceImpl implements IJobTasksService
         {
             Map<String, String> params = Maps.newHashMap();
             
-            String crossdataServiceUrl = StringUtils.join(platformAttr.getBasePlatformUrl(),RequestServiceUri.DB_CROSSDATA_KILL);
-                //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/crossdatajob/shutdown.do");
+            String crossdataServiceUrl = ServiceUrlProvider.crossDataService(RequestServiceUri.DB_CROSSDATA_KILL);
             params.put("batchNum", jobCode);
             httpRequest(crossdataServiceUrl, params, batchNo);
         }

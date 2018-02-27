@@ -257,12 +257,12 @@ public class DataSourceFlatAttr
         this.targetDriverClass = targetDriverClass;
     }
     
-    public String getTargetonnectAddr()
+    public String getTargetConnectAddr()
     {
         return targetConnectAddr;
     }
     
-    public void setTargetconnectAddr(String targetConnectAddr)
+    public void setTargetConnectAddr(String targetConnectAddr)
     {
         this.targetConnectAddr = targetConnectAddr;
     }

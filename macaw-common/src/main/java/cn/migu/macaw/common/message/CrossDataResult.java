@@ -11,7 +11,7 @@ public class CrossDataResult
 
     private String endtime;
 
-    private String jobCode;
+    private String jobId;
 
     private String jobState;
 
@@ -24,12 +24,12 @@ public class CrossDataResult
 
     }
 
-    public CrossDataResult(String starttime, String endtime, String jobCode, String jobState, long inputRecordNum,
+    public CrossDataResult(String starttime, String endtime, String jobId, String jobState, long inputRecordNum,
         long outputRecordNum)
     {
         this.starttime = starttime;
         this.endtime = endtime;
-        this.jobCode = jobCode;
+        this.jobId = jobId;
         this.jobState = jobState;
         this.inputRecordNum = inputRecordNum;
         this.outputRecordNum = outputRecordNum;
@@ -55,14 +55,14 @@ public class CrossDataResult
         this.endtime = endtime;
     }
 
-    public String getJobCode()
+    public String getJobId()
     {
-        return jobCode;
+        return jobId;
     }
 
-    public void setJobCode(String jobCode)
+    public void setJobId(String jobId)
     {
-        this.jobCode = jobCode;
+        this.jobId = jobId;
     }
 
     public String getJobState()

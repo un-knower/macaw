@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.migu.macaw.schedule.dao.CrossdataBatchLogMapper">
+  <resultMap id="BaseResultMap" type="cn.migu.macaw.schedule.api.model.CrossdataBatchLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="OBJ_ID" jdbcType="VARCHAR" property="objId" />
+    <result column="JOB_ID" jdbcType="VARCHAR" property="jobId" />
+    <result column="BATCH_NO" jdbcType="VARCHAR" property="batchNo" />
+    <result column="IN_SOURCE" jdbcType="VARCHAR" property="inSource" />
+    <result column="OUT_SOURCE" jdbcType="VARCHAR" property="outSource" />
+    <result column="DATA_KIND" jdbcType="INTEGER" property="dataKind" />
+    <result column="OUTPUT_NUM" jdbcType="BIGINT" property="outputNum" />
+    <result column="INPUT_NUM" jdbcType="BIGINT" property="inputNum" />
+    <result column="START_TIME" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="ELAPSE" jdbcType="BIGINT" property="elapse" />
+    <result column="JOB_CODE" jdbcType="VARCHAR" property="jobCode" />
+    <result column="JOB_STATE" jdbcType="VARCHAR" property="jobState" />
+  </resultMap>
+</mapper>

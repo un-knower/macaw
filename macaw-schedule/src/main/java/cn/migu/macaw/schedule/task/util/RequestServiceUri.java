@@ -66,7 +66,7 @@ public interface RequestServiceUri
     /**
      * jdbc方式查询HT
      */
-    String JDBC_EXECUTE_QUERY = "SparkSQL/executeQuery.do";
+    String JDBC_EXECUTE_QUERY = "hugetable-sql-select";
 
     /**
      *
@@ -76,12 +76,12 @@ public interface RequestServiceUri
     /**
      * 数据同步
      */
-    String COMMON_DB_CROSSDATA = "commonDbCrossdata.do";
+    String COMMON_DB_CROSSDATA = "crossdata-start";
 
     /**
      * 停止数据同步服务
      */
-    String DB_CROSSDATA_KILL = "crossdatajob/shutdown.do";
+    String DB_CROSSDATA_KILL = "crossdata-stop";
 
     /**
      * 创建spark session

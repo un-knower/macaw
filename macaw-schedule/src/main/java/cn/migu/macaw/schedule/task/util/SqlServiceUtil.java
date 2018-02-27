@@ -318,8 +318,7 @@ public class SqlServiceUtil
     public void executeForHt(TaskNodeBrief brief, DataSourceFlatAttr dsAttr, String nodeRunSql)
         throws Exception
     {
-        String url = StringUtils.join(platformAttr.getBasePlatformUrl(), RequestServiceUri.JDBC_EXECUTE_QUERY);
-            //StringUtils.join("http://", ServiceName.DATA_SYN_AND_HT, "/", "/SparkSQL/executeSql.do");
+        String url = ServiceUrlProvider.hugetableSqlService(RequestServiceUri.JDBC_EXECUTE_QUERY);
         
         for (int i = 0; i < RETRY_TIME; i++)
         {
