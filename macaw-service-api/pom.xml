@@ -19,6 +19,7 @@
         <module>macaw-jar-boot-api</module>
         <module>macaw-crossdata-api</module>
         <module>macaw-hugetable-api</module>
+        <module>macaw-hdfs-api</module>
     </modules>
 
     <dependencyManagement>

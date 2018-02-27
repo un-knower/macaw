@@ -1,0 +1,30 @@
+server:
+  # 端口
+  port: 8088
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+#    serviceUrl:
+#      defaultZone: http://MGXY-migudmzftp004:8001/eureka/,http://MGXY-migudmzftp005:8001/eureka/
+#    healthcheck:
+#        enabled: true
+#        instance:
+#            lease-expiration-duration-in-seconds: 30
+#            lease-renewal-interval-in-seconds: 10
+
+spring:
+  application:
+    name: hdfs
+  jackson:
+    default-property-inclusion: NON_NULL
+
+hdfs:
+  ha-conf: '{"clustername":"hadoop","namenodes":[{"hostname":"ndl-bass-ys-vm-129-186","port":"8020"},{"hostname":"ndl-bass-ys-vm-129-187","port":"8020"}]}'
+
+# 日志
+logging:
+  level:
+    cn.migu: INFO
+

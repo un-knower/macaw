@@ -21,6 +21,7 @@
         <module>macaw-jar-boot</module>
         <module>macaw-crossdata</module>
         <module>macaw-hugetable</module>
+        <module>macaw-hdfs</module>
     </modules>
 
     <groupId>cn.migu</groupId>
@@ -63,6 +64,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>macaw-dag</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>macaw-hdfs-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

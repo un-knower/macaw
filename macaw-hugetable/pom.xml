@@ -53,11 +53,11 @@
         </dependency>
         <!-- hugetable操作必需包 End -->
 
-        <dependency>
+        <!--<dependency>
             <groupId>commons-dbutils</groupId>
             <artifactId>commons-dbutils</artifactId>
             <version>1.6</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>com.alibaba</groupId>
