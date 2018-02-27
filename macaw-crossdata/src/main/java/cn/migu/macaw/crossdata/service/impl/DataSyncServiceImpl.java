@@ -103,7 +103,7 @@ public class DataSyncServiceImpl implements IDataSyncService
         
         switch (sData)
         {
-            case HUGETABLE:
+            case HIVE:
                 switch (tData)
                 {
                     case ORACLE:
@@ -120,7 +120,7 @@ public class DataSyncServiceImpl implements IDataSyncService
             case FTP:
                 switch (tData)
                 {
-                    case HUGETABLE:
+                    case HIVE:
                         config = genJobConfigForFtpToHdfs(params);
                         break;
                     default:
@@ -133,7 +133,7 @@ public class DataSyncServiceImpl implements IDataSyncService
                 {
                     config = genJobConfigForSqlToHdfs(params);
                 }
-                else if (DataSourceType.HUGETABLE == tData)
+                else if (DataSourceType.HIVE == tData)
                 {
                     config = genJobConfigForDbToHive(params);
                 }
@@ -370,7 +370,7 @@ public class DataSyncServiceImpl implements IDataSyncService
                 .setUsername(params.getT_auth()[0])
                 .setDriver(params.getT_dataSource().getDriverClass())
                 .setRecordsPerStatement(params.getRecordPerStatement());
-            
+
             //目标数据源是oracle 则表名大写 其余情况小写
             if (DataSourceType.ORACLE == params.getT_dataSource())
             {

@@ -15,10 +15,10 @@
         <module>macaw-common-entity</module>
         <module>macaw-schedule-api</module>
         <module>macaw-sparkdriver-manager-api</module>
-        <module>macaw-hadoop-api</module>
         <module>macaw-supervisor-api</module>
         <module>macaw-jar-boot-api</module>
         <module>macaw-crossdata-api</module>
+        <module>macaw-hugetable-api</module>
     </modules>
 
     <dependencyManagement>

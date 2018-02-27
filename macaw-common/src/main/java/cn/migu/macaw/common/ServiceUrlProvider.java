@@ -22,9 +22,14 @@ public class ServiceUrlProvider implements ServiceName,ServiceModule
         return String.format("http://%s/%s/%s",JOB_SCHEDULE,SCHEDULE,service);
     }
 
-    public final static String hadoopService(String service)
+    public final static String crossDataService(String service)
     {
-        return String.format("http://%s/%s/%s",HADOOP_SERVICE,HADOOP,service);
+        return String.format("http://%s/%s",CROSSDATA,service);
+    }
+
+    public final static String hugetableSqlService(String service)
+    {
+        return String.format("http://%s/%s",HUGETABLE_SQL,service);
     }
 
 

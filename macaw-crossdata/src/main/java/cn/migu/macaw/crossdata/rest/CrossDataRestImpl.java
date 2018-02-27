@@ -43,7 +43,7 @@ public class CrossDataRestImpl implements CrossDataService
     @Override
     public Response dataBaseSyncStart(HttpServletRequest request)
     {
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request, ServiceName.HADOOP_SERVICE);
+        InterfaceLogBean logBean = reqRespLog.initLogBean(request, ServiceName.CROSSDATA);
         reqRespLog.requestLog(request,crossDataLog,logBean);
 
         Entity entity = new Entity();
@@ -72,7 +72,7 @@ public class CrossDataRestImpl implements CrossDataService
     @Override
     public Response dataBaseSyncStop(HttpServletRequest request)
     {
-        InterfaceLogBean logBean = reqRespLog.initLogBean(request, ServiceName.HADOOP_SERVICE);
+        InterfaceLogBean logBean = reqRespLog.initLogBean(request, ServiceName.CROSSDATA);
         reqRespLog.requestLog(request,crossDataLog,logBean);
 
         Entity entity = new Entity();

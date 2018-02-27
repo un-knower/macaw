@@ -454,7 +454,7 @@ public class CrossDataParam
         switch(dataSource)
         {
             case "hugetable":
-                return DataSourceType.HUGETABLE;
+                return DataSourceType.HIVE;
             case "oracle":
                 return DataSourceType.ORACLE;
             case "mysql":

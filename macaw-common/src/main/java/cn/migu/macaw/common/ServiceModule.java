@@ -16,8 +16,4 @@ public interface ServiceModule
      */
     String RESOURCE = "resource";
 
-    /**
-     * hadoop服务模块
-     */
-    String HADOOP = "hadoop";
 }

@@ -18,12 +18,17 @@ public interface ServiceName
     String SPARK_DRIVER_RES_MGR = "spark-driver-manager";
 
     /**
-     * HADOOP平台底层服务实例
+     * 数据同步服务实例
      */
-    String HADOOP_SERVICE = "hadoop-service";
+    String CROSSDATA = "crossdata";
 
     /**
      * 系统服务jar启动实例
      */
     String JAR_BOOT = "jar-boot";
+
+    /**
+     * hugetable sql实例
+     */
+    String HUGETABLE_SQL = "hugetable-sql";
 }

@@ -8,9 +8,10 @@ package cn.migu.macaw.crossdata.common;
 public enum DataSourceType
 {
     /**
-     * 大表
+     * HIVE表
      */
-    HUGETABLE("com.chinamobile.cmss.ht.Driver"),
+    HIVE("com.chinamobile.cmss.ht.Driver"),
+
     /**
      * mysql
      */

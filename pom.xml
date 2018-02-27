@@ -18,9 +18,9 @@
         <module>macaw-schedule</module>
         <module>macaw-dag</module>
         <module>macaw-sparkdriver-manager</module>
-        <module>macaw-hadoop</module>
         <module>macaw-jar-boot</module>
         <module>macaw-crossdata</module>
+        <module>macaw-hugetable</module>
     </modules>
 
     <groupId>cn.migu</groupId>
@@ -67,12 +67,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>macaw-hadoop-api</artifactId>
+                <artifactId>macaw-crossdata-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>macaw-crossdata-api</artifactId>
+                <artifactId>macaw-hugetable-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
