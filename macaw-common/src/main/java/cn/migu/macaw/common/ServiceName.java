@@ -31,4 +31,9 @@ public interface ServiceName
      * hugetable sql实例
      */
     String HUGETABLE_SQL = "hugetable-sql";
+
+    /**
+     * hdfs文件实例
+     */
+    String HDFS = "hdfs";
 }

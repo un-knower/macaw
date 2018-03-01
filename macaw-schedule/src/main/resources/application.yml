@@ -63,6 +63,19 @@ spring:
   jackson:
     default-property-inclusion: NON_NULL
 
+ribbon:
+  ReadTimeout: 180000
+  ConnectTimeout: 180000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 2
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 180000
+
 spark:
   master-url: spark://172.18.111.3:7077
 hdfs:
@@ -102,5 +115,5 @@ pagehelper:
 # 日志
 logging:
   level:
-    cn.migu.macaw.schedule: INFO
+    cn.migu: INFO
 

@@ -47,4 +47,18 @@ public interface RequestKey
     String CROSS_DATA_PORT = "crossDataPort";
 
     String CROSS_DATA_JOB_ID = "crossDataJobId";
+
+    String HOST = "host";
+
+    String PORT = "port";
+
+    String DB_INDEX = "db_index";
+
+    String DB_URL = "dburl";
+
+    String DB_DRIVER = "dbdriver";
+
+    String DB_USER = "dbuser";
+
+    String DB_PASSWORD = "dbpassword";
 }

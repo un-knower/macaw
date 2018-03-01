@@ -22,6 +22,7 @@ spring:
 
 hdfs:
   ha-conf: '{"clustername":"hadoop","namenodes":[{"hostname":"ndl-bass-ys-vm-129-186","port":"8020"},{"hostname":"ndl-bass-ys-vm-129-187","port":"8020"}]}'
+  default-user: service
 
 # 日志
 logging:

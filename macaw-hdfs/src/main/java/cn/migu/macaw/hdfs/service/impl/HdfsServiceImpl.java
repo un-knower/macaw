@@ -1,124 +1,128 @@
 package cn.migu.macaw.hdfs.service.impl;
 
-import cn.migu.macaw.hdfs.service.IHdfsService;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang3.StringUtils;
+import java.io.IOException;
+import java.net.URI;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.fs.Path;
+import org.springframework.stereotype.Service;
+
+import cn.migu.macaw.hdfs.service.IHdfsService;
 
 /**
  * hdfs文件操作
  *
  * @author soy
  */
+@Service
 public class HdfsServiceImpl implements IHdfsService
 {
-    @Value("${hdfs.ha-conf}")
-    private String hdfsHaConf;
-
-    private final String HDFS_CLUSTER_NAME_KEY = "clustername";
-
-    private final String NAMENODES_KEY = "namenodes";
-
-    private final String HOSTNAME_KEY = "hostname";
-
-    private final String PORT_KEY = "port";
+    private static final Log logger = LogFactory.getLog(HdfsServiceImpl.class);
 
     /**
-     * 创建配置对象
-     *
-     * @param confStr
-     * @return
+     * 删除hdfs文件
+     * @param conf ha配置
+     * @param hdfsPath hdfs文件路径
+     * @param user 用户
+     * @return boolean - 是否操作成功
      */
-    public Configuration createConf(String confStr)
+    @Override
+    public boolean delete(Configuration conf, String hdfsPath, String user)
     {
-        if (StringUtils.isNotEmpty(confStr))
+        Path path = new Path(hdfsPath);
+        FileSystem fs = null;
+        try
         {
-            //解析hdfs配置参数
-            JSONObject jsonObj = JSONObject.parseObject(confStr);
-            String clusterName = jsonObj.getString(HDFS_CLUSTER_NAME_KEY);
-
-            JSONArray namenodes = jsonObj.getJSONArray(NAMENODES_KEY);
-
-            int bsize = namenodes.size();
-
-            String[] hostnames = new String[bsize];
-            String[] ports = new String[bsize];
-            for (int i = 0; i < namenodes.size(); i++)
+            fs = FileSystem.get(URI.create(conf.get("fs.defaultFS")), conf, user);
+            
+            if (fs != null)
             {
-                JSONObject nn = (JSONObject)namenodes.get(i);
-                hostnames[i] = nn.getString(HOSTNAME_KEY);
-                ports[i] = nn.getString(PORT_KEY);
+                fs.deleteOnExit(path);
             }
-
-            Configuration pConf = makeHaConf(clusterName, hostnames, ports);
-            if (null == pConf)
-            {
-                throw new IllegalArgumentException("hdfs配置参数无效:" + confStr);
-            }
-            return pConf;
         }
-
-        return null;
+        catch (InterruptedException e1)
+        {
+            return false;
+        }
+        catch (IOException e2)
+        {
+            e2.printStackTrace();
+            return false;
+        }
+        finally
+        {
+            try
+            {
+                if (null != fs)
+                {
+                    fs.close();
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
-
+    
     /**
-     * 解析ha配置
-     * @param clusterName
-     * @param hostnames
-     * @param ports
-     * @return
+     * 拷贝hdfs文件至本地
+     * @param conf ha配置
+     * @param hdfsFile hdfs文件路径
+     * @param localFile 本地文件路径
+     * @return boolean - 操作是否成功
      */
-    private Configuration makeHaConf(String clusterName, String[] hostnames, String[] ports)
+    @Override
+    public boolean copyToLocal(Configuration conf, String hdfsFile, String localFile)
     {
-        if (StringUtils.isEmpty(clusterName))
+        boolean result = false;
+        
+        FileSystem dstFS = null;
+        
+        FileSystem srcFS = null;
+        
+        try
         {
-            return null;
+            dstFS = FileSystem.getLocal(conf);
+            srcFS = FileSystem.get(URI.create(conf.get("fs.defaultFS")), conf);
+            
+            Path dstpath = new Path(localFile);
+            Path srcpath = new Path(hdfsFile);
+            
+            result = FileUtil.copy(srcFS, srcpath, dstFS, dstpath, false, conf);
+            
         }
-
-        if (hostnames.length != ports.length)
+        catch (Exception e)
         {
-            return null;
+            logger.error("",e);
+            result = false;
         }
-
-        Configuration conf = new Configuration(false);
-        conf.set("fs.defaultFS", StringUtils.join("hdfs://", clusterName));
-        conf.set("fs.default.name", conf.get("fs.defaultFS"));
-        conf.set("dfs.nameservices", clusterName);
-
-        int len = hostnames.length;
-        String nns = "";
-        for (int i = 0; i < len; i++)
+        finally
         {
-            if (StringUtils.isEmpty(hostnames[i]) || StringUtils.isEmpty(ports[i]))
+            try
             {
-                return null;
+                if (null != dstFS)
+                {
+                    dstFS.close();
+                }
+                
+                if (null != srcFS)
+                {
+                    srcFS.close();
+                }
             }
-
-            if (!StringUtils.isNumeric(ports[i]))
+            catch (IOException e)
             {
-                return null;
+                e.printStackTrace();
             }
-
-            //自定义namenode名字
-            String nnn = StringUtils.join("nn", String.valueOf(i + 1));
-
-            nns = StringUtils.join(nns, nnn, ",");
-
-            conf.set(StringUtils.join("dfs.namenode.rpc-address.", clusterName, ".", nnn),
-                StringUtils.join(hostnames[i], ":", ports[i]));
         }
-
-        nns = StringUtils.substring(nns, 0, nns.length() - 1);
-
-        conf.set(StringUtils.join("dfs.ha.namenodes.", clusterName), nns);
-
-        conf.set(StringUtils.join("dfs.client.failover.proxy.provider.", clusterName),
-            "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
-
-        conf.set("dfs.support.append", "true");
-
-        return conf;
+        
+        return result;
+        
     }
 }
