@@ -209,6 +209,11 @@ public interface SysRetCode
      * spark jar配置信息错误
      */
     String SPARK_JAR_CONFIG_ERROR = "0317";
+
+    /**
+     * 丢失spark提交成功
+     */
+    String SPARK_SUBMIT_MISS_ERROR = "0318";
     
     ////////////////////////////////////////////////////////
 

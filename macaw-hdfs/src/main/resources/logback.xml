@@ -11,7 +11,7 @@
     <appender name="RUN" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/apps/service/logs/macaw/hdfs-run.log</file>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger - %msg%n</pattern>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level %logger - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">

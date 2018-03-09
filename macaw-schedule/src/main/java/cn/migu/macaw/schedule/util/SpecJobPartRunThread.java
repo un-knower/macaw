@@ -3,15 +3,15 @@ package cn.migu.macaw.schedule.util;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import cn.migu.macaw.schedule.api.model.Job;
-import cn.migu.macaw.schedule.api.model.JobLog;
-import cn.migu.macaw.schedule.workflow.DataConstants;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import cn.migu.macaw.common.log.LogUtils;
+import cn.migu.macaw.schedule.api.model.Job;
+import cn.migu.macaw.schedule.api.model.JobLog;
 import cn.migu.macaw.schedule.service.IJobLogService;
 import cn.migu.macaw.schedule.service.IJobTasksService;
+import cn.migu.macaw.schedule.workflow.DataConstants;
 
 /**
  * 局部job执行线程
@@ -25,7 +25,7 @@ public class SpecJobPartRunThread implements Runnable
      * 线程计数器
      */
     static final AtomicInteger NODE_EXECUTOR_THREAD_LIMIT = new AtomicInteger(0);
-
+    
     private Job job;
     
     private String nodeCode;
@@ -50,7 +50,7 @@ public class SpecJobPartRunThread implements Runnable
     public void run()
     {
         AtomicInteger counter = NODE_EXECUTOR_THREAD_LIMIT;
-        if(counter.get() >= DataConstants.MAX_NODE_THREAD)
+        if (counter.get() >= DataConstants.MAX_NODE_THREAD)
         {
             throw new IllegalStateException("threads num exceeds the maximum limit");
         }
@@ -58,7 +58,7 @@ public class SpecJobPartRunThread implements Runnable
         {
             NODE_EXECUTOR_THREAD_LIMIT.getAndIncrement();
         }
-
+        
         switch (type)
         {
             case "region":
@@ -86,14 +86,14 @@ public class SpecJobPartRunThread implements Runnable
         {
             jobTasksService.runSpecRegion(this.job.getCode(), nodeCode, batchNo);
             
-            jobLogService.successJobLog(jobLog, job);
+            jobLogService.successJobLog(jobLog, job, batchNo);
         }
         catch (Exception e)
         {
             String errMsg = ExceptionUtils.getStackTrace(e);
             LogUtils.runLogError(errMsg);
             
-            jobLogService.excepJobLog(jobLog, job, job.getCode(), errMsg);
+            jobLogService.excepJobLog(jobLog, job, batchNo, job.getCode(), errMsg);
         }
         finally
         {
@@ -116,14 +116,14 @@ public class SpecJobPartRunThread implements Runnable
         {
             jobTasksService.runSingleNode(this.job.getCode(), nodeCode, batchNo);
             
-            jobLogService.successJobLog(jobLog, job);
+            jobLogService.successJobLog(jobLog, job, batchNo);
         }
         catch (Exception e)
         {
             String errMsg = ExceptionUtils.getStackTrace(e);
             LogUtils.runLogError(errMsg);
             
-            jobLogService.excepJobLog(jobLog, job, job.getCode(), errMsg);
+            jobLogService.excepJobLog(jobLog, job, batchNo, job.getCode(), errMsg);
         }
         finally
         {

@@ -7,9 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
-import cn.migu.macaw.schedule.util.ScheduleLogTrace;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -179,7 +177,7 @@ public class TaskGroupWorkflow implements Closeable
             
         }
 
-        ScheduleLogTrace.scheduleInfoLog(StringUtils.join("本次调度分配的executor数量为", String.valueOf(qty)));
+        /*ScheduleLogTrace.scheduleInfoLog(StringUtils.join("本次调度分配的executor数量为", String.valueOf(qty)));*/
         
         return qty;
     }

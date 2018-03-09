@@ -21,12 +21,12 @@ import org.springframework.web.client.RestTemplate;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hugetable.crossdata.client.CrossDataClient;
-import com.hugetable.crossdata.config.Column;
-import com.hugetable.crossdata.config.FileInfo;
-import com.hugetable.crossdata.config.JobConfig;
-import com.hugetable.crossdata.ipc.JobInfo;
-import com.hugetable.crossdata.ipc.JobStatus;
+import com.chinamobile.cmss.crossdata.client.CrossDataClient;
+import com.chinamobile.cmss.crossdata.config.Column;
+import com.chinamobile.cmss.crossdata.config.FileInfo;
+import com.chinamobile.cmss.crossdata.config.JobConfig;
+import com.chinamobile.cmss.crossdata.ipc.JobInfo;
+import com.chinamobile.cmss.crossdata.ipc.JobStatus;
 
 import cn.migu.common.redis.StringRedisService;
 import cn.migu.macaw.common.*;
@@ -198,6 +198,7 @@ public class DataSyncServiceImpl implements IDataSyncService
             finally
             {
                 removeCrossDataCache(jobId);
+                client.close();
             }
         }
         else
@@ -219,6 +220,7 @@ public class DataSyncServiceImpl implements IDataSyncService
             try
             {
                 client.kill(jobId);
+                client.close();
             }
             catch (Exception e)
             {

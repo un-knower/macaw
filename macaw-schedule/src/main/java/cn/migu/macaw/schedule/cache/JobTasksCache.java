@@ -268,8 +268,8 @@ public class JobTasksCache
             Object counter = redisService.getValueByKeyANdField(key, field);
             if (null != counter)
             {
-                ScheduleLogTrace
-                    .scheduleInfoLog(key, "*", "*", StringUtils.join(field, "'s counter value=", counter.toString()));
+                /*ScheduleLogTrace
+                    .scheduleInfoLog(key, "*", "*", StringUtils.join(field, "'s counter value=", counter.toString()));*/
 
                 int status = Integer.valueOf(counter.toString());
 

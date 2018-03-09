@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import cn.migu.macaw.common.ServiceName;
+import cn.migu.macaw.common.*;
 import cn.migu.macaw.common.log.ReqRespLog;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,8 +22,6 @@ import org.springframework.web.client.RestTemplate;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
 
-import cn.migu.macaw.common.RestTemplateProvider;
-import cn.migu.macaw.common.SysRetCode;
 import cn.migu.macaw.common.log.InterfaceLogBean;
 import cn.migu.macaw.common.log.LogUtils;
 import cn.migu.macaw.common.message.Entity;
@@ -36,7 +34,6 @@ import cn.migu.macaw.sparkdrivermgr.api.service.SparkDriverManagerService;
 import cn.migu.macaw.sparkdrivermgr.cache.SparkJobContext;
 import cn.migu.macaw.sparkdrivermgr.common.DriverType;
 import cn.migu.macaw.sparkdrivermgr.common.ProcessStatus;
-import cn.migu.macaw.sparkdrivermgr.common.RetCodeDesc;
 import cn.migu.macaw.sparkdrivermgr.hook.SparkSubmitHook;
 import cn.migu.macaw.sparkdrivermgr.manager.DataSheetHandler;
 import cn.migu.macaw.sparkdrivermgr.manager.RemoteLaunchJar;
@@ -59,9 +56,6 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
 
     @Autowired
     private ReqRespLog reqRespLog;
-
-    @Autowired
-    private RetCodeDesc retCodeDesc;
 
     @Autowired
     private ISparkJobMgrService sparkJobMgrService;
@@ -99,11 +93,11 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         //获取内存参数
         String memSize = request.getParameter("executorMemory");
 
-        String ret = sparkJobMgrService.checkResParam(coresNum, memSize);
-        if (!StringUtils.equals(ret, SysRetCode.SUCCESS))
+        ReturnCode ret = sparkJobMgrService.checkResParam(coresNum, memSize);
+        if (ret != ReturnCode.SUCCESS)
         {
-            entity.setCode(ret);
-            entity.setDesc(retCodeDesc.getDesc(ret));
+            entity.setCode(ret.getCode());
+            entity.setDesc(ret.getName());
             resp.setResponse(entity);
 
             reqRespLog.responseLog(sparkJobForwardLog, logBean, StringUtils.join("资源参数不合法:核数-", coresNum, ",内存-", memSize));
@@ -112,11 +106,11 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         }
         else
         {
-            String batchNo = request.getParameter("batchNo");
-            String jobCode = request.getParameter("jobCode");
-            String taskCode = request.getParameter("taskCode");
+            String batchNo = request.getParameter(RequestKey.BATCH_NO);
+            String jobCode = request.getParameter(RequestKey.JOB_CODE);
+            String taskCode = request.getParameter(RequestKey.TASK_CODE);
 
-            String appId = request.getParameter("appId");
+            String appId = request.getParameter(RequestKey.APP_ID);
 
             //获取可用资源
             SparkJobMetaData resCtx = new SparkJobMetaData();
@@ -127,16 +121,16 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
             resCtx.setMemSize(Integer.valueOf(memSize));
             resCtx.setAppId(appId);
 
-            String retCode = sparkJobMgrService.getResourceCtxCache(resCtx);
-            if (!StringUtils.equals(retCode, SysRetCode.SUCCESS))
+            ReturnCode retCode = sparkJobMgrService.getResourceCtxCache(resCtx);
+            if (retCode != ReturnCode.SUCCESS)
             {
                 retCode = sparkJobMgrService.allocResource(request, resCtx);
             }
 
-            if (!StringUtils.equals(retCode, SysRetCode.SUCCESS))
+            if (retCode != ReturnCode.SUCCESS)
             {
-                entity.setCode(retCode);
-                entity.setDesc(retCodeDesc.getDesc(retCode));
+                entity.setCode(retCode.getCode());
+                entity.setDesc(retCode.getName());
                 resp.setResponse(entity);
 
                 reqRespLog.responseLog(sparkJobForwardLog, logBean, "申请driver资源失败");
@@ -146,10 +140,10 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
 
             //发送请求到远端
             retCode = sparkJobMgrService.submit(request, resCtx, logBean);
-            if (!StringUtils.equals(retCode, SysRetCode.SUCCESS))
+            if (retCode != ReturnCode.SUCCESS)
             {
-                entity.setCode(retCode);
-                entity.setDesc(retCodeDesc.getDesc(retCode));
+                entity.setCode(retCode.getCode());
+                entity.setDesc(retCode.getName());
                 resp.setResponse(entity);
 
                 reqRespLog.responseLog(sparkJobForwardLog, logBean, "任务提交driver失败");
@@ -182,8 +176,8 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         reqRespLog.requestLog(request, sparkJobForwardLog, logBean);
 
         //spark服务地地址
-        String appName = request.getParameter("appName");
-        String appId = request.getParameter("appId");
+        String appName = request.getParameter(RequestKey.APP_NAME);
+        String appId = request.getParameter(RequestKey.APP_ID);
         if (StringUtils.isEmpty((appName)) && StringUtils.isEmpty((appId)))
         {
             entity.setCode(SysRetCode.ERROR);
@@ -217,7 +211,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
     @Override
     public Response querySparkJobStatus(HttpServletRequest request)
     {
-        String appId = request.getParameter("appId");
+        String appId = request.getParameter(RequestKey.APP_ID);
 
         String sparkIp = request.getParameter("sparkIp");
         String sparkMgrPort = request.getParameter("sparkMgrPort");
@@ -236,7 +230,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
 
         String driverPort = request.getParameter("driverPort");
         String pid = request.getParameter("pid");
-        String appId = request.getParameter("appId");
+        String appId = request.getParameter(RequestKey.APP_ID);
         String serverId = request.getParameter("serverId");
         String jarId = request.getParameter("jarId");
         Process processEntity = new Process();
@@ -344,27 +338,27 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
 
         SparkJobMetaData resCtx = new SparkJobMetaData();
 
-        String cRet = this.inputParams(request, resCtx);
-        if (!StringUtils.equals(cRet, SysRetCode.SUCCESS))
+        ReturnCode cRet = this.inputParams(request, resCtx);
+        if (cRet != ReturnCode.SUCCESS)
         {
-            entity.setCode(cRet);
-            entity.setDesc(retCodeDesc.getDesc(cRet));
+            entity.setCode(cRet.getCode());
+            entity.setDesc(cRet.getName());
             resp.setResponse(entity);
 
-            reqRespLog.responseLog(sparkJobForwardLog, logBean, retCodeDesc.getDesc(cRet));
+            reqRespLog.responseLog(sparkJobForwardLog, logBean, cRet.getName());
 
             return resp;
         }
 
         //申请driver(计算中心)
-        String alloRet = sparkJobMgrService.allocResource(request, resCtx);
-        if (!StringUtils.equals(alloRet, SysRetCode.SUCCESS))
+        ReturnCode alloRet = sparkJobMgrService.allocResource(request, resCtx);
+        if (alloRet != ReturnCode.SUCCESS)
         {
-            entity.setCode(alloRet);
-            entity.setDesc(retCodeDesc.getDesc(alloRet));
+            entity.setCode(alloRet.getCode());
+            entity.setDesc(alloRet.getName());
             resp.setResponse(entity);
 
-            reqRespLog.responseLog(sparkJobForwardLog, logBean, retCodeDesc.getDesc(alloRet));
+            reqRespLog.responseLog(sparkJobForwardLog, logBean, alloRet.getName());
 
             return resp;
         }
@@ -381,7 +375,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         }
         else
         {
-            reqRespLog.responseLog(sparkJobForwardLog, logBean, retCodeDesc.getDesc(entity.getCode()));
+            reqRespLog.responseLog(sparkJobForwardLog, logBean, alloRet.getName());
         }
 
         return resp;
@@ -638,15 +632,15 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
      * @return
      * @see [类、类#方法、类#成员]
      */
-    private String inputParams(HttpServletRequest request, SparkJobMetaData resCtx)
+    private ReturnCode inputParams(HttpServletRequest request, SparkJobMetaData resCtx)
     {
         //获取CPU核数
         String coresNum = request.getParameter("coresNum");
         //获取内存参数
         String memSize = request.getParameter("executorMemory");
 
-        String ret = sparkJobMgrService.checkResParam(coresNum, memSize);
-        if (!StringUtils.equals(ret, SysRetCode.SUCCESS))
+        ReturnCode ret = sparkJobMgrService.checkResParam(coresNum, memSize);
+        if (ret != ReturnCode.SUCCESS)
         {
             return ret;
         }
@@ -662,6 +656,6 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         resCtx.setCoreNum(Integer.valueOf(coresNum));
         resCtx.setMemSize(Integer.valueOf(memSize));
 
-        return SysRetCode.SUCCESS;
+        return ReturnCode.SUCCESS;
     }
 }

@@ -194,7 +194,7 @@ public class DataSourceAdapter
             .collect(Collectors.groupingBy(NodeParam::getNodeCode,
                 Collectors.mapping(np -> Pair.of(np.getValue(), np.getPkey()), Collectors.toSet())));
         
-        ScheduleLogTrace.scheduleInfoLog(jobCode, "*", "*", dsSet.toString());
+        /*ScheduleLogTrace.scheduleInfoLog(jobCode, "*", "*", dsSet.toString());*/
         
         for (Map.Entry<String, Set<Object>> entry : dsSet.entrySet())
         {

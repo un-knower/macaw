@@ -11,6 +11,7 @@ package cn.migu.macaw.sparkdrivermgr.service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import cn.migu.macaw.common.ReturnCode;
 import cn.migu.macaw.common.log.InterfaceLogBean;
 import cn.migu.macaw.common.message.Entity;
 import cn.migu.macaw.common.message.Response;
@@ -38,7 +39,7 @@ public interface ISparkJobMgrService
      * @param resCtx spark job信息
      * @return String 分配spark session结果
      */
-    String allocResource(HttpServletRequest request, SparkJobMetaData resCtx);
+    ReturnCode allocResource(HttpServletRequest request, SparkJobMetaData resCtx);
     
     /**
      * 资源释放
@@ -61,7 +62,7 @@ public interface ISparkJobMgrService
      * @param logBean 日志记录
      * @return String spark job提交结果
      */
-    String submit(HttpServletRequest request, SparkJobMetaData resCtx, InterfaceLogBean logBean);
+    ReturnCode submit(HttpServletRequest request, SparkJobMetaData resCtx, InterfaceLogBean logBean);
     
     /**
      * 主动kill spark app
@@ -77,14 +78,14 @@ public interface ISparkJobMgrService
      * @param memSize spark executor内存大小
      * @return String 检测spark资源结果
      */
-    String checkResParam(String coreNum, String memSize);
+    ReturnCode checkResParam(String coreNum, String memSize);
     
     /**
      * 查询缓存中的resource context
      * @param resCtx spark job信息
      * @return 获取spark job提交上下文结果
      */
-    String getResourceCtxCache(SparkJobMetaData resCtx);
+    ReturnCode getResourceCtxCache(SparkJobMetaData resCtx);
 
     /**
      * 查询spark job状态

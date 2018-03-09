@@ -25,17 +25,19 @@ public interface IJobLogService
      * 任务成功运行结束日志
      * @param jobLog 任务日志对象
      * @param job 任务对象
+     * @param batchNo 运行批次号
      */
-    void successJobLog(JobLog jobLog, Job job);
+    void successJobLog(JobLog jobLog, Job job,String batchNo);
 
     /**
      * 任务异常运行日志
      * @param jobLog 任务日志对象
      * @param job 任务对象
+     * @param batchNo 运行批次号
      * @param addJobCode 新增标识
      * @param errMsg 异常信息
      */
-    void excepJobLog(JobLog jobLog, Job job, String addJobCode, String errMsg);
+    void excepJobLog(JobLog jobLog, Job job,String batchNo, String addJobCode, String errMsg);
 
     /**
      * 根据开始时间查询最新的任务日志

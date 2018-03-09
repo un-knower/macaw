@@ -97,7 +97,7 @@ public class JobLogServiceImpl implements IJobLogService
         
         jobLogDao.insertSelective(jobLog);
         
-        ScheduleLogTrace.scheduleInfoLog(StringUtils.join("[", job.getCode(), "]-[", batchNo, "] ", "开始执行..."));
+        ScheduleLogTrace.scheduleInfoLog(job.getCode(),batchNo,"开始执行...");
         
         this.updateJobCurrentBatchNo(job, batchNo);
         
@@ -110,7 +110,7 @@ public class JobLogServiceImpl implements IJobLogService
      * job成功运行后日志
      */
     @Override
-    public void successJobLog(JobLog jobLog, Job job)
+    public void successJobLog(JobLog jobLog, Job job,String batchNo)
     {
         if (null == jobLog)
         {
@@ -177,14 +177,14 @@ public class JobLogServiceImpl implements IJobLogService
             LogUtils.runLogError("[正常结束]更新job_log时主键为空");
         }
         
-        ScheduleLogTrace.scheduleInfoLog(StringUtils.join("[", job.getCode(), "]-[", jobLog.getBatchno(), "] 结束执行..."));
+        ScheduleLogTrace.scheduleInfoLog(job.getCode(),batchNo,"结束执行...");
     }
     
     /**
      * job异常运行后日志
      */
     @Override
-    public void excepJobLog(JobLog jobLog, Job job, String jobCode, String errMsg)
+    public void excepJobLog(JobLog jobLog, Job job, String batchNo, String jobCode, String errMsg)
     {
         if (null == jobLog && StringUtils.isNotEmpty(jobCode))
         {
@@ -229,7 +229,7 @@ public class JobLogServiceImpl implements IJobLogService
                 LogUtils.runLogError("[异常结束]更新job_log时主键为空");
             }
             
-            ScheduleLogTrace.scheduleWarnLog(StringUtils.join("[", jobCode, "]-[", batchCode, "] 异常结束！！！"));
+            ScheduleLogTrace.scheduleWarnLog(jobCode,batchNo,"异常结束！！！");
         }
         
         if (null == job && StringUtils.isNotEmpty(jobCode))

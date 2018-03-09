@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import cn.migu.macaw.common.ReturnCode;
 import cn.migu.macaw.sparkdrivermgr.model.SparkDriverMetaData;
 import cn.migu.macaw.sparkdrivermgr.model.SparkJobMetaData;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -210,13 +211,13 @@ public class DataSheetHandler
      * 更新spark app记录日志
      * @param res spark job信息
      */
-    public synchronized void updateAppLog(SparkJobMetaData res)
+    public synchronized ReturnCode updateAppLog(SparkJobMetaData res)
     {
 
         SparkApplicationLog sparkAppLog = this.getLatestAppById(res.getAppId());
         if (null == sparkAppLog)
         {
-            LogUtils.runLogError(StringUtils.join("提交spark app后查询不到spark_application记录[", res.getAppId(), "]"));
+            return ReturnCode.SPARK_SUBMIT_MISS_ERROR;
         }
 
         sparkAppLog.setDriverIp(res.getDriverIp());
@@ -238,7 +239,8 @@ public class DataSheetHandler
         sparkAppLog.setAppName(res.getAppName());
 
         appDao.updateByPrimaryKeySelective(sparkAppLog);
-        
+
+        return ReturnCode.SUCCESS;
     }
     
     /**

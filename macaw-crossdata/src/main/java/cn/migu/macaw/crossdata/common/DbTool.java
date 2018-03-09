@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
-import com.hugetable.crossdata.config.Column;
+import com.chinamobile.cmss.crossdata.config.Column;
 
 import cn.migu.macaw.common.log.LogUtils;
 

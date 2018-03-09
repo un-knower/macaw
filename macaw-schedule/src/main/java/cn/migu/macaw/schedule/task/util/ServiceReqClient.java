@@ -196,9 +196,10 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         
         postParams.put(CROSS_DATA_PORT, crossDataPort);
 
-        postParams.put("jobCode", brief.getJobCode());
-        postParams.put("taskCode", brief.getTaskCode());
-        postParams.put("nodeId", brief.getNodeId());
+        postParams.put(RequestKey.JOB_CODE, brief.getJobCode());
+        postParams.put(RequestKey.TASK_CODE, brief.getTaskCode());
+        postParams.put(RequestKey.NODE_ID, brief.getNodeId());
+        postParams.put(RequestKey.BATCH_NO, brief.getBatchCode());
         
         String response = null;
         

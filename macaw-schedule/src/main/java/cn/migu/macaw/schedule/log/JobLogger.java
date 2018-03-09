@@ -79,7 +79,7 @@ public class JobLogger
             //运行job任务
             obj = pjp.proceed();
             
-            jobLogService.successJobLog(jobLog, job);
+            jobLogService.successJobLog(jobLog, job,batchCode);
             
         }
         catch (Throwable e)
@@ -88,7 +88,7 @@ public class JobLogger
             String errMsg = ExceptionUtils.getStackTrace(e);
             LogUtils.runLogError(errMsg);
             
-            jobLogService.excepJobLog(jobLog, job, jobCode, errMsg);
+            jobLogService.excepJobLog(jobLog, job,batchCode, jobCode, errMsg);
             
         }
         finally

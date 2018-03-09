@@ -77,7 +77,6 @@ public class TaskTraceLogUtil
         
         StringBuffer reqPathStr = new StringBuffer("服务请求");
         reqPathStr.append("[").append(desc).append("]");
-        reqPathStr.append("[").append(batchNo).append("]");
         reqPathStr.append(" ").append("请求路径:");
         reqPathStr.append(url);
         
@@ -88,7 +87,7 @@ public class TaskTraceLogUtil
             reqParamStr.append(postFormParam);
         }
 
-        ScheduleLogTrace.scheduleInfoLog(StringUtils.join(reqPathStr.toString(), reqParamStr.toString()));
+        ScheduleLogTrace.scheduleInfoLog(jobCode,batchNo,StringUtils.join(reqPathStr.toString(), reqParamStr.toString()));
         
     }
     
@@ -119,7 +118,6 @@ public class TaskTraceLogUtil
         
         StringBuffer reqPathStr = new StringBuffer("服务请求");
         reqPathStr.append("[").append(desc).append("]");
-        reqPathStr.append("[").append(brief.getBatchCode()).append("]");
         reqPathStr.append(" ").append("请求路径:");
         reqPathStr.append(url);
         
@@ -127,7 +125,7 @@ public class TaskTraceLogUtil
         reqParamStr.append(" 请求参数:");
         reqParamStr.append(postFormParam);
 
-        ScheduleLogTrace.scheduleInfoLog(StringUtils.join(reqPathStr.toString(), reqParamStr.toString()));
+        ScheduleLogTrace.scheduleInfoLog(brief,StringUtils.join(reqPathStr.toString(), reqParamStr.toString()));
         
     }
     
@@ -152,7 +150,6 @@ public class TaskTraceLogUtil
         
         StringBuffer respPathStr = new StringBuffer("服务响应");
         respPathStr.append("[").append(desc).append("]");
-        respPathStr.append("[").append(brief.getBatchCode()).append("]");
         respPathStr.append(" ").append("请求路径:");
         respPathStr.append(url);
         
@@ -162,7 +159,7 @@ public class TaskTraceLogUtil
             respStr.append("[").append(resp).append("]");
         }
 
-        ScheduleLogTrace.scheduleInfoLog(StringUtils.join(respPathStr.toString(), respStr.toString()));
+        ScheduleLogTrace.scheduleInfoLog(brief,StringUtils.join(respPathStr.toString(), respStr.toString()));
 
     }
     
@@ -174,7 +171,7 @@ public class TaskTraceLogUtil
      * @param batchNo
      * @see [类、类#方法、类#成员]
      */
-    public void resqPostLog(String url, String resp, String batchNo)
+    public void resqPostLog(String url, String resp,String jobCode ,String batchNo)
     {
         String lastName = FilenameUtils.getName(url);
         
@@ -188,7 +185,6 @@ public class TaskTraceLogUtil
         
         StringBuffer respPathStr = new StringBuffer("服务响应");
         respPathStr.append("[").append(desc).append("]");
-        respPathStr.append("[").append(batchNo).append("]");
         respPathStr.append(" ").append("请求路径:");
         respPathStr.append(url);
         
@@ -198,7 +194,7 @@ public class TaskTraceLogUtil
             respStr.append("[").append(resp).append("]");
         }
 
-        ScheduleLogTrace.scheduleInfoLog(StringUtils.join(respPathStr.toString(), respStr.toString()));
+        ScheduleLogTrace.scheduleInfoLog(jobCode,batchNo,StringUtils.join(respPathStr.toString(), respStr.toString()));
         
     }
 

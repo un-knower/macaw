@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import cn.migu.macaw.common.ReturnCode;
 import cn.migu.macaw.common.log.ReqRespLog;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,6 @@ import cn.migu.macaw.sparkdrivermgr.api.model.SparkApplicationLog;
 import cn.migu.macaw.sparkdrivermgr.cache.SparkJobContext;
 import cn.migu.macaw.sparkdrivermgr.common.DriverType;
 import cn.migu.macaw.sparkdrivermgr.common.ProcessStatus;
-import cn.migu.macaw.sparkdrivermgr.common.RetCodeDesc;
 import cn.migu.macaw.sparkdrivermgr.manager.DataSheetHandler;
 import cn.migu.macaw.sparkdrivermgr.manager.RemoteLaunchJar;
 import cn.migu.macaw.sparkdrivermgr.model.AvailableSparkDriverProcess;
@@ -58,9 +58,6 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
     private ReqRespLog reqRespLog;
     
     @Resource
-    private RetCodeDesc retCodeDesc;
-    
-    @Resource
     private SparkJobContext sparkJobContext;
     
     @Resource(name = "restTemplate")
@@ -78,20 +75,20 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
      * @return
      * @see [类、类#方法、类#成员]
      */
-    private String getValidResource(SparkJobMetaData resource)
+    private ReturnCode getValidResource(SparkJobMetaData resource)
     {
         AvailableSparkDriverProcess driverProcess = dataSheetHandler.getIdleDriver(resource.getAppId());
         if (null == driverProcess)
         {
             LogUtils.runLogError(StringUtils.join(resource.getAppId(), ",driver进程资源不足!"));
-            return SysRetCode.SPARK_DRIVER_INSUFFICIENT;
+            return ReturnCode.SPARK_DRIVER_INSUFFICIENT;
         }
         
         resource.setDriverIp(driverProcess.getIp());
         resource.setPort(driverProcess.getPort());
         resource.setProcessId(driverProcess.getObjId());
         
-        return SysRetCode.SUCCESS;
+        return ReturnCode.SUCCESS;
     }
     
     /**
@@ -101,9 +98,9 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
      * @see [类、类#方法、类#成员]
      */
     @Override
-    public String submit(HttpServletRequest request, SparkJobMetaData resCtx, InterfaceLogBean logBean)
+    public ReturnCode submit(HttpServletRequest request, SparkJobMetaData resCtx, InterfaceLogBean logBean)
     {
-        String retCode = SysRetCode.SUCCESS;
+        ReturnCode retCode = ReturnCode.SUCCESS;
         
         Map<String, String> form = reqParamToMap(request);
         
@@ -134,7 +131,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
                 {
                     this.freeResource(resCtx);
                 }
-                return SysRetCode.SPARK_APP_CREATED_FAILED;
+                return ReturnCode.SPARK_APP_CREATED_FAILED;
             }
             
             if (StringUtils.isNotEmpty(response.getResponse().getAppname()))
@@ -142,7 +139,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
                 resCtx.setAppName(response.getResponse().getAppname());
                 resCtx.setAppId(response.getResponse().getAppid());
                 //记录app log
-                dataSheetHandler.updateAppLog(resCtx);
+                retCode = dataSheetHandler.updateAppLog(resCtx);
             }
             
         }
@@ -150,7 +147,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         {
             e.printStackTrace();
             LogUtils.runLogError(e);
-            retCode = SysRetCode.SPARK_DRIVER_REQUEST_ERROR;
+            retCode = ReturnCode.SPARK_DRIVER_REQUEST_ERROR;
             
             if (resCtx.isResAlloc())
             {
@@ -162,15 +159,15 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
     }
     
     @Override
-    public synchronized String allocResource(HttpServletRequest request, SparkJobMetaData resCtx)
+    public synchronized ReturnCode allocResource(HttpServletRequest request, SparkJobMetaData resCtx)
     
     {
         
         //请求类型
         this.setContextAppType(request, resCtx);
-        
-        String ret = this.getValidResource(resCtx);
-        if (!StringUtils.equals(ret, SysRetCode.SUCCESS))
+
+        ReturnCode ret = this.getValidResource(resCtx);
+        if (ret != ReturnCode.SUCCESS)
         {
             return ret;
         }
@@ -180,7 +177,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         
         resCtx.setResAlloc(true);
         
-        return SysRetCode.SUCCESS;
+        return ReturnCode.SUCCESS;
     }
     
     /**
@@ -291,43 +288,43 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
      * @see [类、类#方法、类#成员]
      */
     @Override
-    public String checkResParam(String coreNum, String memSize)
+    public ReturnCode checkResParam(String coreNum, String memSize)
     {
         if (StringUtils.isEmpty(coreNum))
         {
-            return SysRetCode.SPARK_CORENUM_EMPTY;
+            return ReturnCode.SPARK_CORENUM_EMPTY;
         }
         
         if (StringUtils.isEmpty(memSize))
         {
-            return SysRetCode.SPARK_MEMSIZE_EMPTY;
+            return ReturnCode.SPARK_MEMSIZE_EMPTY;
         }
         
         if (!NumberUtils.isNumber(coreNum))
         {
-            return SysRetCode.SPARK_CORENUM_NONNUMERIC;
+            return ReturnCode.SPARK_CORENUM_NONNUMERIC;
         }
         
         if (!NumberUtils.isNumber(memSize))
         {
-            return SysRetCode.SPARK_MEMSIZE_NONNUMERIC;
+            return ReturnCode.SPARK_MEMSIZE_NONNUMERIC;
         }
         
         int iCoreNum = Integer.valueOf(coreNum);
         
         if (iCoreNum <= 0 || iCoreNum > globalParam.getSparkMaxCores())
         {
-            return SysRetCode.SPARK_CORENUM_OVERFLOW;
+            return ReturnCode.SPARK_CORENUM_OVERFLOW;
         }
         
         int iMemSize = Integer.valueOf(memSize);
         
         if (iMemSize <= 0 || iMemSize > globalParam.getSparkMaxMem())
         {
-            return SysRetCode.SPARK_CORENUM_OVERFLOW;
+            return ReturnCode.SPARK_CORENUM_OVERFLOW;
         }
         
-        return SysRetCode.SUCCESS;
+        return ReturnCode.SUCCESS;
     }
     
     /**
@@ -381,8 +378,8 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
             }
             else
             {
-                entity.setCode(SysRetCode.SPARK_APP_CREATED_FAILED);
-                entity.setDesc(retCodeDesc.getDesc(SysRetCode.SPARK_APP_CREATED_FAILED));
+                entity.setCode(ReturnCode.SPARK_APP_CREATED_FAILED.getCode());
+                entity.setDesc(ReturnCode.SPARK_APP_CREATED_FAILED.getName());
                 
                 //释放资源
                 if (resCtx.isResAlloc())
@@ -395,8 +392,8 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         catch (Exception e)
         {
             LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
-            entity.setCode(SysRetCode.SPARK_APP_CREATED_FAILED);
-            entity.setDesc(retCodeDesc.getDesc(SysRetCode.SPARK_APP_CREATED_FAILED));
+            entity.setCode(ReturnCode.SPARK_APP_CREATED_FAILED.getCode());
+            entity.setDesc(ReturnCode.SPARK_APP_CREATED_FAILED.getName());
             
             //释放资源
             if (resCtx.isResAlloc())
@@ -414,7 +411,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
      * @see [类、类#方法、类#成员]
      */
     @Override
-    public String getResourceCtxCache(SparkJobMetaData resCtx)
+    public ReturnCode getResourceCtxCache(SparkJobMetaData resCtx)
     {
         if (StringUtils.isNotEmpty(resCtx.getAppId()))
         {
@@ -424,11 +421,11 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
                 BeanUtils.copyProperties(allocCtx, resCtx);
                 resCtx.setResAlloc(false);
                 
-                return SysRetCode.SUCCESS;
+                return ReturnCode.SUCCESS;
             }
         }
         
-        return SysRetCode.ERROR;
+        return ReturnCode.FAILED;
     }
     
     @Override
@@ -439,8 +436,8 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         
         if (StringUtils.isEmpty(appId))
         {
-            entity.setCode(SysRetCode.SPARK_APP_NOT_FOUND);
-            entity.setDesc(retCodeDesc.getDesc(SysRetCode.SPARK_APP_NOT_FOUND));
+            entity.setCode(ReturnCode.SPARK_APP_NOT_FOUND.getCode());
+            entity.setDesc(ReturnCode.SPARK_APP_NOT_FOUND.getName());
             
             resp.setResponse(entity);
             return resp;
@@ -465,8 +462,8 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         
         if (null == app)
         {
-            entity.setCode(SysRetCode.SPARK_APP_NOT_FOUND);
-            entity.setDesc(retCodeDesc.getDesc(SysRetCode.SPARK_APP_NOT_FOUND));
+            entity.setCode(ReturnCode.SPARK_APP_NOT_FOUND.getCode());
+            entity.setDesc(ReturnCode.SPARK_APP_NOT_FOUND.getName());
             
             return;
         }
@@ -474,7 +471,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         entity.setAppid(appId);
         entity.setAppname(app.getAppName());
         entity.setCode(app.getStatus());
-        entity.setDesc(retCodeDesc.getDesc(app.getStatus()));
+        entity.setDesc(ReturnCode.desc(app.getStatus()));
         
         if (!StringUtils.equals(app.getStatus(), SysRetCode.SPARK_APP_RUNNING))
         {

@@ -45,13 +45,15 @@ public class TaskExecutorShell implements TaskExecutor
                 String type = execTask.getMetaData().get(DataConstants.TASK_NODE_TYPE);
                 
                 String jobCode = execTask.getMetaData().get(DataConstants.JOB_CODE);
+
+                String batchNo = execTask.getMetaData().get(DataConstants.BATCH_NO);
                 
                 if (StringUtils.isEmpty(jobCode))
                 {
                     return new TaskExecutionResult(TaskExecutionStatus.FAILED_STOP, "NEXT");
                 }
                 
-                ScheduleLogTrace.scheduleInfoLog(jobCode, nodeId, type, "开始被调度");
+                ScheduleLogTrace.scheduleInfoLog(jobCode, batchNo, StringUtils.join(nodeId,"开始被调度"));
                 
                 //判断是否取消执行
                 JobTasksCache jobTasksCache = (JobTasksCache)ApplicationContextProvider.getBean("jobTasksCache");
@@ -59,7 +61,7 @@ public class TaskExecutorShell implements TaskExecutor
                 String isCustomCancel = jobTasksCache.get(jobCode, nodeId, DataConstants.CUSTOM_CANCEL_RUN);
                 if (StringUtils.equals(isCustomCancel, DataConstants.VALID))
                 {
-                    ScheduleLogTrace.scheduleInfoLog(jobCode, nodeId, type, "被取消执行[配置]");
+                    ScheduleLogTrace.scheduleInfoLog(jobCode, batchNo, StringUtils.join(nodeId,"被取消执行[配置]"));
                     
                     return new TaskExecutionResult(TaskExecutionStatus.FAILED_CONTINUE, "NEXT");
                 }
@@ -67,7 +69,7 @@ public class TaskExecutorShell implements TaskExecutor
                 String isCancel = jobTasksCache.get(jobCode, nodeId, DataConstants.CANCEL_RUN);
                 if (StringUtils.equals(isCancel, DataConstants.VALID))
                 {
-                    ScheduleLogTrace.scheduleInfoLog(jobCode, nodeId, type, "被取消执行[决策]");
+                    ScheduleLogTrace.scheduleInfoLog(jobCode, batchNo, StringUtils.join(nodeId,"被取消执行[决策]"));
                     
                     return new TaskExecutionResult(TaskExecutionStatus.FAILED_CONTINUE, "NEXT");
                 }
@@ -75,7 +77,7 @@ public class TaskExecutorShell implements TaskExecutor
                 //terminate task:job流程直接终止
                 if (StringUtils.equals(type, DataConstants.TASK_TYPE_DIRECT_TERMINATE))
                 {
-                    ScheduleLogTrace.scheduleInfoLog(jobCode, nodeId, type, "直接终止");
+                    ScheduleLogTrace.scheduleInfoLog(jobCode, batchNo, StringUtils.join(nodeId,"直接终止"));
                     return new TaskExecutionResult(TaskExecutionStatus.FAILED_STOP, "NEXT");
                 }
                 
@@ -85,7 +87,6 @@ public class TaskExecutorShell implements TaskExecutor
                 {
                     try
                     {
-                        String batchNo = execTask.getMetaData().get(DataConstants.BATCH_NO);
                         String taskCode = execTask.getMetaData().get(DataConstants.TASK_CODE);
                         String taskClass = execTask.getMetaData().get(DataConstants.TASK_NODE_TYPE);
                         TaskNodeBrief brief = new TaskNodeBrief(jobCode, nodeId, taskCode, batchNo);
@@ -93,13 +94,13 @@ public class TaskExecutorShell implements TaskExecutor
                         
                         jobTasksService.runNode(brief, dag, type);
                         
-                        ScheduleLogTrace.scheduleInfoLog(jobCode, nodeId, type, "执行结束");
+                        ScheduleLogTrace.scheduleInfoLog(jobCode, batchNo, StringUtils.join(nodeId,"执行结束"));
                     }
                     catch (Throwable e)
                     {
                         LogUtils.runLogError(e);
                         String err = ExceptionUtils.getStackTrace(e);
-                        ScheduleLogTrace.scheduleWarnLog(jobCode, nodeId, type, StringUtils.join("执行异常:", err));
+                        ScheduleLogTrace.scheduleWarnLog(jobCode, batchNo,StringUtils.join(nodeId,"执行异常:", err));
                         
                         if (!jobTasksService.isResidualCtx(jobCode))
                         {

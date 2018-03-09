@@ -9,14 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.quartz.CronTrigger;
-import org.quartz.Job;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.TriggerKey;
+import org.quartz.*;
 import org.quartz.spi.MutableTrigger;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +27,7 @@ public class SchedulerTemplate
      */
     @Resource
     private Scheduler scheduler;
-
+    
     /**
      *  job默认组
      */
@@ -48,15 +41,9 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public Date scheduleJob(JobDetail jobDetail, Trigger trigger)
+        throws SchedulerException
     {
-        try
-        {
-            return scheduler.scheduleJob(jobDetail, trigger);
-        }
-        catch (SchedulerException e)
-        {
-            throw new QuartzRuntimeException(e);
-        }
+        return scheduler.scheduleJob(jobDetail, trigger);
     }
     
     /**
@@ -66,15 +53,9 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public boolean deleteJob(String name)
+        throws SchedulerException
     {
-        try
-        {
-            return scheduler.deleteJob(JobKey.jobKey(name, JOB_DEFAULT_GROUP));
-        }
-        catch (SchedulerException e)
-        {
-            throw new QuartzRuntimeException(e);
-        }
+        return scheduler.deleteJob(JobKey.jobKey(name, JOB_DEFAULT_GROUP));
     }
     
     /**
@@ -84,17 +65,11 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public JobDetail updateJobDetail(JobDetail newJobDetail)
+        throws SchedulerException
     {
-        try
-        {
-            JobDetail oldJob = scheduler.getJobDetail(newJobDetail.getKey());
-            scheduler.addJob(newJobDetail, true);
-            return oldJob;
-        }
-        catch (SchedulerException e)
-        {
-            throw new QuartzRuntimeException(e);
-        }
+        JobDetail oldJob = scheduler.getJobDetail(newJobDetail.getKey());
+        scheduler.addJob(newJobDetail, true);
+        return oldJob;
     }
     
     /**
@@ -104,17 +79,11 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public Trigger updateTrigger(Trigger newTrigger)
+        throws SchedulerException
     {
-        try
-        {
-            Trigger oldTrigger = scheduler.getTrigger(newTrigger.getKey());
-            scheduler.rescheduleJob(oldTrigger.getKey(), newTrigger);
-            return oldTrigger;
-        }
-        catch (SchedulerException e)
-        {
-            throw new QuartzRuntimeException(e);
-        }
+        Trigger oldTrigger = scheduler.getTrigger(newTrigger.getKey());
+        scheduler.rescheduleJob(oldTrigger.getKey(), newTrigger);
+        return oldTrigger;
     }
     
     /**
@@ -123,15 +92,9 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public void pauseJob(String jobKey)
+        throws SchedulerException
     {
-        try
-        {
-            scheduler.pauseJob(JobKey.jobKey(jobKey, JOB_DEFAULT_GROUP));
-        }
-        catch (SchedulerException e)
-        {
-            throw new QuartzRuntimeException(e);
-        }
+        scheduler.pauseJob(JobKey.jobKey(jobKey, JOB_DEFAULT_GROUP));
     }
     
     /**
@@ -140,15 +103,9 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public void resumeJob(String jobKey)
+        throws SchedulerException
     {
-        try
-        {
-            scheduler.resumeJob(JobKey.jobKey(jobKey, JOB_DEFAULT_GROUP));
-        }
-        catch (SchedulerException e)
-        {
-            throw new QuartzRuntimeException(e);
-        }
+        scheduler.resumeJob(JobKey.jobKey(jobKey, JOB_DEFAULT_GROUP));
     }
     
     /**
@@ -157,15 +114,9 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public void triggerJob(String jobKey)
+        throws SchedulerException
     {
-        try
-        {
-            scheduler.triggerJob(JobKey.jobKey(jobKey, JOB_DEFAULT_GROUP));
-        }
-        catch (SchedulerException e)
-        {
-            throw new QuartzRuntimeException(e);
-        }
+        scheduler.triggerJob(JobKey.jobKey(jobKey, JOB_DEFAULT_GROUP));
     }
     
     /**
@@ -175,15 +126,9 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public boolean interrupt(String jobKey)
+        throws UnableToInterruptJobException
     {
-        try
-        {
-            return scheduler.interrupt(JobKey.jobKey(jobKey, JOB_DEFAULT_GROUP));
-        }
-        catch (SchedulerException e)
-        {
-            throw new QuartzRuntimeException(e);
-        }
+        return scheduler.interrupt(JobKey.jobKey(jobKey, JOB_DEFAULT_GROUP));
     }
     
     /**
@@ -199,6 +144,7 @@ public class SchedulerTemplate
      */
     public Date scheduleCronJob(JobKey jobKey, String cron, Class<? extends Job> jobClass, Map<String, Object> dataMap,
         Date startTime, Date endTime)
+        throws SchedulerException
     {
         JobDetail job = createJobDetail(jobKey, jobClass, true, dataMap);
         TriggerKey triggerKey = TriggerKey.triggerKey(jobKey.getName(), jobKey.getGroup());
@@ -223,7 +169,7 @@ public class SchedulerTemplate
         {
             jobDetail.getJobDataMap().putAll(dataMap);
         }
-
+        
         return jobDetail;
     }
     
@@ -242,21 +188,12 @@ public class SchedulerTemplate
         {
             startTime = new Date();
         }
-
-        try
-        {
-            CronTrigger trigger =
-                newTrigger().withIdentity(triggerKey)
-                    .startAt(startTime)
-                    .endAt(endTime)
-                    .withSchedule(cronSchedule(cron))
-                    .build();
-            return (MutableTrigger)trigger;
-        }
-        catch (RuntimeException e)
-        {
-            throw new QuartzRuntimeException(e);
-        }
+        CronTrigger trigger = newTrigger().withIdentity(triggerKey)
+            .startAt(startTime)
+            .endAt(endTime)
+            .withSchedule(cronSchedule(cron))
+            .build();
+        return (MutableTrigger)trigger;
     }
     
     /**
@@ -268,6 +205,7 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public Date scheduleCronJob(String name, String cron, Class<? extends Job> jobClass)
+        throws SchedulerException
     {
         return scheduleCronJob(JobKey.jobKey(name, JOB_DEFAULT_GROUP), cron, jobClass, null, new Date(), null);
     }
@@ -282,6 +220,7 @@ public class SchedulerTemplate
      * @see [类、类#方法、类#成员]
      */
     public Date scheduleCronJob(String name, String cron, Class<? extends Job> jobClass, Map<String, Object> dataMap)
+        throws SchedulerException
     {
         return scheduleCronJob(JobKey.jobKey(name, JOB_DEFAULT_GROUP), cron, jobClass, dataMap, new Date(), null);
     }
@@ -298,6 +237,7 @@ public class SchedulerTemplate
      */
     public Date scheduleCronJob(String name, String cron, Class<? extends Job> jobClass, Map<String, Object> dataMap,
         Date startTime)
+        throws SchedulerException
     {
         return scheduleCronJob(JobKey.jobKey(name, JOB_DEFAULT_GROUP), cron, jobClass, dataMap, startTime, null);
     }

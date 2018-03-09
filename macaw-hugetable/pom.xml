@@ -38,13 +38,25 @@
         </dependency>
 
         <!-- hugetable操作必需包 Start -->
-        <dependency>
+        <!--<dependency>
             <groupId>com.hugetable</groupId>
             <artifactId>hugetable-driver-5.4.7-bc1.2.2</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hugetable</groupId>
             <artifactId>hugetable-common-5.4.7-bc1.2.2</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>com.chinamobile</groupId>
+            <artifactId>hugetable-driver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.chinamobile</groupId>
+            <artifactId>hugetable-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hive-serde</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.zookeeper</groupId>

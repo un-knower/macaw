@@ -3,8 +3,7 @@ package cn.migu.macaw.schedule.rest;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import cn.migu.macaw.common.NetUtils;
-import cn.migu.macaw.common.RestTemplateProvider;
+import cn.migu.macaw.common.*;
 import cn.migu.macaw.schedule.api.service.ScheduleJobService;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -14,8 +13,6 @@ import org.quartz.TriggerKey;
 
 import com.alibaba.fastjson.JSON;
 
-import cn.migu.macaw.common.SysRetCode;
-import cn.migu.macaw.common.ThreadUtilities;
 import cn.migu.macaw.common.log.LogUtils;
 import cn.migu.macaw.common.message.Entity;
 import cn.migu.macaw.common.message.Response;
@@ -94,7 +91,7 @@ public class JobRestImpl implements ScheduleJobService
                 {
                     LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
                     
-                    content.setDesc(ExceptionUtils.getStackTrace(e));
+                    content.setDesc(ExceptionUtils.getRootCauseMessage(e));
                     content.setCode(SysRetCode.ERROR);
                     
                 }
@@ -102,14 +99,14 @@ public class JobRestImpl implements ScheduleJobService
             }
             else
             {
-                content.setCode(SysRetCode.JOB_TRIGGER_OR_CLASS);
-                content.setDesc("触发器或任务执行类为空");
+                content.setCode(ReturnCode.JOB_TRIGGER_OR_CLASS.getCode());
+                content.setDesc(ReturnCode.JOB_TRIGGER_OR_CLASS.getName());
             }
         }
         else
         {
-            content.setCode(SysRetCode.JOB_NAME_ABSENT);
-            content.setDesc("任务名称不存在:" + name);
+            content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getName() + ":" + name);
         }
         
         Response resp = new Response(content);
@@ -157,20 +154,20 @@ public class JobRestImpl implements ScheduleJobService
                 {
                     LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
                     content.setCode(SysRetCode.ERROR);
-                    content.setDesc(ExceptionUtils.getStackTrace(e));
+                    content.setDesc(ExceptionUtils.getRootCauseMessage(e));
                 }
                 
             }
             else
             {
-                content.setCode(SysRetCode.JOB_TRIGGER_OR_CLASS);
-                content.setDesc("触发器或任务执行类为空");
+                content.setCode(ReturnCode.JOB_TRIGGER_OR_CLASS.getCode());
+                content.setDesc(ReturnCode.JOB_TRIGGER_OR_CLASS.getName());
             }
         }
         else
         {
-            content.setCode(SysRetCode.JOB_NAME_ABSENT);
-            content.setDesc("任务名称不存在:" + name);
+            content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getName() + ":" + name);
         }
         
         Response resp = new Response(content);
@@ -207,13 +204,13 @@ public class JobRestImpl implements ScheduleJobService
             {
                 LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
                 content.setCode(SysRetCode.ERROR);
-                content.setDesc(ExceptionUtils.getStackTrace(e));
+                content.setDesc(ExceptionUtils.getRootCauseMessage(e));
             }
         }
         else
         {
-            content.setCode(SysRetCode.JOB_NAME_ABSENT);
-            content.setDesc("任务名称不存在:" + name);
+            content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getName()+ ":" + name);
         }
         
         Response resp = new Response(content);
@@ -250,13 +247,13 @@ public class JobRestImpl implements ScheduleJobService
             {
                 LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
                 content.setCode(SysRetCode.ERROR);
-                content.setDesc(ExceptionUtils.getStackTrace(e));
+                content.setDesc(ExceptionUtils.getRootCauseMessage(e));
             }
         }
         else
         {
-            content.setCode(SysRetCode.JOB_NAME_ABSENT);
-            content.setDesc("任务名称不存在:" + name);
+            content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getName() + ":" + name);
         }
         
         Response resp = new Response(content);
@@ -293,13 +290,13 @@ public class JobRestImpl implements ScheduleJobService
             {
                 LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
                 content.setCode(SysRetCode.ERROR);
-                content.setDesc(ExceptionUtils.getStackTrace(e));
+                content.setDesc(ExceptionUtils.getRootCauseMessage(e));
             }
         }
         else
         {
-            content.setCode(SysRetCode.JOB_NAME_ABSENT);
-            content.setDesc("任务名称不存在:" + name);
+            content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getName() + ":" + name);
         }
         
         Response resp = new Response(content);
@@ -331,8 +328,8 @@ public class JobRestImpl implements ScheduleJobService
         {
             if (jobCommService.isAlreadyTriggerRun(name))
             {
-                content.setCode(SysRetCode.JOB_ALREADY_TRIGGERED);
-                content.setDesc("job已经被触发执行:" + name);
+                content.setCode(ReturnCode.JOB_ALREADY_TRIGGERED.getCode());
+                content.setDesc(ReturnCode.JOB_ALREADY_TRIGGERED.getName() + ":" + name);
             }
             else
             {
@@ -354,14 +351,14 @@ public class JobRestImpl implements ScheduleJobService
                     jobDao.updateByPrimaryKeySelective(job);
                     
                     content.setCode(SysRetCode.ERROR);
-                    content.setDesc(ExceptionUtils.getStackTrace(e));
+                    content.setDesc(ExceptionUtils.getRootCauseMessage(e));
                 }
             }
         }
         else
         {
-            content.setCode(SysRetCode.JOB_NAME_ABSENT);
-            content.setDesc("任务名称不存在:" + name);
+            content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getCode() + ":" + name);
         }
         
         Response resp = new Response(content);
@@ -405,7 +402,7 @@ public class JobRestImpl implements ScheduleJobService
                     {
                         LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
                         content.setCode(SysRetCode.ERROR);
-                        content.setDesc(ExceptionUtils.getStackTrace(e));
+                        content.setDesc(ExceptionUtils.getRootCauseMessage(e));
                     }
 
                     try
@@ -438,7 +435,7 @@ public class JobRestImpl implements ScheduleJobService
                     {
                         LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
                         content.setCode(SysRetCode.ERROR);
-                        content.setDesc(ExceptionUtils.getStackTrace(e));
+                        content.setDesc(ExceptionUtils.getRootCauseMessage(e));
                     }
                 }
                 else
@@ -453,8 +450,8 @@ public class JobRestImpl implements ScheduleJobService
         }
         else
         {
-            content.setCode(SysRetCode.JOB_NAME_ABSENT);
-            content.setDesc("任务名称不存在:" + name);
+            content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getName() + ":" + name);
         }
         
         Response resp = new Response(content);
@@ -498,13 +495,13 @@ public class JobRestImpl implements ScheduleJobService
             {
                 LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
                 content.setCode(SysRetCode.ERROR);
-                content.setDesc(ExceptionUtils.getStackTrace(e));
+                content.setDesc(ExceptionUtils.getRootCauseMessage(e));
             }
         }
         else
         {
-            content.setCode(SysRetCode.JOB_NAME_ABSENT);
-            content.setDesc("任务名称不存在:" + jobCode);
+            content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getName() + ":" + jobCode);
         }
         
         Response resp = new Response(content);
@@ -549,13 +546,13 @@ public class JobRestImpl implements ScheduleJobService
             {
                 LogUtils.runLogError(ExceptionUtils.getStackTrace(e));
                 content.setCode(SysRetCode.ERROR);
-                content.setDesc(ExceptionUtils.getStackTrace(e));
+                content.setDesc(ExceptionUtils.getRootCauseMessage(e));
             }
         }
         else
         {
-            content.setCode(SysRetCode.JOB_NAME_ABSENT);
-            content.setDesc("任务名称不存在:" + jobCode);
+            content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getName() + ":" + jobCode);
         }
         
         Response resp = new Response(content);

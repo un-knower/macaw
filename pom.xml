@@ -40,6 +40,7 @@
         <guava.version>18.0</guava.version>
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <hadoop.version>2.6.0</hadoop.version>
+        <crossdata.version>1.4.15</crossdata.version>
         <jsch.version>0.1.54</jsch.version>
     </properties>
 
@@ -131,7 +132,7 @@
             <dependency>
                 <groupId>tk.mybatis</groupId>
                 <artifactId>mapper-spring-boot-starter</artifactId>
-                <version>RELEASE</version>
+                <version>1.2.3</version>
             </dependency>
             <!-- 通用分页 -->
             <dependency>
@@ -183,7 +184,7 @@
             <!-- 调度相关 End -->
 
             <!-- hadoop相关 Start -->
-            <dependency>
+            <!--<dependency>
                 <groupId>com.hugetable</groupId>
                 <artifactId>hugetable-driver-5.4.7-bc1.2.2</artifactId>
                 <version>5.4.7</version>
@@ -192,6 +193,21 @@
                 <groupId>com.hugetable</groupId>
                 <artifactId>hugetable-common-5.4.7-bc1.2.2</artifactId>
                 <version>5.4.7</version>
+            </dependency>-->
+            <dependency>
+                <groupId>com.chinamobile</groupId>
+                <artifactId>hugetable-driver</artifactId>
+                <version>5.5.0-1.3.6-migu</version>
+            </dependency>
+            <dependency>
+                <groupId>com.chinamobile</groupId>
+                <artifactId>hugetable-common</artifactId>
+                <version>5.5.0-1.3.6-migu</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hive-serde</artifactId>
+                <version>1.1.0-bc1.3.6-1.2.2-migu</version>
             </dependency>
             <!-- hadoop相关 End -->
 

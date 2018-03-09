@@ -307,7 +307,7 @@ public class JobTasksServiceImpl implements IJobTasksService
         {
             taskTraceLogUtil.reqPostLog(url, params, "", batchNo);
             String resp = RestTemplateProvider.postFormForEntity(restTemplate, url, String.class, params);
-            taskTraceLogUtil.resqPostLog(url, resp, batchNo);
+            taskTraceLogUtil.resqPostLog(url, resp, "",batchNo);
         }
         catch (Exception e)
         {
@@ -413,14 +413,14 @@ public class JobTasksServiceImpl implements IJobTasksService
         
         if (this.isJobRunning(jobCode))
         {
-            ScheduleLogTrace.scheduleInfoLog(StringUtils.join("job[", jobCode, "]==>已有任务被调度运行"));
+            ScheduleLogTrace.scheduleInfoLog(jobCode,batchNo,"已有任务被调度运行");
             return;
         }
         
         List<JobNode> jns = this.getNodesForJob(jobCode);
         if (CollectionUtils.isEmpty(jns))
         {
-            ScheduleLogTrace.scheduleInfoLog(StringUtils.join("job[", jobCode, "]==>任务未配置task node"));
+            ScheduleLogTrace.scheduleInfoLog(jobCode,batchNo,"任务未配置task node");
             return;
         }
         
@@ -749,7 +749,7 @@ public class JobTasksServiceImpl implements IJobTasksService
         
         IdDag<String> dags = this.buildGraph(jobCode, jns, tnbs);
         
-        ScheduleLogTrace.scheduleInfoLog(StringUtils.join("[", jobCode, "]-[", batchNo, "]调度节点信息:", dags.toString()));
+        /*ScheduleLogTrace.scheduleInfoLog(jobCode,batchNo,StringUtils.join("调度节点信息:", dags.toString()));*/
         
         // 同步系统参数至redis缓存
         this.synSysParam(jobCode);

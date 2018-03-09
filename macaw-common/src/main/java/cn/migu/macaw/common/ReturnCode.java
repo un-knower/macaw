@@ -1,5 +1,6 @@
 package cn.migu.macaw.common;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,6 +14,30 @@ import org.apache.commons.lang3.StringUtils;
 public enum ReturnCode
 {
     SUCCESS(SysRetCode.SUCCESS, "操作成功"),
+
+    JOB_NAME_ABSENT(SysRetCode.JOB_NAME_ABSENT,"job不存在"),
+    JOB_ALREADY_TRIGGERED(SysRetCode.JOB_ALREADY_TRIGGERED,"job已经被触发执行"),
+    JOB_TRIGGER_OR_CLASS(SysRetCode.JOB_TRIGGER_OR_CLASS,"触发器或任务类为空"),
+
+    SPARK_CORENUM_EMPTY(SysRetCode.SPARK_CORENUM_EMPTY, "资源核数为空"),
+    SPARK_MEMSIZE_EMPTY(SysRetCode.SPARK_MEMSIZE_EMPTY, "资源内存数为空"),
+    SPARK_CORENUM_NONNUMERIC(SysRetCode.SPARK_CORENUM_NONNUMERIC, "资源核数不是数字"),
+    SPARK_MEMSIZE_NONNUMERIC(SysRetCode.SPARK_MEMSIZE_NONNUMERIC, "资源内存大小不是数字"),
+    SPARK_CORENUM_OVERFLOW(SysRetCode.SPARK_CORENUM_OVERFLOW, "资源核数超过限制"),
+    SPARK_MEMSIZE_OVERFLOW(SysRetCode.SPARK_MEMSIZE_OVERFLOW, "资源内存大小超过限制"),
+    SPARK_DRIVER_INSUFFICIENT(SysRetCode.SPARK_DRIVER_INSUFFICIENT, "driver资源不足"),
+    SPARK_DRIVER_REQUEST_ERROR(SysRetCode.SPARK_DRIVER_REQUEST_ERROR, "driver资源请求异常"),
+    SPARK_APP_STOP_FAIL(SysRetCode.SPARK_APP_STOP_FAIL, "停止spark app失败"),
+    SPARK_RES_PARAM_ERROR(SysRetCode.SPARK_RES_PARAM_ERROR, "spark资源参数错误"),
+    SPARK_APP_NOT_FOUND(SysRetCode.SPARK_APP_NOT_FOUND, "spark app无查询结果"),
+    SPARK_APP_FINISHED(SysRetCode.SPARK_APP_FINISHED, "spark app执行已完成"),
+    SPARK_APP_RUNNING(SysRetCode.SPARK_APP_RUNNING, "spark app正在运行中"),
+    SPARK_APP_KILLED(SysRetCode.SPARK_APP_KILLED, "spark app已被停止"),
+    SPARK_APP_FAILED(SysRetCode.SPARK_APP_FAILED, "spark app执行失败"),
+    SPARK_APP_CREATED_FAILED(SysRetCode.SPARK_APP_CREATED_FAILED, "spark创建任务失败"),
+    SPARK_JAR_CONFIG_ERROR(SysRetCode.SPARK_JAR_CONFIG_ERROR, "对应jar配置错误"),
+    SPARK_SUBMIT_MISS_ERROR(SysRetCode.SPARK_SUBMIT_MISS_ERROR,"丢失spark提交成功"),
+
 
     DATA_SYNC_FUNC_NOT_SUPPORT(SysRetCode.DATA_SYNC_FUNC_NOT_SUPPORT,"数据同步功能不支持"),
     DATA_SYNC_PARAM_PARSE_ERROR(SysRetCode.DATA_SYNC_PARAM_PARSE_ERROR,"数据同步参数解析错误"),
@@ -61,6 +86,11 @@ public enum ReturnCode
     {
         this.code = code;
         this.name = name;
+    }
+
+    public final static String desc(String code)
+    {
+        return Arrays.stream(ReturnCode.values()).filter(e -> StringUtils.equals(e.getCode(),code)).findFirst().get().getName();
     }
 
     public String getCode()

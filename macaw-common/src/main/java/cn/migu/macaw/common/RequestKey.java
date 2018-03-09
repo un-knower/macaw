@@ -32,6 +32,8 @@ public interface RequestKey
 
     String TASK_CODE = "taskCode";
 
+    String NODE_ID = "nodeId";
+
     String IS_PROCEDURE = "isProcedure";
 
     String CORES_NUM = "coresNum";

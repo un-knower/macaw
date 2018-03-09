@@ -54,6 +54,8 @@ public class CrossDataParam
 
     private String hiveServer2Url;
 
+    private String batchNo;
+
     private String jobCode;
 
     private String taskCode;
@@ -297,6 +299,16 @@ public class CrossDataParam
     public void setHiveServer2Url(String hiveServer2Url)
     {
         this.hiveServer2Url = hiveServer2Url;
+    }
+
+    public String getBatchNo()
+    {
+        return batchNo;
+    }
+
+    public void setBatchNo(String batchNo)
+    {
+        this.batchNo = batchNo;
     }
 
     public String getJobCode()
