@@ -1,15 +1,16 @@
 package cn.migu.macaw.common.log;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.springframework.stereotype.Component;
+
+import com.google.common.base.Joiner;
 
 import cn.migu.macaw.common.RemoteIpHelper;
 
@@ -26,11 +27,11 @@ public class ReqRespLog
      * @return
      * @see [类、类#方法、类#成员]
      */
-    public InterfaceLogBean initLogBean(HttpServletRequest request,String moduleName)
+    public InterfaceLogBean initLogBean(HttpServletRequest request, String moduleName)
     {
         InterfaceLogBean interfaceLogBean = new InterfaceLogBean();
         
-        interfaceLogBean.setUniqueId(UUID.randomUUID().toString().replace("-",""));
+        interfaceLogBean.setUniqueId(UUID.randomUUID().toString().replace("-", ""));
         interfaceLogBean.setInterfaceName(request.getRequestURI());
         interfaceLogBean.setSystemModuleName(moduleName);
         
@@ -54,20 +55,20 @@ public class ReqRespLog
     {
         interfaceLogBean.setReqResIdent("request");
         
-        StringBuffer reqParams = new StringBuffer();
-        
         Map<String, String[]> params = request.getParameterMap();
-        Iterator<Entry<String, String[]>> it = params.entrySet().iterator();
-        while (it.hasNext())
-        {
-            Entry<String, String[]> entry = it.next();
-            if (null != entry.getValue() && entry.getValue().length > 0)
-            {
-                reqParams.append(entry.getKey()).append("=").append(entry.getValue()[0]).append(",");
-            }
-        }
+
+        Map<String, String> nMapParams = params.entrySet()
+            .stream()
+            .filter(e -> null != e.getValue() && e.getValue().length > 0 && StringUtils.isNotEmpty(e.getValue()[0]))
+            .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()[0]));
         
-        interfaceLogBean.setMessage(StringUtils.join("请求参数:", reqParams.toString()));
+        String postFormParam = null;
+        if (null != nMapParams && nMapParams.size() > 0)
+        {
+            postFormParam = Joiner.on(",").withKeyValueSeparator("=").join(nMapParams);
+        }
+
+        interfaceLogBean.setMessage(StringUtils.join("请求参数:", postFormParam));
         
         InterfaceLog.getInstance().info(paramLog, interfaceLogBean);
         
@@ -88,7 +89,7 @@ public class ReqRespLog
         
         InterfaceLog.getInstance().info(paramLog, interfaceLogBean);
     }
-
+    
     /**
      * 过程信息日志
      * @param paramLog 日志对象
@@ -98,9 +99,9 @@ public class ReqRespLog
     public void otherLog(Log paramLog, InterfaceLogBean interfaceLogBean, String message)
     {
         interfaceLogBean.setReqResIdent("process");
-
+        
         interfaceLogBean.setMessage(message);
-
+        
         InterfaceLog.getInstance().info(paramLog, interfaceLogBean);
     }
 }

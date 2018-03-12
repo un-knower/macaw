@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import cn.migu.macaw.schedule.api.model.Job;
 import cn.migu.macaw.schedule.api.model.ProcVariableMap;
 import cn.migu.macaw.schedule.api.model.Procedure;
+import com.google.common.base.Joiner;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -200,19 +201,17 @@ public class JobCommServiceImpl implements IJobCommService
      */
     private String getReqParams(HttpServletRequest request)
     {
-        StringBuffer reqParams = new StringBuffer();
-        
-        Map<String, String[]> params = request.getParameterMap();
-        Iterator<Entry<String, String[]>> it = params.entrySet().iterator();
-        while (it.hasNext())
+        Map<String, String> nMapParams = request.getParameterMap().entrySet()
+            .stream()
+            .filter(e -> null != e.getValue() && e.getValue().length > 0 && StringUtils.isNotEmpty(e.getValue()[0]))
+            .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()[0]));
+
+        String postFormParam = null;
+        if (null != nMapParams && nMapParams.size() > 0)
         {
-            Entry<String, String[]> entry = it.next();
-            if (null != entry.getValue() && entry.getValue().length > 0)
-            {
-                reqParams.append(entry.getKey()).append("=").append(entry.getValue()[0]).append(",");
-            }
+            postFormParam = Joiner.on(",").withKeyValueSeparator("=").join(nMapParams);
         }
-        
-        return reqParams.toString();
+
+        return postFormParam;
     }
 }

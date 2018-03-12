@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author soy
  */
-@RequestMapping("/")
+@RequestMapping("/jar-boot")
 public interface JarBootService
 {
     /**
@@ -18,7 +18,7 @@ public interface JarBootService
      * @param request http请求
      * @return String - 返回信息
      */
-    @PostMapping("/runJar")
+    @PostMapping("/run-jar")
     String boot(HttpServletRequest request);
 
     /**
@@ -26,7 +26,7 @@ public interface JarBootService
      * @param request http请求
      * @return String - 返回信息
      */
-    @PostMapping("/stopAndRunJar")
+    @PostMapping("/restart-jar")
     String reboot(HttpServletRequest request);
 
     /**
@@ -34,6 +34,6 @@ public interface JarBootService
      * @param request http请求
      * @return String - 返回信息
      */
-    @PostMapping("/stopJar")
+    @PostMapping("/stop-jar")
     String stop(HttpServletRequest request);
 }

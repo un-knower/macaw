@@ -102,5 +102,5 @@ spark-driver:
 # 日志
 logging:
   level:
-    cn.migu.macaw.sparkdrivermgr: INFO
+    cn.migu: INFO
 
