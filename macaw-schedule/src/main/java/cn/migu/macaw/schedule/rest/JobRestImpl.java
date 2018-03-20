@@ -358,7 +358,7 @@ public class JobRestImpl implements ScheduleJobService
         else
         {
             content.setCode(ReturnCode.JOB_NAME_ABSENT.getCode());
-            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getCode() + ":" + name);
+            content.setDesc(ReturnCode.JOB_NAME_ABSENT.getName() + ":" + name);
         }
         
         Response resp = new Response(content);

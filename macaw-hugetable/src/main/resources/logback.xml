@@ -11,7 +11,7 @@
     <appender name="RUN" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/apps/service/logs/macaw/hugetable-run.log</file>
         <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level %logger - %msg%n</pattern>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}]|%-5level|%logger|%msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -28,7 +28,7 @@
     <appender name="HUGETABLE_SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/apps/service/logs/macaw/hugetable-sql.log</file>
         <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level %logger - %msg%n</pattern>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}]|%-5level|%logger|%msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/apps/service/logs/macaw/hugetable-sql-%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -40,7 +40,7 @@
     <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/apps/service/logs/macaw/hugetable-error.log</file>
         <encoder>
-            <pattern>[%d{yyyy-MM-dd HH:mm:ss}] %-5level %msg%n</pattern>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}]|%-5level|%msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <fileNamePattern>/apps/service/logs/macaw/hugetable-error.log.%i</fileNamePattern>

@@ -37,7 +37,7 @@ import java.util.Map;
  * @author soy
  */
 @RestController
-@RequestMapping("/jarboot")
+@RequestMapping("/jar-boot")
 public class ProvideFunction extends PreLogger
 {
     private static final Log provideFuncLog = LogFactory.getLog("jar-boot-provide-func");

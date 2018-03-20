@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import cn.migu.macaw.common.ReturnCode;
+import cn.migu.macaw.common.*;
 import cn.migu.macaw.common.log.ReqRespLog;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,9 +22,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
 import com.google.common.collect.Maps;
 
-import cn.migu.macaw.common.DateUtil;
-import cn.migu.macaw.common.RestTemplateProvider;
-import cn.migu.macaw.common.SysRetCode;
 import cn.migu.macaw.common.log.InterfaceLogBean;
 import cn.migu.macaw.common.log.LogUtils;
 import cn.migu.macaw.common.message.Entity;
@@ -209,7 +206,6 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         try
         {
             Map<String, String> params = Maps.newHashMap();
-            params.put("dataSource", "hive");
             reqRespLog.requestLog(request, sparkDriverInterlog, logBean);
             String result = RestTemplateProvider.postFormForEntity(restTemplate, stopScUrl, String.class, params);
             reqRespLog.responseLog(sparkDriverInterlog,
@@ -245,7 +241,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         if (null != appLog)
         {
             Map<String, String> param = Maps.newHashMap();
-            param.put("appName", appName);
+            param.put(RequestKey.APP_NAME, appName);
             
             String url = StringUtils.join("http://",
                 appLog.getDriverIp(),

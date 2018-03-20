@@ -42,6 +42,7 @@
         <hadoop.version>2.6.0</hadoop.version>
         <crossdata.version>1.4.15</crossdata.version>
         <jsch.version>0.1.54</jsch.version>
+        <oracle.version>10.7.0.0.0</oracle.version>
     </properties>
 
     <dependencyManagement>
@@ -111,6 +112,11 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc7</artifactId>
+                <version>${oracle.version}</version>
             </dependency>
             <!-- 数据库连接池 -->
             <dependency>
