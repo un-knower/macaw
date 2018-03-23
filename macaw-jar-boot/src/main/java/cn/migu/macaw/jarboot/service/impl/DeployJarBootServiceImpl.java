@@ -778,7 +778,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
                 });
 
                 List<Triple<String,String,String>> originalItems = originalMonitorItem(cf.getFileId());
-                items.stream().forEach(e -> {
+                originalItems.stream().forEach(e -> {
                     updateOrAddMonitorValue(JarMonitorValueType.ORIGIANL,cf.getFileId(),e.getLeft(),e.getRight(),e.getMiddle(),cf.getPeriod(),cf.getScope());
                 });
             }
