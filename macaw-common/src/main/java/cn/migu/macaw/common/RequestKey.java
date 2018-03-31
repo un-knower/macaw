@@ -63,4 +63,6 @@ public interface RequestKey
     String DB_USER = "dbuser";
 
     String DB_PASSWORD = "dbpassword";
+
+    String NON_SCHEDULE = "non-schedule";
 }

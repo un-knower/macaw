@@ -154,7 +154,10 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
             entity.setAppid(resCtx.getAppId());
             entity.setAppname(resCtx.getAppName());
 
-            sparkSubmitHook.sendAliveMsg(resCtx, false);
+            if(StringUtils.isEmpty(request.getParameter(RequestKey.NON_SCHEDULE)))
+            {
+                sparkSubmitHook.sendAliveMsg(resCtx, false);
+            }
 
         }
 
