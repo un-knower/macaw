@@ -21,8 +21,7 @@ import cn.migu.macaw.schedule.util.ScheduleLogTrace;
 
 /**
  * 操作系统命令执行task
- * 
- * 
+ *
  * @author soy
  */
 @Component("remoteShellTask")

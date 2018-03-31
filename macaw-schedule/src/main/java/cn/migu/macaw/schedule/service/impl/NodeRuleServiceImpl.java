@@ -1,27 +1,22 @@
 package cn.migu.macaw.schedule.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import cn.migu.macaw.schedule.cache.JobTasksCache;
-import cn.migu.macaw.schedule.service.IJobTasksService;
-import cn.migu.macaw.schedule.task.TaskNodeBrief;
-import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tk.mybatis.mapper.entity.Example;
-import cn.migu.macaw.schedule.dao.NodeRuleMapper;
+import com.google.common.collect.Maps;
+
 import cn.migu.macaw.schedule.api.model.NodeRule;
-import cn.migu.macaw.schedule.service.INodeRuleService;
 import cn.migu.macaw.schedule.cache.ProcContextCache;
+import cn.migu.macaw.schedule.dao.NodeRuleMapper;
+import cn.migu.macaw.schedule.service.INodeRuleService;
+import cn.migu.macaw.schedule.task.TaskNodeBrief;
 import cn.migu.macaw.schedule.task.util.StringTagReplaceUtil;
-import cn.migu.macaw.schedule.util.ScheduleLogTrace;
 
 /**
  * 节点规则业务实现类

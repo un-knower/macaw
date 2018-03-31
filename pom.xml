@@ -98,6 +98,11 @@
                 <artifactId>macaw-jar-boot-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>macaw-sparkjob-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- spring cloud -->
             <dependency>

@@ -318,7 +318,7 @@ public class SqlServiceUtil
     public void executeForHt(TaskNodeBrief brief, DataSourceFlatAttr dsAttr, String nodeRunSql)
         throws Exception
     {
-        String url = ServiceUrlProvider.hugetableSqlService(RequestServiceUri.JDBC_EXECUTE_QUERY);
+        String url = ServiceUrlProvider.hugetableSqlService(RequestServiceUri.HUGETABLE_EXECUTE_SQL);
         
         for (int i = 0; i < RETRY_TIME; i++)
         {

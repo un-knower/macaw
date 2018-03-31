@@ -27,22 +27,26 @@ public class TaskTraceLogUtil
 {
     @Resource
     private ServiceReqClient httpClientUtil;
-
+    
     /**
      * 发出请求描述,对以下请求记录日志
      */
-    private String[][] reqDesc =
-        {{RequestServiceUri.SPARK_SQL_EXECUTE, "单SQL执行"}, {RequestServiceUri.SPARK_SQL_EXECUTE_CTX, "单SQL执行_IN-THE-CONTEXT"},
-            {RequestServiceUri.JDBC_EXECUTE_QUERY, "JDBC查询HT"}, {RequestServiceUri.LOADL_FILE_TO_DATABASE, "加载文件至数据库"},
-            {RequestServiceUri.EXECUTE_SQL_DATAFRAME, "SQL/DataFrame操作"}, {RequestServiceUri.SPARK_SELECT_TO_FILE, "SQL生成文件"},
-            {RequestServiceUri.SPARK_SQLLIST_PATH, "多SQL执行"}, {RequestServiceUri.SPARK_JSON_TO_DB, "json数据->Data WareHouse"},
-            {RequestServiceUri.SINGLE_DATASOURCE_TABLE, "crossdata DB->HUGETABLE"}, {RequestServiceUri.ALGO_TRAIN, "算法数据训练"},
-            {RequestServiceUri.ALGO_USE, "算法数据使用"}, {RequestServiceUri.SPARK_SELECT_TO_TEXT, "SQL生成单个文本文件"},
-            {RequestServiceUri.COMMON_DB_CROSSDATA, "数据同步"}, {RequestServiceUri.SPARK_DRIVER_INIT, "Spark Driver申请"},
-            {RequestServiceUri.SPARK_DRIVER_FREE, "Spark Driver释放"}, {RequestServiceUri.SPARK_STOP_APP, "停止Spark Application"},
-            {RequestServiceUri.SPARK_SELECT_QUERY, "Spark SQL查询返回"},
-            {RequestServiceUri.SAVE_TO_REDIS_BYSQL, "根据spark sql保存数据到redis"},
-            {RequestServiceUri.DB_CROSSDATA_KILL, "Kill CrossData Job(By JobCode)"}};
+    private String[][] reqDesc = {{RequestServiceUri.SPARK_SQL_EXECUTE, "单SQL执行"},
+        {RequestServiceUri.SPARK_SQL_EXECUTE_CTX, "单SQL执行_IN-THE-CONTEXT"},
+        {RequestServiceUri.HUGETABLE_QUERY_SQL, "查询HUGEATBLE SQL"}, {RequestServiceUri.HUGETABLE_EXECUTE_SQL, "执行HUGETABLE SQL"},
+        {RequestServiceUri.LOADL_FILE_TO_DATABASE, "加载文件至数据库"},
+        {RequestServiceUri.EXECUTE_SQL_DATAFRAME, "SQL/DataFrame操作"},
+        {RequestServiceUri.SPARK_SELECT_TO_FILE, "SQL生成文件"}, {RequestServiceUri.SPARK_SQLLIST_PATH, "多SQL执行"},
+        {RequestServiceUri.SPARK_JSON_TO_DB, "json数据->Data WareHouse"},
+        {RequestServiceUri.SINGLE_DATASOURCE_TABLE, "crossdata DB->HUGETABLE"},
+        {RequestServiceUri.ALGO_TRAIN, "算法数据训练"}, {RequestServiceUri.ALGO_USE, "算法数据使用"},
+        {RequestServiceUri.SPARK_SELECT_TO_TEXT, "SQL生成单个文本文件"}, {RequestServiceUri.COMMON_DB_CROSSDATA, "数据同步"},
+        {RequestServiceUri.SPARK_DRIVER_INIT, "Spark Driver申请"},
+        {RequestServiceUri.SPARK_DRIVER_FREE, "Spark Driver释放"},
+        {RequestServiceUri.SPARK_STOP_APP, "停止Spark Application"},
+        {RequestServiceUri.SPARK_SELECT_QUERY, "Spark SQL查询返回"},
+        {RequestServiceUri.SAVE_TO_REDIS_BYSQL, "根据spark sql保存数据到redis"},
+        {RequestServiceUri.DB_CROSSDATA_KILL, "Kill CrossData Job(By JobCode)"}};
     
     /**
      * 请求日志
@@ -86,8 +90,9 @@ public class TaskTraceLogUtil
         {
             reqParamStr.append(postFormParam);
         }
-
-        ScheduleLogTrace.scheduleInfoLog(jobCode,batchNo,StringUtils.join(reqPathStr.toString(), reqParamStr.toString()));
+        
+        ScheduleLogTrace
+            .scheduleInfoLog(jobCode, batchNo, StringUtils.join(reqPathStr.toString(), reqParamStr.toString()));
         
     }
     
@@ -98,7 +103,7 @@ public class TaskTraceLogUtil
      * @param brief task执行上下文
      * @see [类、类#方法、类#成员]
      */
-    public void reqPostLog(String url, Map<String,String> entity, TaskNodeBrief brief)
+    public void reqPostLog(String url, Map<String, String> entity, TaskNodeBrief brief)
     {
         //获取url描述
         String lastName = FilenameUtils.getName(url);
@@ -124,8 +129,8 @@ public class TaskTraceLogUtil
         StringBuffer reqParamStr = new StringBuffer(desc);
         reqParamStr.append(" 请求参数:");
         reqParamStr.append(postFormParam);
-
-        ScheduleLogTrace.scheduleInfoLog(brief,StringUtils.join(reqPathStr.toString(), reqParamStr.toString()));
+        
+        ScheduleLogTrace.scheduleInfoLog(brief, StringUtils.join(reqPathStr.toString(), reqParamStr.toString()));
         
     }
     
@@ -158,9 +163,9 @@ public class TaskTraceLogUtil
         {
             respStr.append("[").append(resp).append("]");
         }
-
-        ScheduleLogTrace.scheduleInfoLog(brief,StringUtils.join(respPathStr.toString(), respStr.toString()));
-
+        
+        ScheduleLogTrace.scheduleInfoLog(brief, StringUtils.join(respPathStr.toString(), respStr.toString()));
+        
     }
     
     /**
@@ -171,7 +176,7 @@ public class TaskTraceLogUtil
      * @param batchNo
      * @see [类、类#方法、类#成员]
      */
-    public void resqPostLog(String url, String resp,String jobCode ,String batchNo)
+    public void resqPostLog(String url, String resp, String jobCode, String batchNo)
     {
         String lastName = FilenameUtils.getName(url);
         
@@ -193,11 +198,11 @@ public class TaskTraceLogUtil
         {
             respStr.append("[").append(resp).append("]");
         }
-
-        ScheduleLogTrace.scheduleInfoLog(jobCode,batchNo,StringUtils.join(respPathStr.toString(), respStr.toString()));
+        
+        ScheduleLogTrace
+            .scheduleInfoLog(jobCode, batchNo, StringUtils.join(respPathStr.toString(), respStr.toString()));
         
     }
-
     
     /**
      * 获取post参数列表
@@ -205,7 +210,7 @@ public class TaskTraceLogUtil
      * @return
      * @see [类、类#方法、类#成员]
      */
-    private String getPostForm(Map<String,String> entity)
+    private String getPostForm(Map<String, String> entity)
     {
         return JSON.toJSONString(entity);
     }

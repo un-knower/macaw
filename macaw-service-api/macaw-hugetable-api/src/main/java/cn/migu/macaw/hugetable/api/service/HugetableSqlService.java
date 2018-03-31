@@ -12,7 +12,7 @@ import cn.migu.macaw.common.message.Response;
  *
  * @author soy
  */
-@RequestMapping("/")
+@RequestMapping("/hugetable-sql")
 public interface HugetableSqlService
 {
     /**
@@ -20,7 +20,7 @@ public interface HugetableSqlService
      * @param request http request
      * @return Response - 返回消息
      */
-    @PostMapping("hugetable-sql")
+    @PostMapping("execute")
     Response hugetableSql(HttpServletRequest request);
 
     /**
@@ -28,6 +28,6 @@ public interface HugetableSqlService
      * @param request
      * @return
      */
-    @PostMapping("hugetable-sql-select")
+    @PostMapping("query")
     Response hugetableSqlSelect(HttpServletRequest request);
 }

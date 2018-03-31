@@ -635,7 +635,7 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         
         for (int i = 0; i < REQ_RETRY; i++)
         {
-            String qryUrl = ServiceUrlProvider.hugetableSqlService(JDBC_EXECUTE_QUERY);
+            String qryUrl = ServiceUrlProvider.hugetableSqlService(HUGETABLE_QUERY_SQL);
             String result = this.post(qryUrl, entity, brief);
             
             JSONObject jsonObject = JSONObject.parseObject(result);

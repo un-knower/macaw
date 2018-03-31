@@ -66,7 +66,12 @@ public interface RequestServiceUri
     /**
      * jdbc方式查询HT
      */
-    String JDBC_EXECUTE_QUERY = "hugetable-sql-select";
+    String HUGETABLE_QUERY_SQL = "hugetable-sql/query";
+
+    /**
+     * jdbc方式查询HT
+     */
+    String HUGETABLE_EXECUTE_SQL = "hugetable-sql/query";
 
     /**
      *

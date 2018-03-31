@@ -36,7 +36,12 @@ public enum JarFuncType
     /**
      * 自定义检验文件
      */
-    CUSTOM_CHECK_FILE(7);
+    CUSTOM_CHECK_FILE(7),
+    /**
+     * 错误类型
+     */
+    ERROR(8);
+
 
     private int value = 0;
 
@@ -48,5 +53,18 @@ public enum JarFuncType
     public int value()
     {
         return this.value;
+    }
+
+    public static JarFuncType jarType(int value)
+    {
+        for(JarFuncType type : JarFuncType.values())
+        {
+            if(type.value == value)
+            {
+                return type;
+            }
+        }
+
+        return ERROR;
     }
 }

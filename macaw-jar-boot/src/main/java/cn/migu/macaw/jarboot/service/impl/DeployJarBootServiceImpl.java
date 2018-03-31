@@ -132,7 +132,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
             }
             else
             {
-                JarFuncType jarType = JarFuncType.values()[Integer.valueOf(param.getKind())];
+                JarFuncType jarType = JarFuncType.jarType(Integer.valueOf(param.getKind()));
                 for (HostPid hp : processHostList)
                 {
                     
@@ -258,7 +258,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
         }
         
         //不同功能jar指定参数检测
-        JarFuncType type = JarFuncType.values()[Integer.valueOf(param.getKind())];
+        JarFuncType type = JarFuncType.jarType(Integer.valueOf(param.getKind()));
         
         switch (type)
         {
@@ -493,8 +493,10 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
      */
     private ReturnCode bootJar(JarConfParam param, Server hostInfo)
     {
+        jarBootLog.info(String.format("JarConfParam:%s",param.toString()));
         String shell = "";
-        JarFuncType type = JarFuncType.values()[Integer.valueOf(param.getKind())];
+        JarFuncType type = JarFuncType.jarType(Integer.valueOf(param.getKind()));
+        jarBootLog.info(type);
         switch (type)
         {
             case CUSTOM:
@@ -684,7 +686,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
      */
     private void monitorConf(JarConfParam param)
     {
-        JarFuncType type = JarFuncType.values()[Integer.valueOf(param.getKind())];
+        JarFuncType type = JarFuncType.jarType(Integer.valueOf(param.getKind()));
         switch (type)
         {
             case FLUME:
