@@ -105,12 +105,12 @@ public class BootCommandGenerator
         }
         else
         {
-            bootShell.append(4096).append("m -jar");
+            bootShell.append(4096).append("m -jar ");
         }
 
-        bootShell.append(param.getPath()).append("clean.jar ").append(param.getAppId()).append(" ");
+        bootShell.append(param.getPath()).append("swallow-plover.jar ").append(param.getAppId()).append(" ");
         bootShell.append(param.getServerId()).append(" ").append(param.getPort()).append(" ").append(param.getObjId());
-        bootShell.append(" ").append(address).append(" ").append(param.getName());
+        bootShell.append(" ").append(address).append(" ").append(param.getName()).append(" --server.port=").append(param.getPort());
 
         return bootShell.toString();
     }

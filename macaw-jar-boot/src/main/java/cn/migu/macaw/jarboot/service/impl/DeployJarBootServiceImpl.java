@@ -161,7 +161,7 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
                     
                     String queryPidShell = String.format("ps -p %d | grep -v PID  | wc -l", hp.getPid());
                     String ret = SSHManager.execCommand(hp.getIp(), hp.getUsername(), hp.getPassword(), queryPidShell);
-                    if (StringUtils.equals("0", ret))
+                    if (StringUtils.equals("0", ret.trim()))
                     {
                         //更改应用状态
                         updateJarStatus(param, JarStatus.STOP.ordinal());
@@ -354,11 +354,13 @@ public class DeployJarBootServiceImpl implements IDeployJarBootService
     private void updateJarStatus(JarConfParam param, int status)
     {
         Jar jarEntity = new Jar();
-        jarEntity.setStatus(status);
         jarEntity.setObjId(param.getObjId());
-        jarEntity.setDealUser(param.getDealUser());
-        jarDao.updateByPrimaryKey(jarEntity);
-        
+        jarEntity = jarDao.selectOne(jarEntity);
+        if(null != jarEntity)
+        {
+            jarEntity.setStatus(status);
+            jarDao.updateByPrimaryKeySelective(jarEntity);
+        }
     }
     
     /**

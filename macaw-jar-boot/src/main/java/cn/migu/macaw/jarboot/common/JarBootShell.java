@@ -228,7 +228,11 @@ public class JarBootShell
 
     public static void main(String[] args)
     {
-        String shell  = "/apps/service/t1.sh shanpao ff14af92-6b26-4e9d-afa1-56e557c91a1e 22ebbf65-f8ea-4126-b13e-bc3b4c27fb9c spark://192.168.129.186:7077 hdfs://hadoop 10004 sp_ugc_new.jar wy 1 1024 10 null";
-        System.out.println(JarBootShell.execCommandForParseRetLine(shell,"192.168.129.186","root","Emc20090"));
+        /*String shell  = "/apps/service/t11.sh shanpao ff14af92-6b26-4e9d-afa1-56e557c91a1e 22ebbf65-f8ea-4126-b13e-bc3b4c27fb9c spark://192.168.129.186:7077 hdfs://hadoop 10004 sp_ugc_new.jar wy 1 1024 10 null";
+        */
+
+
+        String shell = "/usr/lib/jvm/jdk1.8.0_102/bin/java -jar /apps/service/swallow-plover.jar  jingfen 65af2e9e-0756-4c75-959b-7ba6d6ddeb32 10987 9befc5de-921a-477f-8d28-667a301dcdf6 hdfs://hadoop/apps/hdfs/qipai/aidate AI_qp --server.port=10987";
+        System.out.println(JarBootShell.execCommandForParseRetLine("192.168.129.186","root","Emc20090",shell));
     }
 }

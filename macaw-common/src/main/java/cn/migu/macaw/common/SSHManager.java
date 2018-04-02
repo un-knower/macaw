@@ -79,6 +79,11 @@ public class SSHManager
 
     public static void main(String[] args)
     {
-        System.out.println(SSHManager.execCommand("192.168.129.153","service","Emc20090","ps -ef | grep unify_calc | grep -v grep | wc -l"));
+        String ret = SSHManager.execCommand("192.168.129.186","service","Emc20090","ps -p 4184 | grep -v PID  | wc -l");
+
+        if (StringUtils.equals("0", ret.trim()))
+        {
+            System.out.println(ret);
+        }
     }
 }
