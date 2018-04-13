@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import cn.migu.macaw.common.*;
+import cn.migu.macaw.schedule.PlatformAttr;
 import cn.migu.macaw.schedule.api.service.ScheduleJobService;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -24,6 +25,7 @@ import cn.migu.macaw.schedule.service.IJobLogService;
 import cn.migu.macaw.schedule.service.IJobTasksService;
 import cn.migu.macaw.schedule.util.SpecJobPartRunThread;
 import cn.migu.macaw.schedule.workflow.DataConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,6 +39,9 @@ import java.util.Map;
 @RestController
 public class JobRestImpl implements ScheduleJobService
 {
+
+    @Autowired
+    private PlatformAttr platformAttr;
 
     @Resource
     private SchedulerTemplate schedulerTemplate;
@@ -76,12 +81,12 @@ public class JobRestImpl implements ScheduleJobService
         
         if (null != job)
         {
-            if (StringUtils.isNotEmpty(job.getCronExpression()) && StringUtils.isNotEmpty(job.getJobClass()))
+            if (StringUtils.isNotEmpty(job.getCronExpression()))
             {
                 Class<? extends org.quartz.Job> jobClass;
                 try
                 {
-                    jobClass = (Class<? extends org.quartz.Job>)Class.forName(job.getJobClass());
+                    jobClass = (Class<? extends org.quartz.Job>)Class.forName(platformAttr.getJobClass());
                     
                     schedulerTemplate.scheduleCronJob(name, job.getCronExpression(), jobClass);
                     
@@ -135,7 +140,7 @@ public class JobRestImpl implements ScheduleJobService
         
         if (null != job)
         {
-            if (StringUtils.isNotEmpty(job.getCronExpression()) && StringUtils.isNotEmpty(job.getJobClass()))
+            if (StringUtils.isNotEmpty(job.getCronExpression()))
             {
                 try
                 {

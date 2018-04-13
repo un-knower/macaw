@@ -123,20 +123,7 @@ public class SparkClusterJobRestImpl implements SparkClusterJobEvent
 
         String realJobCode = jobCode;
 
-        if (isProcedure)
-        {
-            Procedure proc = new Procedure();
-            proc.setCode(jobCode);
-            Procedure tProc = procDao.selectOne(proc);
-            if (null == tProc)
-            {
-                logger.info( "spark context fallback:procedure is not found" + realJobCode);
-                return null;
-            }
-
-            realJobCode = tProc.getJobCode();
-        }
-        else
+        if (!isProcedure)
         {
             if (StringUtils.isEmpty(appName))
             {

@@ -2,22 +2,23 @@ package cn.migu.macaw.sparkdrivermgr.hook;
 
 import java.util.Map;
 
-import cn.migu.macaw.common.RequestKey;
-import cn.migu.macaw.common.RestTemplateProvider;
-import cn.migu.macaw.common.ServiceName;
-import cn.migu.macaw.common.ServiceUrlProvider;
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import cn.migu.macaw.common.log.LogUtils;
-import cn.migu.macaw.sparkdrivermgr.model.SparkJobMetaData;
-
-import com.google.common.collect.Maps;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
+import com.google.common.collect.Maps;
+
+import cn.migu.macaw.common.RequestKey;
+import cn.migu.macaw.common.RestTemplateProvider;
+import cn.migu.macaw.common.ServiceUrlProvider;
+import cn.migu.macaw.common.log.LogUtils;
+import cn.migu.macaw.sparkdrivermgr.model.SparkJobMetaData;
 
 /**
  * spark job提交问题处理
@@ -26,6 +27,8 @@ import javax.annotation.Resource;
 @Service
 public class SparkSubmitHook
 {
+    private static final Log logger = LogFactory.getLog(SparkSubmitHook.class);
+
     @Resource(name = "restTemplateForLoadBalance")
     private RestTemplate restTemplateForLoadBalance;
 

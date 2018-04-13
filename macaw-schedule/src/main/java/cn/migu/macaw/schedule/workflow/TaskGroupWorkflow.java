@@ -69,7 +69,7 @@ public class TaskGroupWorkflow implements Closeable
         TaskExecutorShell taskExecutor = new TaskExecutorShell(this.customDag);
         
         // workflow命名空间
-        String namespace = UUID.randomUUID().toString();
+        String namespace = UUID.randomUUID().toString().replace("-","");
         
         //调度并发度
         int qty = this.getExecutorNum(this.customDag);

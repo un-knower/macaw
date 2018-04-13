@@ -139,7 +139,7 @@ public class SparkEventHandler
         
         Entity rltEntity =
             client.postCommonTaskForEntity(ServiceUrlProvider.sparkJobMgrService(ServiceReqClient.SPARK_DRIVER_INIT),
-                client.sparkCtxInitEntity(brief, proc.getCode(), cores, memSize),
+                client.sparkCtxInitEntity(brief, brief.getJobCode(), cores, memSize),
                 brief);
         
         if (StringUtils.equals(rltEntity.getCode(), SysRetCode.SUCCESS))

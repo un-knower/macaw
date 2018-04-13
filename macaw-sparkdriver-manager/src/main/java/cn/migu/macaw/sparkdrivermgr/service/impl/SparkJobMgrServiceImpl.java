@@ -170,7 +170,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
         }
         
         //1-更新进程状态
-        dataSheetHandler.updateProcessStatus(resCtx.getProcessId(), ProcessStatus.PROCESS_READY);
+        dataSheetHandler.updateProcessStatus(resCtx.getProcessId(), ProcessStatus.PROCESS_READY,resCtx.getAppName());
         
         resCtx.setResAlloc(true);
         
@@ -185,7 +185,7 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
     {
         
         //恢复进程状态
-        dataSheetHandler.updateProcessStatus(resCtx.getProcessId(), ProcessStatus.PROCESS_WAITING);
+        dataSheetHandler.updateProcessStatus(resCtx.getProcessId(), ProcessStatus.PROCESS_WAITING,null);
         
         resCtx.setResAlloc(false);
     }
@@ -370,6 +370,11 @@ public class SparkJobMgrServiceImpl implements ISparkJobMgrService
                 else
                 {
                     BeanUtils.copyProperties(retEntry, entity);
+                    //释放资源
+                    if (resCtx.isResAlloc())
+                    {
+                        this.freeResource(resCtx);
+                    }
                 }
             }
             else

@@ -143,7 +143,7 @@ public class DataSheetHandler
      * 更新spark app log
      * @param app spark application日志
      */
-    public synchronized void updateAppLog(SparkApplicationLog app)
+    public void updateAppLog(SparkApplicationLog app)
     {
         appDao.updateByPrimaryKeySelective(app);
     }
@@ -198,11 +198,12 @@ public class DataSheetHandler
      * @param processId 进程主键
      * @param status 进程状态
      */
-    public void updateProcessStatus(String processId, int status)
+    public void updateProcessStatus(String processId, int status,String sparkAppName)
     {
         Process p = new Process();
         p.setObjId(processId);
         p.setStatus(status);
+        p.setDealUser(sparkAppName);
         
         processDao.updateByPrimaryKeySelective(p);
     }
@@ -211,7 +212,7 @@ public class DataSheetHandler
      * 更新spark app记录日志
      * @param res spark job信息
      */
-    public synchronized ReturnCode updateAppLog(SparkJobMetaData res)
+    public ReturnCode updateAppLog(SparkJobMetaData res)
     {
 
         SparkApplicationLog sparkAppLog = this.getLatestAppById(res.getAppId());
@@ -276,7 +277,7 @@ public class DataSheetHandler
      * @param process 进程实例
      * @see [类、类#方法、类#成员]
      */
-    public synchronized void addProcess(Process process)
+    public void addProcess(Process process)
     {
         processDao.insertSelective(process);
     }
@@ -287,7 +288,7 @@ public class DataSheetHandler
      * @param app spark application日志实例
      * @see [类、类#方法、类#成员]
      */
-    public synchronized void addAppLog(SparkApplicationLog app)
+    public void addAppLog(SparkApplicationLog app)
     {
         if (null == app)
         {

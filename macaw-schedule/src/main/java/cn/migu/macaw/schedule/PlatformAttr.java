@@ -28,6 +28,9 @@ public class PlatformAttr
     @Value("${base-platform.url}")
     private String basePlatformUrl;
 
+    @Value("${job-class}")
+    private String jobClass;
+
     public String getSparkMaster()
     {
         return sparkMaster;
@@ -86,5 +89,15 @@ public class PlatformAttr
     public void setBasePlatformUrl(String basePlatformUrl)
     {
         this.basePlatformUrl = basePlatformUrl;
+    }
+
+    public String getJobClass()
+    {
+        return jobClass;
+    }
+
+    public void setJobClass(String jobClass)
+    {
+        this.jobClass = jobClass;
     }
 }

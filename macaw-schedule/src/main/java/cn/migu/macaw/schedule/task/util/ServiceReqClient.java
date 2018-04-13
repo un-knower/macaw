@@ -140,7 +140,7 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS))
         {
             LogUtils.runLogError(response);
-            String errMsg = StringUtils.isEmpty(sr.getErrorStack()) ? "调用服务中心组件失败" : sr.getErrorStack();
+            String errMsg = StringUtils.isEmpty(sr.getErrorStack()) ? String.format("调用服务中心组件失败:%s",sr.getDesc()) : sr.getErrorStack();
             throw new RuntimeException(errMsg);
         }
         
@@ -167,7 +167,7 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         if (!StringUtils.equals(sr.getCode(), SysRetCode.SUCCESS))
         {
             LogUtils.runLogError(response);
-            String errMsg = StringUtils.isEmpty(sr.getErrorStack()) ? "调用服务中心组件失败" : sr.getErrorStack();
+            String errMsg = StringUtils.isEmpty(sr.getErrorStack()) ? String.format("调用服务中心组件失败:%s",sr.getDesc()) : sr.getErrorStack();
             throw new RuntimeException(errMsg);
         }
         
@@ -547,6 +547,8 @@ public class ServiceReqClient implements RequestKey, RequestServiceUri
         entity.put(EXECUTOR_MEMORY, memory);
         
         entity.put(JOB_CODE, procCode);
+
+        entity.put(BATCH_NO,brief.getBatchCode());
         
         this.getClusterMaster(entity, brief);
         

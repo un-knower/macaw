@@ -378,7 +378,7 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         }
         else
         {
-            reqRespLog.responseLog(sparkJobForwardLog, logBean, alloRet.getName());
+            reqRespLog.responseLog(sparkJobForwardLog, logBean, String.format("初始化spark session失败:%s",entity.getDesc()));
         }
 
         return resp;
@@ -649,9 +649,9 @@ public class SparkDriverMgrRestImpl implements SparkDriverManagerService
         }
 
         //业务参数,选填
-        String batchNo = request.getParameter("batchNo");
-        String jobCode = request.getParameter("jobCode");
-        String taskCode = request.getParameter("taskCode");
+        String batchNo = request.getParameter(RequestKey.BATCH_NO);
+        String jobCode = request.getParameter(RequestKey.JOB_CODE);
+        String taskCode = request.getParameter(RequestKey.TASK_CODE);
 
         resCtx.setBatchNo(batchNo);
         resCtx.setJobCode(jobCode);

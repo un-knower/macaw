@@ -140,9 +140,9 @@ public class JobTasksServiceImpl implements IJobTasksService
             }
             else
             {
-                ImmutableSet<String> childs = dags.childIdSet(n);
+                ImmutableSet<String> children = dags.childIdSet(n);
                 
-                for (String child : childs)
+                for (String child : children)
                 {
                     cnodes.add(taskObjs.get(child));
                 }

@@ -236,8 +236,6 @@ public class DataSyncServiceImpl implements IDataSyncService
             RestTemplateProvider.postFormForEntity(restTemplate,StringUtils.join(redirectAddress,"/crossdata-stop"),String.class,params);
         }
 
-
-
         return ReturnCode.SUCCESS;
     }
 

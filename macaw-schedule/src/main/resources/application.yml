@@ -86,6 +86,7 @@ crossdata:
   port: 9099
 base-platform:
   url: 'http://192.168.129.188:8086/'
+job-class: cn.migu.macaw.schedule.job.RunJob
 
 # mybatis配置
 mybatis:

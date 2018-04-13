@@ -53,9 +53,7 @@ public class RunJob extends BaseJob implements InterruptableJob
         
         try
         {
-            
             jobTasksService.jobRun(jobCode, batchNo);
-            
         }
         catch (Exception e)
         {
