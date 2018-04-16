@@ -17,29 +17,29 @@ import cn.migu.macaw.dag.idgraph.IdDag;
 public class PathsLib
 {
     /**
-     * 查找指定两个节点之间的所有路径
-     * @param source
-     * @param destination
-     * @param dag
-     * @return
+     * 查找指定两个节点之间的所有路径(DFS)
+     * @param source 源节点
+     * @param destination 目的节点
+     * @param dag 有向图
+     * @return  - 路径信息
      * @see [类、类#方法、类#成员]
      */
     public static List<List<String>> getAllPaths(String source, String destination, final IdDag<String> dag)
     {
-        List<List<String>> paths = new ArrayList<List<String>>();
+        List<List<String>> paths = new ArrayList<>();
         
-        recursive(source, destination, paths, new LinkedHashSet<String>(), dag);
+        recursive(source, destination, paths, new LinkedHashSet<>(), dag);
         
         return paths;
     }
     
     /**
-     * 递归路径查找
-     * @param current
-     * @param destination
-     * @param paths
-     * @param path
-     * @param dag
+     * 递归路径查找(DFS)
+     * @param current 当前节点
+     * @param destination 目的节点
+     * @param paths 所有路径集合
+     * @param path 已访问节点
+     * @param dag 有向图
      * @see [类、类#方法、类#成员]
      */
     private static void recursive(String current, String destination, List<List<String>> paths,
@@ -49,7 +49,7 @@ public class PathsLib
         
         if (StringUtils.equals(current, destination))
         {
-            paths.add(new ArrayList<String>(path));
+            paths.add(new ArrayList<>(path));
             path.remove(current);
             return;
         }
