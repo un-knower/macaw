@@ -10,12 +10,6 @@ import cn.migu.macaw.schedule.task.TaskNodeBrief;
  */
 public interface IJobTasksService
 {
-    /**
-     * 关闭http请求
-     * @param jobCode
-     * @see [类、类#方法、类#成员]
-     */
-    void closeHttpReq(String jobCode);
     
     /**
      * 资源回收

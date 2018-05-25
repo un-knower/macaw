@@ -101,13 +101,20 @@ public class TaskExecutorShell implements TaskExecutor
                         LogUtils.runLogError(e);
                         String err = ExceptionUtils.getStackTrace(e);
                         ScheduleLogTrace.scheduleWarnLog(jobCode, batchNo,StringUtils.join(nodeId,"执行异常:", err));
-                        
-                        if (!jobTasksService.isResidualCtx(jobCode))
+
+                        try
                         {
-                            jobTasksService.setJobTaskCtxFlag(jobCode, "", DataConstants.JOB_EXCEP_FLAG, "1");
-                            jobTasksService.setJobTaskCtxFlag(jobCode, "", DataConstants.JOB_EXCEP_MSG, err);
+                            if (!jobTasksService.isResidualCtx(jobCode))
+                            {
+                                jobTasksService.setJobTaskCtxFlag(jobCode, "", DataConstants.JOB_EXCEP_FLAG, "1");
+                                jobTasksService.setJobTaskCtxFlag(jobCode, "", DataConstants.JOB_EXCEP_MSG, err);
+                            }
                         }
-                        
+                        catch(Exception ex)
+                        {
+                            LogUtils.runLogError(ex);
+                        }
+
                         return new TaskExecutionResult(TaskExecutionStatus.FAILED_STOP, "NEXT");
                     }
                     

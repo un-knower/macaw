@@ -421,7 +421,6 @@ public class JobRestImpl implements ScheduleJobService
                                 rt.interrupt();
                             }
                             jobTasksService.setJobTaskCtxFlag(name, "", DataConstants.JOB_INTERRUPT_FLAG, "1");
-                            jobTasksService.closeHttpReq(name);
                         }
 
                         //single
@@ -433,7 +432,6 @@ public class JobRestImpl implements ScheduleJobService
                                 st.interrupt();
                             }
                             jobTasksService.setJobTaskCtxFlag(name, "", DataConstants.JOB_INTERRUPT_FLAG, "1");
-                            jobTasksService.closeHttpReq(name);
                         }
                     }
                     catch (Exception e)

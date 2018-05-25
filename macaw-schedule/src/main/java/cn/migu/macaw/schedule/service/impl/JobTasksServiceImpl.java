@@ -134,7 +134,6 @@ public class JobTasksServiceImpl implements IJobTasksService
             // 区分叶节点和中间节点创建task对象方式
             if (dags.isLeaf(n))
             {
-                
                 Task lfn = new Task(new TaskId(n), taskType, Lists.newArrayList(), metadata);
                 taskObjs.put(n, lfn);
             }
@@ -226,10 +225,7 @@ public class JobTasksServiceImpl implements IJobTasksService
             
             //释放其他业务资源
             this.freeServiceResource(jobCode, batchNo);
-            
-            //释放阻塞http请求
-            this.closeHttpReq(jobCode);
-            
+
         }
         catch (Exception e)
         {
@@ -248,17 +244,6 @@ public class JobTasksServiceImpl implements IJobTasksService
             //job临时变量清除
             this.clearJobTmpVars(jobCode);
         }
-        
-    }
-    
-    /**
-     * 释放阻塞的http请求
-     * @param jobCode
-     * @see [类、类#方法、类#成员]
-     */
-    @Override
-    public void closeHttpReq(String jobCode)
-    {
         
     }
     
